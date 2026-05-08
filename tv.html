@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamVerse – TV Shows</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg2: #111118;
+            --surface: #1a1a24;
+            --accent: #e50914;
+            --accent2: #f5a623;
+            --gold: #FFD700;
+            --text: #f0f0f0;
+            --muted: #888;
+            --card-w: 180px;
+            --card-h: 260px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar { width: 6px; height: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            padding: 16px 48px;
+            background: linear-gradient(to bottom, rgba(10,10,15,0.98) 70%, transparent);
+            backdrop-filter: blur(8px);
+            transition: background 0.3s;
+        }
+
+        .logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            flex-shrink: 0;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .nav-links { display: flex; gap: 4px; flex: 1; }
+        .nav-links a {
+            text-decoration: none;
+            color: #bbb;
+            font-size: 0.88rem;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+            padding: 6px 14px;
+            border-radius: 6px;
+            transition: color 0.2s, background 0.2s;
+        }
+        .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.07); }
+        .nav-links a.active {
+            color: #fff;
+            background: rgba(229,9,20,0.1);
+            border-bottom: 2px solid var(--accent);
+            border-radius: 6px 6px 0 0;
+        }
+
+        .nav-right { display: flex; align-items: center; gap: 16px; margin-left: auto; }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 7px 16px;
+            transition: border-color 0.2s, width 0.3s;
+        }
+        .search-box:focus-within { border-color: rgba(229,9,20,0.5); }
+        .search-box input {
+            background: none; border: none; outline: none;
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            width: 160px;
+        }
+        .search-box input::placeholder { color: var(--muted); }
+
+        .nav-btn {
+            background: linear-gradient(135deg, var(--accent), #c20810);
+            border: none; color: #fff;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: 0.3px;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .nav-btn:hover { opacity: 0.88; transform: scale(1.03); }
+
+        .avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            display: grid; place-items: center;
+            font-weight: 700; font-size: 0.85rem;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+        .avatar:hover { border-color: var(--accent2); }
+
+        /* ── HERO ── */
+        .hero {
+            height: 92vh;
+            min-height: 580px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 120px 60px 40px;
+        }
+
+        .hero-bg-img {
+            position: absolute; inset: 0;
+            background-image: url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1800&q=80');
+            background-size: cover;
+            background-position: center 20%;
+            animation: heroZoom 18s ease-in-out infinite alternate;
+        }
+
+        @keyframes heroZoom {
+            from { transform: scale(1.02); }
+            to   { transform: scale(1.07); }
+        }
+
+        .hero-bg {
+            position: absolute; inset: 0;
+            background:
+                linear-gradient(to right, rgba(10,10,15,0.97) 32%, rgba(10,10,15,0.55) 60%, rgba(10,10,15,0.15) 100%),
+                linear-gradient(to top, rgba(10,10,15,1) 0%, rgba(10,10,15,0.4) 35%, transparent 65%);
+        }
+
+        /* Grain texture overlay */
+        .hero-grain {
+            position: absolute; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative; z-index: 2;
+            max-width: 560px;
+            animation: heroFadeUp 0.8s ease both;
+        }
+
+        @keyframes heroFadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center; gap: 8px;
+            background: rgba(229,9,20,0.12);
+            border: 1px solid rgba(229,9,20,0.35);
+            border-radius: 4px;
+            padding: 5px 14px;
+            font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 2px; color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .hero-badge .pulse-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: var(--accent);
+            animation: pulse 1.4s infinite;
+        }
+
+        @keyframes pulse {
+            0%,100% { opacity: 1; transform: scale(1); }
+            50%      { opacity: 0.35; transform: scale(0.8); }
+        }
+
+        .hero-network {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 4px 12px 4px 4px;
+            margin-bottom: 14px;
+        }
+        .hero-network img {
+            width: 24px; height: 24px;
+            border-radius: 50%; object-fit: cover;
+        }
+        .hero-network span {
+            font-size: 0.72rem; font-weight: 600;
+            color: #ccc; letter-spacing: 0.5px;
+        }
+
+        .hero-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(3rem, 5.5vw, 5.5rem);
+            line-height: 0.92;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 40px rgba(0,0,0,0.5);
+        }
+        .hero-title em {
+            font-style: normal;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-meta {
+            display: flex; align-items: center;
+            gap: 12px; flex-wrap: wrap;
+            margin-bottom: 14px;
+            font-size: 0.82rem; color: #aaa;
+        }
+        .hero-meta .year { color: var(--accent2); font-weight: 600; }
+        .hero-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: #555; }
+        .rating-badge {
+            background: rgba(255,215,0,0.12);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 4px; padding: 2px 8px;
+            color: var(--gold); font-weight: 600; font-size: 0.78rem;
+        }
+        .imdb-badge {
+            background: #f5c518;
+            border-radius: 3px; padding: 2px 6px;
+            color: #000; font-weight: 800; font-size: 0.7rem;
+            letter-spacing: 0.3px;
+        }
+
+        .genre-tags { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+        .genre-tag {
+            padding: 4px 14px; border-radius: 20px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.12);
+            font-size: 0.75rem; color: #ccc;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .genre-tag:hover { border-color: var(--accent); color: #fff; cursor: pointer; }
+
+        .hero-desc {
+            font-size: 0.88rem; line-height: 1.75;
+            color: rgba(200,200,210,0.85);
+            margin-bottom: 30px; max-width: 440px;
+        }
+
+        .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 28px; }
+
+        .btn-play {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--accent); color: #fff;
+            border: none; border-radius: 8px;
+            padding: 14px 30px;
+            font-size: 0.95rem; font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            letter-spacing: 0.4px;
+        }
+        .btn-play:hover { transform: scale(1.04); box-shadow: 0 8px 32px rgba(229,9,20,0.55); }
+        .btn-play svg { width: 18px; height: 18px; fill: #fff; }
+
+        .btn-episodes {
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.18);
+            color: #fff; border-radius: 8px;
+            padding: 14px 24px;
+            font-size: 0.95rem; font-weight: 500;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: background 0.2s;
+            letter-spacing: 0.4px;
+            backdrop-filter: blur(4px);
+        }
+        .btn-episodes:hover { background: rgba(255,255,255,0.18); }
+        .btn-episodes svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+        .btn-watchlist {
+            display: flex; align-items: center; gap: 8px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.18);
+            color: #ccc; border-radius: 8px;
+            padding: 14px 20px;
+            font-size: 0.9rem; font-weight: 500;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .btn-watchlist:hover { border-color: var(--accent2); color: var(--accent2); }
+        .btn-watchlist svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+        /* Hero side info panel */
+        .hero-side {
+            position: absolute;
+            right: 60px; bottom: 90px;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+            animation: heroFadeUp 1s 0.3s ease both;
+        }
+
+        .ep-chip-row { display: flex; gap: 10px; }
+
+        .ep-chip {
+            background: rgba(10,10,15,0.88);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-size: 0.75rem;
+            backdrop-filter: blur(12px);
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s, transform 0.2s;
+            min-width: 80px;
+        }
+        .ep-chip:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.25); }
+        .ep-chip.current { border-color: var(--accent); background: rgba(229,9,20,0.15); }
+        .ep-chip .ep-num { font-weight: 700; color: #fff; margin-bottom: 3px; font-size: 0.82rem; }
+        .ep-chip .ep-label { color: var(--muted); font-size: 0.65rem; letter-spacing: 0.5px; }
+        .ep-chip.current .ep-label { color: var(--accent); }
+
+        .cast-row {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(10,10,15,0.75);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 10px 14px;
+            backdrop-filter: blur(12px);
+        }
+        .cast-avatars { display: flex; }
+        .cast-avatar {
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            border: 2px solid var(--bg);
+            overflow: hidden;
+            margin-left: -8px;
+            background: var(--surface);
+        }
+        .cast-avatar:first-child { margin-left: 0; }
+        .cast-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .cast-info { font-size: 0.7rem; color: #aaa; margin-left: 4px; }
+        .cast-info strong { color: #fff; display: block; font-size: 0.75rem; }
+
+        .hero-dots {
+            display: flex; gap: 8px;
+        }
+        .hero-dots span {
+            width: 28px; height: 3px;
+            border-radius: 2px;
+            background: rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: background 0.3s, width 0.3s;
+        }
+        .hero-dots span.active { background: var(--accent); width: 44px; }
+
+        /* Volume button */
+        .hero-mute {
+            position: absolute;
+            right: 60px; top: 50%;
+            transform: translateY(-50%);
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            background: rgba(10,10,15,0.7);
+            border: 1px solid rgba(255,255,255,0.15);
+            display: grid; place-items: center;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: border-color 0.2s;
+            z-index: 3;
+        }
+        .hero-mute:hover { border-color: var(--accent); }
+        .hero-mute svg { width: 18px; height: 18px; stroke: #fff; fill: none; stroke-width: 2; }
+
+        /* ── MAIN ── */
+        main { padding: 0 0 80px; }
+
+        /* ── CATEGORY PILLS ── */
+        .category-bar {
+            display: flex; gap: 10px;
+            padding: 30px 48px 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .category-bar::-webkit-scrollbar { display: none; }
+
+        .cat-pill {
+            flex-shrink: 0;
+            padding: 10px 20px;
+            border-radius: 24px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #bbb;
+            font-size: 0.85rem; font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .cat-pill:hover { background: rgba(255,255,255,0.12); color: #fff; border-color: rgba(255,255,255,0.2); }
+        .cat-pill.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+
+        /* ── SECTION ── */
+        .section { margin-top: 48px; }
+
+        .section-header {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            padding: 0 48px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            display: flex; align-items: center;
+            gap: 12px;
+            font-size: 1.28rem; font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+        .section-title .icon { font-size: 1.4rem; }
+        .section-label {
+            font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            color: var(--muted); padding: 3px 10px;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.05);
+            margin-left: 6px;
+        }
+
+        .see-all {
+            font-size: 0.82rem; color: var(--accent);
+            cursor: pointer; font-weight: 500;
+            letter-spacing: 0.3px; text-decoration: none;
+            display: flex; align-items: center; gap: 4px;
+            transition: gap 0.2s;
+        }
+        .see-all:hover { gap: 8px; }
+
+        /* ── ROW ── */
+        .row-wrap { position: relative; }
+
+        .row {
+            display: flex; gap: 16px;
+            padding: 8px 48px 16px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
+        }
+        .row::-webkit-scrollbar { display: none; }
+
+        .scroll-btn {
+            position: absolute; top: 50%;
+            transform: translateY(-50%);
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            background: rgba(15,15,22,0.95);
+            border: 1px solid rgba(255,255,255,0.14);
+            color: #fff; font-size: 1.2rem;
+            cursor: pointer;
+            display: grid; place-items: center;
+            z-index: 10;
+            transition: background 0.2s, opacity 0.2s, transform 0.2s;
+            opacity: 0;
+            backdrop-filter: blur(8px);
+        }
+        .row-wrap:hover .scroll-btn { opacity: 1; }
+        .scroll-btn:hover { background: rgba(229,9,20,0.75); transform: translateY(-50%) scale(1.08); }
+        .scroll-btn.left { left: 6px; }
+        .scroll-btn.right { right: 6px; }
+
+        /* ── PORTRAIT CARD ── */
+        .card {
+            flex-shrink: 0;
+            width: var(--card-w);
+            cursor: pointer;
+            transition: transform 0.28s;
+            position: relative;
+        }
+        .card:hover { transform: scale(1.07) translateY(-4px); z-index: 5; }
+
+        .card-thumb {
+            width: 100%; height: var(--card-h);
+            border-radius: 10px; overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+        .card-thumb img {
+            width: 100%; height: 100%;
+            object-fit: cover; display: block;
+            transition: transform 0.4s;
+        }
+        .card:hover .card-thumb img { transform: scale(1.07); }
+
+        .card-thumb::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 55%);
+            border-radius: 10px;
+            opacity: 0; transition: opacity 0.28s;
+        }
+        .card:hover .card-thumb::after { opacity: 1; }
+
+        .card-play {
+            position: absolute; inset: 0;
+            display: grid; place-items: center;
+            opacity: 0; transition: opacity 0.28s; z-index: 2;
+        }
+        .card:hover .card-play { opacity: 1; }
+
+        .card-play-btn {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: rgba(229,9,20,0.92);
+            display: grid; place-items: center;
+            box-shadow: 0 4px 24px rgba(229,9,20,0.6);
+            transition: transform 0.2s;
+        }
+        .card:hover .card-play-btn { transform: scale(1.1); }
+        .card-play-btn svg { width: 18px; height: 18px; fill: #fff; margin-left: 2px; }
+
+        .card-badge {
+            position: absolute; top: 8px; left: 8px; z-index: 3;
+            font-size: 0.6rem; font-weight: 700;
+            letter-spacing: 1px; text-transform: uppercase;
+            padding: 3px 8px; border-radius: 3px;
+        }
+        .badge-new  { background: var(--accent); color: #fff; }
+        .badge-hot  { background: var(--accent2); color: #000; }
+        .badge-free { background: #16a34a; color: #fff; }
+        .badge-4k   { background: #7c3aed; color: #fff; }
+        .badge-top  { background: var(--gold); color: #000; }
+        .badge-live {
+            background: var(--accent); color: #fff;
+            animation: livePulse 1.5s infinite;
+        }
+        @keyframes livePulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+
+        .ep-badge {
+            position: absolute; bottom: 8px; right: 8px; z-index: 3;
+            background: rgba(0,0,0,0.75); border-radius: 3px;
+            font-size: 0.6rem; font-weight: 600;
+            padding: 2px 7px; color: #ccc;
+            backdrop-filter: blur(4px);
+        }
+
+        .card-info { padding: 10px 4px 0; }
+        .card-title {
+            font-size: 0.82rem; font-weight: 600;
+            white-space: nowrap; overflow: hidden;
+            text-overflow: ellipsis; margin-bottom: 4px;
+        }
+        .card-sub {
+            font-size: 0.72rem; color: var(--muted);
+            display: flex; align-items: center; gap: 5px;
+        }
+        .card-rating { color: var(--gold); font-size: 0.7rem; }
+        .live-dot {
+            display: inline-block; width: 6px; height: 6px;
+            border-radius: 50%; background: var(--accent);
+            animation: livePulse 1.2s infinite;
+        }
+
+        /* ── WIDE CARD ── */
+        .wide-card {
+            flex-shrink: 0;
+            width: 300px; height: 172px;
+            border-radius: 12px; overflow: hidden;
+            cursor: pointer; position: relative;
+            transition: transform 0.28s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+        .wide-card:hover { transform: scale(1.04) translateY(-4px); z-index: 5; }
+        .wide-card img {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.4s;
+        }
+        .wide-card:hover img { transform: scale(1.07); }
+        .wide-card-inner {
+            position: absolute; inset: 0;
+            display: flex; flex-direction: column;
+            justify-content: flex-end;
+            padding: 16px;
+            background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, transparent 60%);
+            z-index: 2;
+        }
+        .wide-card-top {
+            position: absolute; top: 10px; left: 10px; right: 10px;
+            display: flex; justify-content: space-between; align-items: flex-start;
+        }
+        .wide-card-title { font-size: 0.96rem; font-weight: 700; margin-bottom: 4px; }
+        .wide-card-sub { font-size: 0.72rem; color: #aaa; }
+
+        /* ── CONTINUE WATCHING ── */
+        .continue-card {
+            flex-shrink: 0; width: 260px;
+            cursor: pointer; transition: transform 0.28s;
+        }
+        .continue-card:hover { transform: scale(1.04) translateY(-4px); z-index: 5; }
+
+        .continue-thumb {
+            width: 100%; height: 148px;
+            border-radius: 10px; overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+        .continue-thumb img {
+            width: 100%; height: 100%; object-fit: cover;
+            display: block; transition: transform 0.4s;
+        }
+        .continue-card:hover .continue-thumb img { transform: scale(1.06); }
+
+        .continue-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
+            opacity: 0; transition: opacity 0.28s;
+            display: grid; place-items: center;
+        }
+        .continue-card:hover .continue-overlay { opacity: 1; }
+
+        .continue-progress-bar {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            height: 4px; background: rgba(255,255,255,0.15);
+        }
+        .continue-progress { height: 100%; background: var(--accent); border-radius: 0 2px 2px 0; }
+
+        .continue-info { padding: 10px 4px 0; }
+        .continue-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+        .continue-ep { font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+        .continue-ep .pct { color: var(--accent2); font-weight: 600; }
+
+        /* ── TOP 10 ── */
+        .top10-card {
+            flex-shrink: 0; width: 165px;
+            cursor: pointer; transition: transform 0.28s;
+            position: relative;
+        }
+        .top10-card:hover { transform: scale(1.06) translateY(-4px); z-index: 5; }
+
+        .top10-num {
+            position: absolute; left: -12px; bottom: 36px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 5.8rem; line-height: 1;
+            -webkit-text-stroke: 2px rgba(255,255,255,0.13);
+            color: transparent; z-index: 3;
+            pointer-events: none;
+        }
+        .top10-thumb {
+            width: 100%; height: 225px;
+            border-radius: 10px; overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+        .top10-thumb img {
+            width: 100%; height: 100%; object-fit: cover;
+            display: block; transition: transform 0.4s;
+        }
+        .top10-card:hover .top10-thumb img { transform: scale(1.06); }
+        .top10-title {
+            font-size: 0.8rem; font-weight: 600;
+            margin-top: 9px; padding: 0 4px;
+            white-space: nowrap; overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ── LIVE TV CARD ── */
+        .live-card {
+            flex-shrink: 0; width: 320px;
+            cursor: pointer; transition: transform 0.28s;
+        }
+        .live-card:hover { transform: scale(1.03) translateY(-4px); z-index: 5; }
+
+        .live-thumb {
+            position: relative; width: 100%; height: 182px;
+            border-radius: 12px; overflow: hidden;
+            box-shadow: 0 6px 28px rgba(0,0,0,0.5);
+        }
+        .live-thumb img {
+            width: 100%; height: 100%; object-fit: cover;
+            display: block; transition: transform 0.4s;
+        }
+        .live-card:hover .live-thumb img { transform: scale(1.06); }
+
+        .live-thumb-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, transparent 55%);
+        }
+
+        .live-indicator {
+            position: absolute; top: 10px; left: 10px;
+            display: flex; align-items: center; gap: 6px;
+            background: rgba(229,9,20,0.92);
+            border-radius: 4px; padding: 5px 10px;
+            font-size: 0.68rem; font-weight: 700;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            backdrop-filter: blur(4px);
+        }
+        .live-indicator .dot {
+            width: 6px; height: 6px;
+            border-radius: 50%; background: #fff;
+            animation: pulse 1s infinite;
+        }
+
+        .live-viewers {
+            position: absolute; top: 10px; right: 10px;
+            background: rgba(0,0,0,0.7);
+            border-radius: 4px; padding: 4px 9px;
+            font-size: 0.68rem; color: #ccc;
+            backdrop-filter: blur(4px);
+        }
+
+        .live-time-bar {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            height: 3px; background: rgba(255,255,255,0.12);
+        }
+        .live-time-fill { height: 100%; background: var(--accent2); }
+
+        .live-card-info {
+            display: flex; gap: 12px;
+            align-items: center; padding: 12px 4px 0;
+        }
+        .channel-tag {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px; padding: 6px 10px;
+            font-size: 0.65rem; font-weight: 800;
+            color: var(--accent2); white-space: nowrap;
+            flex-shrink: 0; letter-spacing: 0.8px;
+        }
+        .live-text-title { font-size: 0.88rem; font-weight: 600; margin-bottom: 3px; }
+        .live-text-sub { font-size: 0.72rem; color: var(--muted); }
+
+        /* ── CHANNEL LOGOS ── */
+        .channel-card {
+            flex-shrink: 0; width: 130px;
+            cursor: pointer; transition: transform 0.25s;
+        }
+        .channel-card:hover { transform: translateY(-6px); z-index: 5; }
+
+        .ch-logo {
+            width: 130px; height: 78px;
+            border-radius: 10px; background: var(--surface);
+            border: 1px solid rgba(255,255,255,0.07);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.1rem; letter-spacing: 2px;
+            line-height: 1.2; text-align: center;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            overflow: hidden; position: relative;
+        }
+        .channel-card:hover .ch-logo {
+            border-color: var(--accent);
+            box-shadow: 0 8px 28px rgba(229,9,20,0.2);
+        }
+        .ch-logo img { width: 70%; object-fit: contain; }
+        .ch-name { text-align: center; font-size: 0.7rem; font-weight: 600; color: var(--muted); margin-top: 8px; }
+        .ch-sp  { color: #f59e0b; } .ch-zee { color: #60a5fa; }
+        .ch-son { color: #c084fc; } .ch-col { color: #fb7185; }
+        .ch-sab { color: #4ade80; } .ch-stb { color: #fbbf24; }
+        .ch-mx  { color: #22d3ee; } .ch-dd  { color: #a3e635; }
+        .ch-sun  { color: #ff6b35; } .ch-and  { color: #ffd700; }
+        .ch-zcin { color: #00bcd4; } .ch-sliv { color: #e91e63; }
+        .ch-sgld { color: #ff9800; } .ch-mtv  { color: #9c27b0; }
+        .ch-nick { color: #4caf50; } .ch-disc { color: #03a9f4; }
+        .ch-n18  { color: #ff5722; } .ch-ndtv { color: #607d8b; }
+        .ch-abp  { color: #f44336; } .ch-znws { color: #ff6f00; }
+        .ch-pogo { color: #8bc34a; } .ch-cn   { color: #00e5ff; }
+        .ch-vh1  { color: #ff4081; } .ch-zmar { color: #69f0ae; }
+        .ch-svij { color: #ffab40; } .ch-gem  { color: #ea80fc; }
+        .ch-zban { color: #80d8ff; } .ch-sjal { color: #ccff90; }
+        .ch-natg { color: #ff6e40; } .ch-ap   { color: #40c4ff; }
+        .ch-zkan { color: #b9f6ca; } .ch-sury { color: #ffe57f; }
+        .ch-asia { color: #ff9e80; } .ch-etv  { color: #84ffff; }
+        .ch-ckan { color: #ff6d00; } .ch-jio  { color: #76ff03; }
+
+        /* ── PROMO BANNER ── */
+        .promo-banner {
+            margin: 48px 48px 0;
+            border-radius: 18px; overflow: hidden;
+            height: 140px; position: relative;
+            background: linear-gradient(135deg, #1a0533 0%, #0d1b3e 50%, #0f2a1e 100%);
+            display: flex; align-items: center;
+            padding: 0 44px; cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .promo-banner:hover { transform: scale(1.01); }
+        .promo-banner::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse at 15% 50%, rgba(229,9,20,0.28) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 50%, rgba(245,166,35,0.22) 0%, transparent 50%);
+        }
+        .promo-banner::after {
+            content: '';
+            position: absolute; right: 200px; top: 0; bottom: 0; left: 0;
+            background: url('https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&q=60') right center / cover no-repeat;
+            opacity: 0.08;
+        }
+        .promo-content { position: relative; z-index: 2; }
+        .promo-tag { font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent2); margin-bottom: 7px; }
+        .promo-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 2px; margin-bottom: 6px; }
+        .promo-features { display: flex; gap: 16px; flex-wrap: wrap; }
+        .promo-feature { font-size: 0.78rem; color: #aaa; display: flex; align-items: center; gap: 5px; }
+        .promo-feature::before { content: '✓'; color: var(--accent2); font-weight: 700; }
+        .promo-btn {
+            margin-left: auto; position: relative; z-index: 2;
+            background: linear-gradient(135deg, var(--accent), #c20810);
+            border: none; color: #fff;
+            padding: 14px 32px; border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.92rem; font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            letter-spacing: 0.3px; white-space: nowrap;
+        }
+        .promo-btn:hover { transform: scale(1.04); box-shadow: 0 8px 28px rgba(229,9,20,0.5); }
+
+        /* ── SCHEDULE STRIP ── */
+        .schedule-strip {
+            margin: 48px 48px 0;
+            background: var(--surface);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px;
+            padding: 24px 32px;
+        }
+        .schedule-header {
+            display: flex; align-items: center;
+            justify-content: space-between; margin-bottom: 20px;
+        }
+        .schedule-title { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .schedule-date { font-size: 0.78rem; color: var(--accent2); font-weight: 600; }
+        .schedule-row { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; }
+        .schedule-row::-webkit-scrollbar { display: none; }
+        .schedule-item {
+            flex-shrink: 0; width: 180px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 10px; padding: 14px;
+            cursor: pointer; transition: border-color 0.2s, background 0.2s;
+            position: relative; overflow: hidden;
+        }
+        .schedule-item:hover { border-color: rgba(229,9,20,0.4); background: rgba(229,9,20,0.05); }
+        .schedule-item.now { border-color: var(--accent); background: rgba(229,9,20,0.08); }
+        .schedule-item.now::before {
+            content: 'NOW';
+            position: absolute; top: 8px; right: 8px;
+            background: var(--accent); color: #fff;
+            font-size: 0.55rem; font-weight: 800;
+            letter-spacing: 1px; padding: 2px 6px; border-radius: 3px;
+        }
+        .sch-time { font-size: 0.72rem; color: var(--accent2); font-weight: 700; margin-bottom: 6px; }
+        .sch-show { font-size: 0.82rem; font-weight: 600; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .sch-channel { font-size: 0.68rem; color: var(--muted); }
+        .sch-thumb {
+            width: 100%; height: 80px;
+            border-radius: 6px; overflow: hidden; margin-bottom: 10px;
+        }
+        .sch-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid rgba(255,255,255,0.07);
+            padding: 44px 48px 32px;
+            margin-top: 32px;
+        }
+        
+        
+        .footer-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem; letter-spacing: 3px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+        .footer-tagline { font-size: 0.82rem; color: var(--muted); line-height: 1.6; max-width: 240px; }
+        .footer-apps { display: flex; gap: 10px; margin-top: 16px; }
+        .app-btn {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; padding: 8px 14px;
+            cursor: pointer; transition: border-color 0.2s;
+            font-size: 0.72rem; color: #ccc;
+        }
+        .app-btn:hover { border-color: rgba(255,255,255,0.25); }
+        .app-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+        
+        
+        
+        
+        
+        
+        
+
+
+        .footer-top { display: flex; justify-content: space-between; align-items: center; padding-bottom: 32px; border-bottom: 1px solid rgba(255,255,255,0.07); margin-bottom: 24px; flex-wrap: wrap; gap: 24px; }
+        .footer-brand { max-width: 280px; }
+        .footer-links-row { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+        .footer-links-row a { color: var(--muted); font-size: 0.82rem; text-decoration: none; transition: color 0.2s; }
+        .footer-links-row a:hover { color: #fff; }
+        .footer-bottom {
+            display: flex; justify-content: space-between;
+            align-items: center; flex-wrap: wrap; gap: 12px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .footer-copy { color: var(--muted); font-size: 0.75rem; }
+        .footer-badges { display: flex; gap: 10px; }
+        .footer-badge {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 4px; padding: 4px 10px;
+            font-size: 0.65rem; color: var(--muted); font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .section { animation: fadeInUp 0.5s ease both; }
+        .section:nth-child(2)  { animation-delay: 0.05s; }
+        .section:nth-child(3)  { animation-delay: 0.1s; }
+        .section:nth-child(4)  { animation-delay: 0.15s; }
+        .section:nth-child(5)  { animation-delay: 0.2s; }
+        .section:nth-child(6)  { animation-delay: 0.25s; }
+        .section:nth-child(7)  { animation-delay: 0.3s; }
+        .section:nth-child(8)  { animation-delay: 0.35s; }
+    </style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+    <div class="logo">StreamVerse</div>
+    <div class="nav-links">
+        <a href="home.html">Home</a>
+        <a href="movies.html">Movies</a>
+        <a href="#" class="active">TV Shows</a>
+        <a href="sports.html">Sports</a>
+        <a href="kids.html">Kids</a>
+    </div>
+    <div class="nav-right">
+        <div class="search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2.5">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input type="text" placeholder="Search serials, shows...">
+        </div>
+        <button class="nav-btn">Subscribe</button>
+        <div class="avatar">U</div>
+    </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+    <div class="hero-bg-img"></div>
+    <div class="hero-bg"></div>
+    <div class="hero-grain"></div>
+
+    <div class="hero-mute">
+        <svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+    </div>
+
+    <div class="hero-content">
+        <div class="hero-badge"><span class="pulse-dot"></span>Now Streaming · Season 2</div>
+        <h1 class="hero-title">NEXUS<br><em>PROTOCOL</em></h1>
+        <div class="hero-meta">
+            <span class="year">2025</span><span class="dot"></span>
+            <span>2 Seasons</span><span class="dot"></span>
+            <span>UA 16+</span><span class="dot"></span>
+            <span class="rating-badge">⭐ 9.1</span>
+            <span class="imdb-badge">IMDb</span>
+        </div>
+        <div class="genre-tags">
+            <span class="genre-tag">Sci-Fi</span>
+            <span class="genre-tag">Thriller</span>
+            <span class="genre-tag">Drama</span>
+            <span class="genre-tag">Tech-Noir</span>
+        </div>
+        <p class="hero-desc">When a rogue AI infiltrates the world's most secure intelligence network, one analyst must race against the algorithm itself — before the system rewrites reality as we know it.</p>
+        <div class="hero-btns">
+            <button class="btn-play">
+                <svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+                Play S2 E1
+            </button>
+            <button class="btn-episodes">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 2l-4 5-4-5"/></svg>
+                All Episodes
+            </button>
+            <button class="btn-watchlist">
+                <svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                Watchlist
+            </button>
+        </div>
+    </div>
+
+    <div class="hero-side">
+        <div class="ep-chip-row">
+            <div class="ep-chip current">
+                <div class="ep-num">S2 E1</div>
+                <div class="ep-label">● New</div>
+            </div>
+            <div class="ep-chip">
+                <div class="ep-num">S2 E2</div>
+                <div class="ep-label">Coming</div>
+            </div>
+            <div class="ep-chip">
+                <div class="ep-num">S1</div>
+                <div class="ep-label">8 Episodes</div>
+            </div>
+        </div>
+        <div class="cast-row">
+            <div class="cast-avatars">
+                <div class="cast-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&q=80" alt=""></div>
+                <div class="cast-avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60&q=80" alt=""></div>
+                <div class="cast-avatar"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=60&q=80" alt=""></div>
+            </div>
+            <div class="cast-info"><strong>Starring</strong>3 Lead Cast Members</div>
+        </div>
+        <div class="hero-dots">
+            <span class="active"></span><span></span><span></span><span></span>
+        </div>
+    </div>
+</section>
+
+<!-- ══ MAIN ══ -->
+<main>
+
+    <!-- CATEGORY PILLS -->
+    <div class="category-bar">
+        <div class="cat-pill active">All</div>
+        <div class="cat-pill">📺 Serials</div>
+        <div class="cat-pill">🌐 Web Series</div>
+        <div class="cat-pill">📡 Live TV</div>
+        <div class="cat-pill">🎭 Drama</div>
+        <div class="cat-pill">😂 Comedy</div>
+        <div class="cat-pill">💕 Romance</div>
+        <div class="cat-pill">🕵 Thriller</div>
+        <div class="cat-pill">🎬 Reality</div>
+        <div class="cat-pill">👻 Horror</div>
+        <div class="cat-pill">🏆 Awards</div>
+        <div class="cat-pill">🌍 International</div>
+        <div class="cat-pill">🎵 Musical</div>
+    </div>
+
+    <!-- CONTINUE WATCHING -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">▶️</span> Continue Watching</div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+
+                <!-- Anupamaa – saree-clad Indian woman, emotional drama -->
+                <div class="continue-card">
+                    <div class="continue-thumb">
+                        <img src="https://images.filmibeat.com/img/popcorn/movie_lists/anupamaa-20240212172531-5304.jpg" alt="Anupamaa">
+                        <div class="continue-overlay"><div class="card-play-btn" style="width:44px;height:44px"><svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#fff;margin-left:2px"><path d="M5 3l14 9-14 9V3z"/></svg></div></div>
+                        <div class="continue-progress-bar"><div class="continue-progress" style="width:62%"></div></div>
+                    </div>
+                    <div class="continue-info">
+                        <div class="continue-title">Anupamaa</div>
+                        <div class="continue-ep">S1 E614 <span class="pct">· 62% left</span></div>
+                    </div>
+                </div>
+
+                <!-- Kundali Bhagya – Indian couple, romance drama -->
+                <div class="continue-card">
+                    <div class="continue-thumb">
+                        <img src="https://upload.wikimedia.org/wikipedia/en/8/87/KundaliBhagya.jpg" alt="Kundali Bhagya">
+                        <div class="continue-overlay"><div class="card-play-btn" style="width:44px;height:44px"><svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#fff;margin-left:2px"><path d="M5 3l14 9-14 9V3z"/></svg></div></div>
+                        <div class="continue-progress-bar"><div class="continue-progress" style="width:38%"></div></div>
+                    </div>
+                    <div class="continue-info">
+                        <div class="continue-title">Kundali Bhagya</div>
+                        <div class="continue-ep">S3 E1802 <span class="pct">· 38% left</span></div>
+                    </div>
+                </div>
+
+                <!-- Taarak Mehta – comedy neighbourhood, bright cheerful -->
+                <div class="continue-card">
+                    <div class="continue-thumb">
+                        <img src="https://i0.wp.com/deadant.co/wp-content/uploads/2023/07/TMKOC.png?fit=1366%2C768&ssl=1" alt="Taarak Mehta">
+                        <div class="continue-overlay"><div class="card-play-btn" style="width:44px;height:44px"><svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#fff;margin-left:2px"><path d="M5 3l14 9-14 9V3z"/></svg></div></div>
+                        <div class="continue-progress-bar"><div class="continue-progress" style="width:81%"></div></div>
+                    </div>
+                    <div class="continue-info">
+                        <div class="continue-title">Taarak Mehta Ka Ooltah Chashmah</div>
+                        <div class="continue-ep">Ep 3855 <span class="pct">· 19% left</span></div>
+                    </div>
+                </div>
+
+                <!-- Bigg Boss – spotlight stage, reality show -->
+                <div class="continue-card">
+                    <div class="continue-thumb">
+                        <img src="https://assets.thehansindia.com/h-upload/2024/11/29/1501625-bigg-boss-18-week-8-voting-trends-shrutika-tops-bagga-faces-elimination.jpg" alt="Bigg Boss">
+                        <div class="continue-overlay"><div class="card-play-btn" style="width:44px;height:44px"><svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#fff;margin-left:2px"><path d="M5 3l14 9-14 9V3z"/></svg></div></div>
+                        <div class="continue-progress-bar"><div class="continue-progress" style="width:14%"></div></div>
+                    </div>
+                    <div class="continue-info">
+                        <div class="continue-title">Bigg Boss 17</div>
+                        <div class="continue-ep">Day 48 <span class="pct">· 86% left</span></div>
+                    </div>
+                </div>
+
+                <!-- KBC – quiz show stage, dramatic light -->
+                <div class="continue-card">
+                    <div class="continue-thumb">
+                        <img src="https://mir-s3-cdn-cf.behance.net/projects/404/e55fe1235914585.Y3JvcCwzMDAwLDIzNDYsMCwzMjY.jpg" alt="KBC">
+                        <div class="continue-overlay"><div class="card-play-btn" style="width:44px;height:44px"><svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#fff;margin-left:2px"><path d="M5 3l14 9-14 9V3z"/></svg></div></div>
+                        <div class="continue-progress-bar"><div class="continue-progress" style="width:55%"></div></div>
+                    </div>
+                    <div class="continue-info">
+                        <div class="continue-title">KBC Season 15</div>
+                        <div class="continue-ep">Ep 22 <span class="pct">· 45% left</span></div>
+                    </div>
+                </div>
+
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- LIVE TV NOW -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title">
+                <span class="icon">📡</span> Live TV
+                <span class="section-label">On Air Now</span>
+            </div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+
+                <!-- Anupamaa LIVE – Indian woman emotional scene -->
+                <div class="live-card">
+                    <div class="live-thumb">
+                        <img src="https://images.filmibeat.com/img/popcorn/movie_lists/anupamaa-20240212172531-5304.jpg" alt="Anupamaa">
+                        <div class="live-thumb-overlay"></div>
+                        <div class="live-indicator"><span class="dot"></span> LIVE</div>
+                        <div class="live-viewers">👁 1.4M watching</div>
+                        <div class="live-time-bar"><div class="live-time-fill" style="width:48%"></div></div>
+                    </div>
+                    <div class="live-card-info">
+                        <div class="channel-tag">STAR PLUS</div>
+                        <div><div class="live-text-title">Anupamaa – Ep 614</div><div class="live-text-sub">Mon–Sat · 10:00 PM</div></div>
+                    </div>
+                </div>
+
+                <!-- Kundali Bhagya LIVE – Indian couple romance -->
+                <div class="live-card">
+                    <div class="live-thumb">
+                        <img src="https://upload.wikimedia.org/wikipedia/en/8/87/KundaliBhagya.jpg" alt="Kundali Bhagya">
+                        <div class="live-thumb-overlay"></div>
+                        <div class="live-indicator"><span class="dot"></span> LIVE</div>
+                        <div class="live-viewers">👁 990K watching</div>
+                        <div class="live-time-bar"><div class="live-time-fill" style="width:65%"></div></div>
+                    </div>
+                    <div class="live-card-info">
+                        <div class="channel-tag">ZEE TV</div>
+                        <div><div class="live-text-title">Kundali Bhagya – Ep 1802</div><div class="live-text-sub">Mon–Fri · 9:30 PM</div></div>
+                    </div>
+                </div>
+
+                <!-- Taarak Mehta LIVE – comedy group friends -->
+                <div class="live-card">
+                    <div class="live-thumb">
+                        <img src="https://i0.wp.com/deadant.co/wp-content/uploads/2023/07/TMKOC.png?fit=1366%2C768&ssl=1" alt="Taarak Mehta">
+                        <div class="live-thumb-overlay"></div>
+                        <div class="live-indicator"><span class="dot"></span> LIVE</div>
+                        <div class="live-viewers">👁 820K watching</div>
+                        <div class="live-time-bar"><div class="live-time-fill" style="width:30%"></div></div>
+                    </div>
+                    <div class="live-card-info">
+                        <div class="channel-tag">SONY SAB</div>
+                        <div><div class="live-text-title">Taarak Mehta – Ep 3855</div><div class="live-text-sub">Mon–Fri · 8:30 PM</div></div>
+                    </div>
+                </div>
+
+                <!-- Bigg Boss LIVE – stage spotlight, reality show -->
+                <div class="live-card">
+                    <div class="live-thumb">
+                        <img src="https://assets.thehansindia.com/h-upload/2024/11/29/1501625-bigg-boss-18-week-8-voting-trends-shrutika-tops-bagga-faces-elimination.jpg" alt="Bigg Boss">
+                        <div class="live-thumb-overlay"></div>
+                        <div class="live-indicator"><span class="dot"></span> LIVE</div>
+                        <div class="live-viewers">👁 630K watching</div>
+                        <div class="live-time-bar"><div class="live-time-fill" style="width:75%"></div></div>
+                    </div>
+                    <div class="live-card-info">
+                        <div class="channel-tag">COLORS</div>
+                        <div><div class="live-text-title">Bigg Boss 17 – Live</div><div class="live-text-sub">Daily · 9:00 PM</div></div>
+                    </div>
+                </div>
+
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- TRENDING WEB SERIES
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title">
+                <span class="icon"></span> Trending Web Series
+                <span class="section-label">This Week</span>
+            </div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+
+                <div class="wide-card">
+                    <img src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3061540/capsule_616x353.jpg?t=1720251153" alt="Nexus Protocol">
+                    <div class="wide-card-inner">
+                        <div class="wide-card-top"><span class="card-badge badge-new" style="position:relative;top:0;left:0;">NEW</span><span class="card-rating" style="font-size:0.75rem">⭐ 9.1</span></div>
+                        <div><div class="wide-card-title">Nexus Protocol</div><div class="wide-card-sub">Sci-Fi · S2 Now Streaming</div></div>
+                    </div>
+                </div>
+
+                <div class="wide-card">
+                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80" alt="Void Walker">
+                    <div class="wide-card-inner">
+                        <div class="wide-card-top"><span class="card-badge badge-hot" style="position:relative;top:0;left:0;">HOT</span><span class="card-rating" style="font-size:0.75rem">⭐ 8.3</span></div>
+                        <div><div class="wide-card-title">Void Walker</div><div class="wide-card-sub">Action · S1</div></div>
+                    </div>
+                </div>
+
+                <div class="wide-card">
+                    <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600&q=80" alt="Eden's Garden">
+                    <div class="wide-card-inner">
+                        <div class="wide-card-top"><span style="font-size:0.75rem"></span><span class="card-rating" style="font-size:0.75rem">⭐ 7.9</span></div>
+                        <div><div class="wide-card-title">Eden's Last Garden</div><div class="wide-card-sub">Drama · S1</div></div>
+                    </div>
+                </div>
+
+                <div class="wide-card">
+                    <img src="https://images.unsplash.com/photo-1476231682828-37e571bc172f?w=600&q=80" alt="Coastal Legends">
+                    <div class="wide-card-inner">
+                        <div class="wide-card-top"><span class="card-badge badge-4k" style="position:relative;top:0;left:0;">4K</span><span class="card-rating" style="font-size:0.75rem">⭐ 8.0</span></div>
+                        <div><div class="wide-card-title">Coastal Legends</div><div class="wide-card-sub">Adventure · S2</div></div>
+                    </div>
+                </div>
+
+                <div class="wide-card">
+                    <img src="https://images.unsplash.com/photo-1502899576159-f224dc2349fa?w=600&q=80" alt="Nova Station">
+                    <div class="wide-card-inner">
+                        <div class="wide-card-top"><span style=""></span><span class="card-rating" style="font-size:0.75rem">⭐ 8.5</span></div>
+                        <div><div class="wide-card-title">Nova Station</div><div class="wide-card-sub">Drama · S3</div></div>
+                    </div>
+                </div>
+
+                <div class="wide-card">
+                    <img src="https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=600&q=80" alt="Desert Kings">
+                    <div class="wide-card-inner">
+                        <div class="wide-card-top"><span style=""></span><span class="card-rating" style="font-size:0.75rem">⭐ 7.7</span></div>
+                        <div><div class="wide-card-title">Desert Kings</div><div class="wide-card-sub">Drama · S2</div></div>
+                    </div>
+                </div>
+
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section> -->
+
+    <!-- TOP 10 SHOWS -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">🏆</span> Top 10 Shows in India</div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+                <div class="top10-card"><div class="top10-num">1</div><div class="top10-thumb"><img src="https://m.media-amazon.com/images/M/MV5BMjlhNWMxNWUtZmRmOC00MGZlLWJhYjctNWI3MjZhZDZiN2RiXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Anupamaa"></div><div class="top10-title">Anupamaa</div></div>
+                <div class="top10-card"><div class="top10-num">2</div><div class="top10-thumb"><img src="https://m.media-amazon.com/images/M/MV5BOTY0MTM5YmYtMjdmMC00MjE3LThlYjQtMGQ4MGE3ZTYyYjk2XkEyXkFqcGc@._V1_.jpg" alt="Kundali Bhagya"></div><div class="top10-title">Kundali Bhagya</div></div>
+                <div class="top10-card"><div class="top10-num">3</div><div class="top10-thumb"><img src="https://m.media-amazon.com/images/M/MV5BMjBjNGYwYjktYjIwZS00OWI1LWEyMmYtNzc1ZTAwNjIxNzNmXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Taarak Mehta"></div><div class="top10-title">Taarak Mehta Ka Ooltah Chashmah</div></div>
+                <div class="top10-card"><div class="top10-num">4</div><div class="top10-thumb"><img src="https://m.media-amazon.com/images/M/MV5BNWJmNTU1NDgtYzc4MC00ODU2LWFjNzYtYjFhNjRkNTQwZmQyXkEyXkFqcGc@._V1_.jpg" alt="Bigg Boss 17"></div><div class="top10-title">Bigg Boss 17</div></div>
+                <div class="top10-card"><div class="top10-num">5</div><div class="top10-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSA1zuczNVnHrF8tIa47cOsDUjC7vTHvuo3A&s" alt="Indian Idol"></div><div class="top10-title">Indian Idol 14</div></div>
+                <div class="top10-card"><div class="top10-num">6</div><div class="top10-thumb"><img src="https://m.media-amazon.com/images/M/MV5BYzNmZWRkMGQtZGU5NS00ODY0LTlmZjUtOTFiYmNjZjg4YzE0XkEyXkFqcGc@._V1_.jpg" alt="Ghum Hai Kisikey"></div><div class="top10-title">Ghum Hai Kisikey</div></div>
+                <div class="top10-card"><div class="top10-num">7</div><div class="top10-thumb"><img src="https://media.themoviedb.org/t/p/w500/iGw6R4e4G07xjffVifFLSN3dEAb.jpg" alt="Shark Tank India"></div><div class="top10-title">Shark Tank India</div></div>
+                <div class="top10-card"><div class="top10-num">8</div><div class="top10-thumb"><img src="https://m.media-amazon.com/images/M/MV5BZmNjMzliYjgtNDdkNC00ZWU5LWI1ZDAtNGI2ODNjODUzMTc1XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Yeh Rishta Kya"></div><div class="top10-title">Yeh Rishta Kya Kehlata Hai</div></div>
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- POPULAR SERIALS -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">📺</span> Popular Serials</div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+                <!-- Anupamaa – Indian woman in saree, dramatic lighting -->
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BMjlhNWMxNWUtZmRmOC00MGZlLWJhYjctNWI3MjZhZDZiN2RiXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Anupamaa"><div class="card-badge badge-new">NEW EP</div><div class="ep-badge">614 eps</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Anupamaa</div><div class="card-sub"><span class="card-rating">⭐ 8.4</span><span>·</span><span>Star Plus</span></div></div></div>
+
+                <!-- Kundali Bhagya – romantic Indian couple -->
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BOTY0MTM5YmYtMjdmMC00MjE3LThlYjQtMGQ4MGE3ZTYyYjk2XkEyXkFqcGc@._V1_.jpg" alt="Kundali Bhagya"><div class="card-badge badge-hot">HOT</div><div class="ep-badge">1802 eps</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Kundali Bhagya</div><div class="card-sub"><span class="card-rating">⭐ 7.9</span><span>·</span><span>Zee TV</span></div></div></div>
+
+                <!-- Taarak Mehta – group of friends laughing comedy -->
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BMjBjNGYwYjktYjIwZS00OWI1LWEyMmYtNzc1ZTAwNjIxNzNmXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Taarak Mehta"><div class="ep-badge">3855 eps</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Taarak Mehta Ka Ooltah Chashmah</div><div class="card-sub"><span class="card-rating">⭐ 8.1</span><span>·</span><span>Sony SAB</span></div></div></div>
+
+                <!-- Ghum Hai Kisikey – intense young Indian woman -->
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BYzNmZWRkMGQtZGU5NS00ODY0LTlmZjUtOTFiYmNjZjg4YzE0XkEyXkFqcGc@._V1_.jpg" alt="Ghum Hai Kisikey"><div class="card-badge badge-new">NEW EP</div><div class="ep-badge">302 eps</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Ghum Hai Kisikey</div><div class="card-sub"><span class="card-rating">⭐ 7.7</span><span>·</span><span>Star Plus</span></div></div></div>
+
+                <!-- Yeh Rishta Kya – Indian bride jewellery traditional -->
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BZmNjMzliYjgtNDdkNC00ZWU5LWI1ZDAtNGI2ODNjODUzMTc1XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Yeh Rishta Kya"><div class="card-badge badge-4k">4K</div><div class="ep-badge">910 eps</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Yeh Rishta Kya</div><div class="card-sub"><span class="card-rating">⭐ 8.0</span><span>·</span><span>Star Plus</span></div></div></div>
+
+                <!-- Ishq Mein Marjawan – dramatic dark romantic -->
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BNWYxZjliZmQtNzY5NC00MTFlLWEyNjUtOGQxYzQ5MjdiZjFhXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Ishq Mein Marjawan"><div class="ep-badge">600 eps</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Ishq Mein Marjawan</div><div class="card-sub"><span class="card-rating">⭐ 7.5</span><span>·</span><span>Colors TV</span></div></div></div>
+
+                <!-- Imlie – young Indian village girl, earthy tones -->
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BZjA3M2UwMDctYTFjZC00Y2Q2LTkwODYtYTY2NjBiZTBkM2IzXkEyXkFqcGc@._V1_.jpg" alt="Imlie"><div class="card-badge badge-hot">HOT</div><div class="ep-badge">452 eps</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Imlie</div><div class="card-sub"><span class="card-rating">⭐ 7.8</span><span>·</span><span>Star Plus</span></div></div></div>
+
+                <!-- Naagin 6 – mysterious woman dark fantasy snake -->
+                <div class="card"><div class="card-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwkOmG6op_MO32rzaQecx4-O8KKD5jSQGcmQ&s" alt="Naagin 6"><div class="card-badge badge-free">FREE</div><div class="ep-badge">255 eps</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Naagin 6</div><div class="card-sub"><span class="card-rating">⭐ 7.4</span><span>·</span><span>Colors TV</span></div></div></div>
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- DRAMA & FAMILY -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">🎭</span> Drama &amp; Family</div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+                <!-- Barrister Babu – historical Indian period drama -->
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BMjZhNzBlNDctM2I2Ni00OWEwLTk4YWUtNDMwNWUwMmM2MTI4XkEyXkFqcGc@._V1_.jpg" alt="Barrister Babu"><div class="card-badge badge-new">NEW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Barrister Babu</div><div class="card-sub"><span class="card-rating">⭐ 8.0</span><span>·</span><span>Colors TV</span></div></div></div>
+
+                <!-- Udaariyaan – Indian family drama, warm lighting -->
+                <div class="card"><div class="card-thumb"><img src="https://img.airtel.tv/unsafe/fit-in/500x0/filters:format(webp)/https://xstreamcp-assets-msp.streamready.in/assets/HOTSTAR_DTH/SERIES/690e028a86fbb35860f593e9/images/PORTRAIT/1734434292679-v?o=production" alt="Udaariyaan"><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Udaariyaan</div><div class="card-sub"><span class="card-rating">⭐ 7.6</span><span>·</span><span>Colors TV</span></div></div></div>
+
+                <!-- Meet Badlegi – independent strong Indian woman -->
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BMzMyNDY1ODctNDBhOC00ZTVhLWI1YmItMTM4ODU2MGU4MWRiXkEyXkFqcGc@._V1_.jpg" alt="Meet Badlegi"><div class="card-badge badge-hot">HOT</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Meet – Badlegi</div><div class="card-sub"><span class="card-rating">⭐ 7.8</span><span>·</span><span>Zee TV</span></div></div></div>
+
+                <!-- Bade Achhe Lagte – mature love story couple -->
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BMDVhODdiNjgtMmM2MS00ODgyLTgxNTQtNGI5OTA2ZDdiMDUxXkEyXkFqcGc@._V1_.jpg" alt="Bade Achhe Lagte"><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Bade Achhe Lagte</div><div class="card-sub"><span class="card-rating">⭐ 8.2</span><span>·</span><span>Sony TV</span></div></div></div>
+
+                <!-- Molkki – rural village bride drama -->
+                <div class="card"><div class="card-thumb"><img src="https://images.justwatch.com/poster/303896170/s166/season-1" alt="Molkki"><div class="card-badge badge-free">FREE</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Molkki</div><div class="card-sub"><span class="card-rating">⭐ 7.5</span><span>·</span><span>Colors TV</span></div></div></div>
+
+                <!-- Yeh Hai Chahatein – intense stare dramatic close-up -->
+                <div class="card"><div class="card-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEkPoRZVm8QmWk1fgCRMPjGccIS3BHsZcwfw&s" alt="Yeh Hai Chahatein"><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Yeh Hai Chahatein</div><div class="card-sub"><span class="card-rating">⭐ 7.9</span><span>·</span><span>Star Plus</span></div></div></div>
+
+                <!-- Sasural Simar Ka – supernatural fantasy woman -->
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BOTU1MTMyMGYtNDA3Yy00Mzg5LTk5NTgtOWI4YjZjYTA5YzRiXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Sasural Simar Ka"><div class="card-badge badge-new">NEW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Sasural Simar Ka</div><div class="card-sub"><span class="card-rating">⭐ 7.4</span><span>·</span><span>Colors TV</span></div></div></div>
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- COMEDY -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">😂</span> Comedy Shows</div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+                <!-- Taarak Mehta – cheerful colony friends -->
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BMjBjNGYwYjktYjIwZS00OWI1LWEyMmYtNzc1ZTAwNjIxNzNmXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Taarak Mehta"><div class="ep-badge">3855 eps</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Taarak Mehta</div><div class="card-sub"><span class="card-rating">⭐ 8.1</span><span>·</span><span>Sony SAB</span></div></div></div>
+
+                <!-- Bhabiji Ghar Par Hain – housewife comedy neighbours -->
+                <div class="card"><div class="card-thumb"><img src="https://www.bollywooindia.com/wp-content/uploads/2019/03/bhabiji-ghar-par-hain.jpg" alt="Bhabiji"><div class="card-badge badge-free">FREE</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Bhabiji Ghar Par Hai</div><div class="card-sub"><span class="card-rating">⭐ 7.6</span><span>·</span><span>SAB TV</span></div></div></div>
+
+                <!-- Kapil Sharma Show – comedy stage show host -->
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BYTkxNTNhYjktMTcxNy00OTA5LThlY2ItZjM3YTFjYmQ1ZmYzXkEyXkFqcGc@._V1_.jpg" alt="Kapil Sharma"><div class="card-badge badge-hot">HOT</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">The Kapil Sharma Show</div><div class="card-sub"><span class="card-rating">⭐ 8.3</span><span>·</span><span>Sony TV</span></div></div></div>
+
+                <!-- Happu Ki Ultan Paltan – police comedy jolly man -->
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BMzM2NTY3OGYtYzljMi00Y2ZjLTkwNGMtNjg3NjVmNjMzZWEwXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Happu Ki Ultan Paltan"><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Happu Ki Ultan Paltan</div><div class="card-sub"><span class="card-rating">⭐ 7.5</span><span>·</span><span>SAB TV</span></div></div></div>
+
+                <!-- Maddam Sir – woman police officer -->
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BMzVjZjA3OTAtNDI4ZC00YjUzLWFhMDEtZWY5ZWJhMjRlMDRiXkEyXkFqcGc@._V1_.jpg" alt="Maddam Sir"><div class="card-badge badge-free">FREE</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Maddam Sir</div><div class="card-sub"><span class="card-rating">⭐ 7.7</span><span>·</span><span>SAB TV</span></div></div></div>
+
+                <!-- Tenali Rama – historical south Indian king court -->
+                <div class="card"><div class="card-thumb"><img src="https://image.tmdb.org/t/p/original/uHLWnU1vkHu9kncH3EfogQ4ebGU.jpg" alt="Tenali Rama"><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Tenali Rama</div><div class="card-sub"><span class="card-rating">⭐ 7.4</span><span>·</span><span>SAB TV</span></div></div></div>
+
+                <!-- FIR – police station drama -->
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BYjAxM2E3NjgtZDkzZS00NDc5LWJiM2EtODI5M2EwNWYwNGU4XkEyXkFqcGc@._V1_.jpg" alt="FIR"><div class="card-badge badge-new">NEW EP</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">FIR</div><div class="card-sub"><span class="card-rating">⭐ 7.8</span><span>·</span><span>Sony SAB</span></div></div></div>
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- REALITY SHOWS -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">🎬</span> Reality &amp; Game Shows</div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+                <!-- Bigg Boss 17 – dramatic stage spotlight reality show -->
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BNWJmNTU1NDgtYzc4MC00ODU2LWFjNzYtYjFhNjRkNTQwZmQyXkEyXkFqcGc@._V1_.jpg" alt="Bigg Boss"><div class="card-badge badge-live">● LIVE</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Bigg Boss 17</div><div class="card-sub"><span class="live-dot"></span> On Air · Colors</div></div></div>
+
+                <!-- KBC – quiz show dramatic single seat spotlight -->
+                <div class="card"><div class="card-thumb"><img src="https://images.justwatch.com/poster/321145083/s718/kaun-banega-crorepati.jpg" alt="KBC"><div class="card-badge badge-new">NEW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">KBC Season 15</div><div class="card-sub"><span class="card-rating">⭐ 8.6</span><span>·</span><span>Sony TV</span></div></div></div>
+
+                <!-- Indian Idol – singing microphone stage music -->
+                <div class="card"><div class="card-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSA1zuczNVnHrF8tIa47cOsDUjC7vTHvuo3A&s"><div class="card-badge badge-hot">HOT</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Indian Idol 14</div><div class="card-sub"><span class="card-rating">⭐ 8.0</span><span>·</span><span>Sony TV</span></div></div></div>
+
+                <!-- Dance India Dance – dancer performance stage -->
+                <div class="card"><div class="card-thumb"><img src="https://s3images.zee5.com/wp-content/uploads/sites/7/2020/08/Best-of-Dance-India-Dance.jpg" alt="Dance India Dance"><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Dance India Dance</div><div class="card-sub"><span class="card-rating">⭐ 7.9</span><span>·</span><span>Zee TV</span></div></div></div>
+
+                <!-- Jhalak Dikhla Ja – dance couple glamour stage -->
+                <div class="card"><div class="card-thumb"><img src="https://cdn.indiacast.com/syndication/wp-content/uploads/2022/10/06122108/Jhalak-Dikhhla-Jaa-S10_1152W-X-1080H_Mobile-Unique-Page.jpg" alt="Jhalak Dikhla Ja"><div class="card-badge badge-new">NEW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Jhalak Dikhla Ja</div><div class="card-sub"><span class="card-rating">⭐ 7.8</span><span>·</span><span>Colors TV</span></div></div></div>
+
+                <!-- Sa Re Ga Ma Pa – classical music singer -->
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BZGQwNjBjMGYtZmNmZS00YjEzLWIxNzYtNDBiYTc1NTViNDA0XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Sa Re Ga Ma Pa"><div class="card-badge badge-4k">4K</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Sa Re Ga Ma Pa</div><div class="card-sub"><span class="card-rating">⭐ 7.6</span><span>·</span><span>Zee TV</span></div></div></div>
+
+                <!-- Shark Tank India – business pitch boardroom -->
+                <div class="card"><div class="card-thumb"><img src="https://media.themoviedb.org/t/p/w500/iGw6R4e4G07xjffVifFLSN3dEAb.jpg" alt="Shark Tank India"><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Shark Tank India</div><div class="card-sub"><span class="card-rating">⭐ 8.5</span><span>·</span><span>Sony TV</span></div></div></div>
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- PROMO BANNER -->
+    <div class="promo-banner">
+        <div class="promo-content">
+            <div class="promo-tag">✦ Limited Time Offer</div>
+            <div class="promo-title">StreamVerse Premium</div>
+            <div class="promo-features">
+                <span class="promo-feature">Live TV</span>
+                <span class="promo-feature">4K Ultra HD</span>
+                <span class="promo-feature">No Ads</span>
+                <span class="promo-feature">Download Offline</span>
+                <span class="promo-feature">5 Screens</span>
+            </div>
+        </div>
+        <button class="promo-btn">Upgrade Now →</button>
+    </div>
+
+    <!-- TV SCHEDULE -->
+    <div class="schedule-strip">
+        <div class="schedule-header">
+            <div class="schedule-title">🗓 Today's TV Schedule</div>
+            <div class="schedule-date">Sunday, March 22 · Prime Time</div>
+        </div>
+        <div class="schedule-row">
+            <div class="schedule-item now">
+                <div class="sch-thumb"><img src="https://images.filmibeat.com/img/popcorn/movie_lists/anupamaa-20240212172531-5304.jpg" alt="Anupamaa"></div>
+                <div class="sch-time">10:00 PM</div>
+                <div class="sch-show">Anupamaa</div>
+                <div class="sch-channel">Star Plus</div>
+            </div>
+            <div class="schedule-item">
+                <div class="sch-thumb"><img src="https://upload.wikimedia.org/wikipedia/en/8/87/KundaliBhagya.jpg" alt="Kundali Bhagya"></div>
+                <div class="sch-time">9:30 PM</div>
+                <div class="sch-show">Kundali Bhagya</div>
+                <div class="sch-channel">Zee TV</div>
+            </div>
+            <div class="schedule-item">
+                <div class="sch-thumb"><img src="https://i0.wp.com/deadant.co/wp-content/uploads/2023/07/TMKOC.png?fit=1366%2C768&ssl=1" alt="Taarak Mehta"></div>
+                <div class="sch-time">8:30 PM</div>
+                <div class="sch-show">Taarak Mehta Ka Ooltah Chashmah</div>
+                <div class="sch-channel">Sony SAB</div>
+            </div>
+            <div class="schedule-item">
+                <div class="sch-thumb"><img src="https://assets.thehansindia.com/h-upload/2024/11/29/1501625-bigg-boss-18-week-8-voting-trends-shrutika-tops-bagga-faces-elimination.jpg" alt="Bigg Boss"></div>
+                <div class="sch-time">9:00 PM</div>
+                <div class="sch-show">Bigg Boss 17</div>
+                <div class="sch-channel">Colors TV</div>
+            </div>
+            <div class="schedule-item">
+                <div class="sch-thumb"><img src="https://upload.wikimedia.org/wikipedia/en/b/b3/Indian_Idol.png" alt="Indian Idol"></div>
+                <div class="sch-time">8:00 PM</div>
+                <div class="sch-show">Indian Idol 14</div>
+                <div class="sch-channel">Sony TV</div>
+            </div>
+            <div class="schedule-item">
+                <div class="sch-thumb"><img src="https://akamaividz2.zee5.com/image/upload/w_1755,h_987,c_scale,f_webp,q_auto:eco/resources/0-6-4z5416889/list/rsz1170x658withlogo35868a8152114447be27dc33e8fab3081d18415d2424484ebe0f76c3b03443bb.jpg" alt="Sa Re Ga Ma Pa"></div>
+                <div class="sch-time">9:30 PM</div>
+                <div class="sch-show">Sa Re Ga Ma Pa</div>
+                <div class="sch-channel">Zee TV</div>
+            </div>
+            <div class="schedule-item">
+                <div class="sch-thumb"><img src="https://media.themoviedb.org/t/p/w500/iGw6R4e4G07xjffVifFLSN3dEAb.jpg" alt="Shark Tank"></div>
+                <div class="sch-time">10:30 PM</div>
+                <div class="sch-show">Shark Tank India</div>
+                <div class="sch-channel">Sony TV</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BROWSE CHANNELS -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">📺</span> Browse Channels</div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+                <div class="channel-card"><div class="ch-logo ch-sp">STAR<br>PLUS</div><div class="ch-name">Star Plus</div></div>
+                <div class="channel-card"><div class="ch-logo ch-zee">ZEE TV</div><div class="ch-name">Zee TV</div></div>
+                <div class="channel-card"><div class="ch-logo ch-son">SONY<br>TV</div><div class="ch-name">Sony TV</div></div>
+                <div class="channel-card"><div class="ch-logo ch-col">COLORS</div><div class="ch-name">Colors TV</div></div>
+                <div class="channel-card"><div class="ch-logo ch-sab">SONY<br>SAB</div><div class="ch-name">Sony SAB</div></div>
+                <div class="channel-card"><div class="ch-logo ch-stb">STAR<br>BHARAT</div><div class="ch-name">Star Bharat</div></div>
+                <div class="channel-card"><div class="ch-logo ch-mx">MX<br>PLAYER</div><div class="ch-name">MX Player</div></div>
+                <div class="channel-card"><div class="ch-logo ch-sun">SUN TV</div><div class="ch-name">Sun TV</div></div>
+                <div class="channel-card"><div class="ch-logo ch-and">&amp;TV</div><div class="ch-name">&TV</div></div>
+                <div class="channel-card"><div class="ch-logo ch-zcin">ZEE<br>CINEMA</div><div class="ch-name">Zee Cinema</div></div>
+                <div class="channel-card"><div class="ch-logo ch-sliv">SONY<br>LIV</div><div class="ch-name">Sony LIV</div></div>
+                <div class="channel-card"><div class="ch-logo ch-sgld">STAR<br>GOLD</div><div class="ch-name">Star Gold</div></div>
+                <div class="channel-card"><div class="ch-logo ch-mtv">MTV<br>INDIA</div><div class="ch-name">MTV India</div></div>
+                <div class="channel-card"><div class="ch-logo ch-nick">NICK<br>INDIA</div><div class="ch-name">Nick India</div></div>
+                <div class="channel-card"><div class="ch-logo ch-disc">DISC<br>OVERY</div><div class="ch-name">Discovery</div></div>
+                <div class="channel-card"><div class="ch-logo ch-n18">NEWS<br>18</div><div class="ch-name">News18</div></div>
+                <div class="channel-card"><div class="ch-logo ch-ndtv">NDTV<br>24x7</div><div class="ch-name">NDTV 24x7</div></div>
+                <div class="channel-card"><div class="ch-logo ch-abp">ABP<br>NEWS</div><div class="ch-name">ABP News</div></div>
+                <div class="channel-card"><div class="ch-logo ch-znws">ZEE<br>NEWS</div><div class="ch-name">Zee News</div></div>
+                <div class="channel-card"><div class="ch-logo ch-pogo">POGO</div><div class="ch-name">Pogo</div></div>
+                <div class="channel-card"><div class="ch-logo ch-cn">CARTOON<br>NET</div><div class="ch-name">Cartoon Network</div></div>
+                <div class="channel-card"><div class="ch-logo ch-vh1">VH1<br>INDIA</div><div class="ch-name">VH1 India</div></div>
+                <div class="channel-card"><div class="ch-logo ch-zmar">ZEE<br>MARATHI</div><div class="ch-name">Zee Marathi</div></div>
+                <div class="channel-card"><div class="ch-logo ch-svij">STAR<br>VIJAY</div><div class="ch-name">Star Vijay</div></div>
+                <div class="channel-card"><div class="ch-logo ch-gem">GEM TV</div><div class="ch-name">Gem TV</div></div>
+                <div class="channel-card"><div class="ch-logo ch-zban">ZEE<br>BANGLA</div><div class="ch-name">Zee Bangla</div></div>
+                <div class="channel-card"><div class="ch-logo ch-sjal">STAR<br>JALSHA</div><div class="ch-name">Star Jalsha</div></div>
+                <div class="channel-card"><div class="ch-logo ch-natg">NAT GEO</div><div class="ch-name">Nat Geo</div></div>
+                <div class="channel-card"><div class="ch-logo ch-ap">ANIMAL<br>PLANET</div><div class="ch-name">Animal Planet</div></div>
+                <div class="channel-card"><div class="ch-logo ch-zkan">ZEE<br>KANNADA</div><div class="ch-name">Zee Kannada</div></div>
+                <div class="channel-card"><div class="ch-logo ch-sury">SURYA TV</div><div class="ch-name">Surya TV</div></div>
+                <div class="channel-card"><div class="ch-logo ch-asia">ASIANET</div><div class="ch-name">Asianet</div></div>
+                <div class="channel-card"><div class="ch-logo ch-etv">ETV<br>TELUGU</div><div class="ch-name">ETV Telugu</div></div>
+                <div class="channel-card"><div class="ch-logo ch-ckan">COLORS<br>KANNADA</div><div class="ch-name">Colors Kannada</div></div>
+                <div class="channel-card"><div class="ch-logo ch-jio">JIO<br>CINEMA</div><div class="ch-name">JioCinema</div></div>
+                <div class="channel-card"><div class="ch-logo ch-dd">DD<br>NATIONAL</div><div class="ch-name">DD National</div></div>
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+</main>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+    <div class="footer-top">
+        <div class="footer-brand">
+            <div class="footer-logo">StreamVerse</div>
+            <div class="footer-tagline">India's most loved streaming platform. Watch anywhere, anytime.</div>
+            <div class="footer-apps">
+                <div class="app-btn"><svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>App Store</div>
+                <div class="app-btn"><svg viewBox="0 0 24 24"><path d="m3 20.5v-17c0-.83 1-.95 1.4-.4l14.5 8.6c.38.24.38.76 0 1L4.4 21.1c-.4.5-1.4.33-1.4-.6z"/></svg>Play Store</div>
+            </div>
+        </div>
+        <div class="footer-links-row">
+            <a href="about.html">About Us</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="help.html">Help &amp; Support</a>
+            <a href="privacy.html">Privacy &amp; Terms</a>
+            <a href="feedback.html">Feedback</a>
+            <a href="#">Careers</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="footer-copy">© 2025 StreamVerse Entertainment Pvt. Ltd. All rights reserved.</div>
+        <div class="footer-badges">
+            <span class="footer-badge">4K UHD</span>
+            <span class="footer-badge">DOLBY ATMOS</span>
+            <span class="footer-badge">HDR 10+</span>
+            <span class="footer-badge">U/A CERTIFIED</span>
+        </div>
+    </div>
+</footer>
+
+<script>
+    function scrollRow(btn, dir) {
+        const wrap = btn.closest('.row-wrap');
+        const row = wrap.querySelector('.row');
+        row.scrollBy({ left: dir * 640, behavior: 'smooth' });
+    }
+
+    document.querySelectorAll('.cat-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+            document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+        });
+    });
+
+    // Hero dots auto-rotate
+    let heroIdx = 0;
+    const heroDots = document.querySelectorAll('.hero-dots span');
+    setInterval(() => {
+        heroDots.forEach(d => d.classList.remove('active'));
+        heroIdx = (heroIdx + 1) % heroDots.length;
+        heroDots[heroIdx].classList.add('active');
+    }, 4000);
+
+    heroDots.forEach((dot, i) => {
+        dot.addEventListener('click', () => {
+            heroDots.forEach(d => d.classList.remove('active'));
+            dot.classList.add('active');
+            heroIdx = i;
+        });
+    });
+
+    // Mute button toggle
+    const muteBtn = document.querySelector('.hero-mute');
+    let muted = true;
+    const muteIcon = `<svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
+    const unmuteIcon = `<svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`;
+
+    muteBtn.addEventListener('click', () => {
+        muted = !muted;
+        muteBtn.style.borderColor = muted ? 'rgba(255,255,255,0.15)' : 'var(--accent2)';
+        muteBtn.innerHTML = muted ? muteIcon : unmuteIcon;
+    });
+</script>
+<script src="script.js"></script>
+</body>
+</html>

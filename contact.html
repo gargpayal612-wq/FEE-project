@@ -1,0 +1,1870 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamVerse – Contact Us</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg2: #111118;
+            --surface: #1a1a24;
+            --accent: #e50914;
+            --accent2: #f5a623;
+            --gold: #FFD700;
+            --teal: #00c9a7;
+            --blue: #4f8ef7;
+            --text: #f0f0f0;
+            --muted: #888;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            padding: 16px 48px;
+            background: rgba(10, 10, 15, 0.98);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #bbb;
+            font-size: 0.88rem;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+            padding: 6px 14px;
+            border-radius: 6px;
+            transition: color 0.2s, background 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .nav-links a.active {
+            color: #fff;
+            background: rgba(229, 9, 20, 0.1);
+            border-bottom: 2px solid var(--accent);
+            border-radius: 6px 6px 0 0;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-left: auto;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 7px 16px;
+            transition: border-color 0.2s;
+        }
+
+        .search-box:focus-within {
+            border-color: rgba(229, 9, 20, 0.5);
+        }
+
+        .search-box input {
+            background: none;
+            border: none;
+            outline: none;
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            width: 160px;
+        }
+
+        .search-box input::placeholder {
+            color: var(--muted);
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, var(--accent), #c20810);
+            border: none;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .nav-btn:hover {
+            opacity: 0.88;
+            transform: scale(1.03);
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        .avatar:hover {
+            border-color: var(--accent2);
+        }
+
+        /* BREADCRUMB */
+        .breadcrumb {
+            margin-top: 68px;
+            padding: 14px 48px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        .breadcrumb a {
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: #fff;
+        }
+
+        .breadcrumb .sep {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .breadcrumb .current {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* HERO */
+        .contact-hero {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 64px 24px 48px;
+        }
+
+        .contact-hero-bg {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #0f0005 0%, #0a0a1a 40%, #0a0f15 70%, #000a15 100%);
+        }
+
+        .contact-hero-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(229, 9, 20, 0.18) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 50%, rgba(245, 166, 35, 0.13) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 100%, rgba(79, 142, 247, 0.09) 0%, transparent 50%);
+        }
+
+        .contact-hero-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(229, 9, 20, 0.06) 80px, transparent 80px),
+                radial-gradient(circle at 90% 80%, rgba(245, 166, 35, 0.06) 120px, transparent 120px);
+        }
+
+        .contact-hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            animation: heroFadeUp 0.8s ease both;
+        }
+
+        @keyframes heroFadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(229, 9, 20, 0.12);
+            border: 1px solid rgba(229, 9, 20, 0.3);
+            border-radius: 4px;
+            padding: 5px 16px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .hero-tag .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            animation: pulse 1.4s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.3
+            }
+        }
+
+        .hero-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2.8rem, 6vw, 5rem);
+            letter-spacing: 3px;
+            line-height: 1;
+            margin-bottom: 16px;
+        }
+
+        .hero-title em {
+            font-style: normal;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-sub {
+            font-size: 0.97rem;
+            color: #aaa;
+            max-width: 520px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* STATUS BAR */
+        .status-bar {
+            background: rgba(0, 201, 167, 0.07);
+            border-top: 1px solid rgba(0, 201, 167, 0.15);
+            border-bottom: 1px solid rgba(0, 201, 167, 0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 24px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--teal);
+        }
+
+        .status-pulse {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--teal);
+            animation: pulse 1.6s infinite;
+        }
+
+        /* STATS BAR */
+        .stats-bar {
+            background: var(--surface);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            flex: 1;
+            min-width: 150px;
+            padding: 24px 28px;
+            text-align: center;
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            transition: background 0.2s;
+        }
+
+        .stat-item:last-child {
+            border-right: none;
+        }
+
+        .stat-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .stat-val {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.2rem;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .stat-label {
+            font-size: 0.72rem;
+            color: var(--muted);
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* MAIN */
+        .contact-main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 80px 48px 100px;
+        }
+
+        /* SECTION HEADING */
+        .section-heading {
+            text-align: center;
+            margin-bottom: 52px;
+        }
+
+        .section-heading .label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .section-heading h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2rem, 3vw, 2.8rem);
+            letter-spacing: 2px;
+        }
+
+        .section-heading h2 em {
+            font-style: normal;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-heading p {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-top: 10px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+        }
+
+        /* CHANNEL CARDS */
+        .channels-section {
+            margin-bottom: 80px;
+        }
+
+        .channels-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .channel-card {
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 16px;
+            padding: 36px 28px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .channel-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s;
+        }
+
+        .channel-card:hover {
+            border-color: rgba(229, 9, 20, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .channel-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .channel-card.featured {
+            border-color: rgba(229, 9, 20, 0.3);
+            background: linear-gradient(160deg, #1e1a22 0%, #1a1a24 100%);
+        }
+
+        .channel-card.featured::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(229, 9, 20, 0.06) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .channel-badge {
+            position: absolute;
+            top: -1px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--accent), #c20810);
+            color: #fff;
+            font-size: 0.62rem;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 0 0 8px 8px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            z-index: 2;
+        }
+
+        .channel-icon-wrap {
+            width: 72px;
+            height: 72px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .channel-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .channel-card p {
+            font-size: 0.82rem;
+            color: rgba(200, 200, 210, 0.7);
+            line-height: 1.65;
+            margin-bottom: 22px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .channel-avail {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            padding: 5px 14px;
+            border-radius: 4px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .avail-green {
+            background: rgba(0, 201, 167, 0.1);
+            border: 1px solid rgba(0, 201, 167, 0.25);
+            color: var(--teal);
+        }
+
+        .avail-gold {
+            background: rgba(245, 166, 35, 0.1);
+            border: 1px solid rgba(245, 166, 35, 0.25);
+            color: var(--accent2);
+        }
+
+        .avail-blue {
+            background: rgba(79, 142, 247, 0.1);
+            border: 1px solid rgba(79, 142, 247, 0.25);
+            color: var(--blue);
+        }
+
+        .channel-action-btn {
+            display: block;
+            width: 100%;
+            margin-top: 18px;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-red {
+            background: linear-gradient(135deg, var(--accent), #c20810);
+            border: none;
+            color: #fff;
+        }
+
+        .btn-red:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 24px rgba(229, 9, 20, 0.4);
+        }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ccc;
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.09);
+            border-color: rgba(255, 255, 255, 0.22);
+        }
+
+        /* TWO COL: FORM + INFO */
+        .form-info-section {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 48px;
+            margin-bottom: 90px;
+            align-items: start;
+        }
+
+        /* CONTACT FORM */
+        .form-wrap {
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 20px;
+            padding: 40px;
+        }
+
+        .form-header {
+            margin-bottom: 30px;
+        }
+
+        .form-label-tag {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent2);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 2px;
+        }
+
+        .form-title em {
+            font-style: normal;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-divider {
+            width: 36px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            border-radius: 2px;
+            margin-top: 14px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .form-group label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #bbb;
+            text-transform: uppercase;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 13px 16px;
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.88rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.25);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: rgba(229, 9, 20, 0.5);
+            box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.08);
+        }
+
+        .form-group select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            cursor: pointer;
+        }
+
+        .form-group select option {
+            background: #1a1a24;
+            color: #fff;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 130px;
+            line-height: 1.6;
+        }
+
+        .attach-area {
+            border: 1.5px dashed rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .attach-area:hover {
+            border-color: rgba(229, 9, 20, 0.4);
+            background: rgba(229, 9, 20, 0.03);
+        }
+
+        .attach-icon {
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+        }
+
+        .attach-text {
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
+
+        .attach-text span {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .form-consent {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .form-consent input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            min-width: 16px;
+            accent-color: var(--accent);
+            margin-top: 2px;
+            cursor: pointer;
+        }
+
+        .form-consent label {
+            font-size: 0.78rem;
+            color: var(--muted);
+            line-height: 1.6;
+            cursor: pointer;
+        }
+
+        .form-consent label a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .form-consent label a:hover {
+            text-decoration: underline;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, var(--accent), #c20810);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 28px rgba(229, 9, 20, 0.45);
+        }
+
+        /* SUCCESS STATE */
+        .success-msg {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: rgba(0, 201, 167, 0.12);
+            border: 2px solid rgba(0, 201, 167, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 20px;
+        }
+
+        .success-msg h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            color: var(--teal);
+        }
+
+        .success-msg p {
+            font-size: 0.87rem;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .ticket-id {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(0, 201, 167, 0.08);
+            border: 1px solid rgba(0, 201, 167, 0.2);
+            border-radius: 6px;
+            padding: 6px 16px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--teal);
+            letter-spacing: 1px;
+        }
+
+        /* RIGHT SIDEBAR */
+        .info-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .info-card {
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 16px;
+            padding: 26px 24px;
+        }
+
+        .info-card-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        /* Response time */
+        .response-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .response-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 11px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+        }
+
+        .response-channel {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .response-channel-icon {
+            font-size: 1.1rem;
+        }
+
+        .response-channel-name {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #ddd;
+        }
+
+        .response-time {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .rt-green {
+            background: rgba(0, 201, 167, 0.1);
+            color: var(--teal);
+            border: 1px solid rgba(0, 201, 167, 0.2);
+        }
+
+        .rt-gold {
+            background: rgba(245, 166, 35, 0.1);
+            color: var(--accent2);
+            border: 1px solid rgba(245, 166, 35, 0.2);
+        }
+
+        .rt-blue {
+            background: rgba(79, 142, 247, 0.1);
+            color: var(--blue);
+            border: 1px solid rgba(79, 142, 247, 0.2);
+        }
+
+        /* Office hours */
+        .hours-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .hours-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.81rem;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .hours-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .hours-day {
+            color: #bbb;
+            font-weight: 500;
+        }
+
+        .hours-time {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .hours-time.closed {
+            color: var(--muted);
+            font-weight: 400;
+        }
+
+        /* Quick links */
+        .quick-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .quick-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 11px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+        }
+
+        .quick-link:hover {
+            background: rgba(229, 9, 20, 0.06);
+            border-color: rgba(229, 9, 20, 0.2);
+        }
+
+        .ql-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ql-icon {
+            font-size: 1rem;
+        }
+
+        .ql-text {
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: #ddd;
+        }
+
+        .ql-arrow {
+            color: rgba(255, 255, 255, 0.25);
+            font-size: 0.85rem;
+        }
+
+        /* Social */
+        .social-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+        }
+
+        .social-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .social-icon {
+            font-size: 1.2rem;
+        }
+
+        .social-name {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #ccc;
+        }
+
+        .social-handle {
+            font-size: 0.68rem;
+            color: var(--muted);
+        }
+
+        /* KNOWLEDGE BASE */
+        .kb-section {
+            margin-bottom: 90px;
+        }
+
+        .kb-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .kb-card {
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 14px;
+            padding: 22px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+        }
+
+        .kb-card:hover {
+            border-color: rgba(229, 9, 20, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .kb-icon-wrap {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .kb-body h4 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .kb-body p {
+            font-size: 0.78rem;
+            color: rgba(200, 200, 210, 0.65);
+            line-height: 1.6;
+        }
+
+        .kb-count {
+            margin-top: 10px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        /* CTA */
+        .cta-block {
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 20px;
+            padding: 60px 48px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-block::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(229, 9, 20, 0.12) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 50%, rgba(245, 166, 35, 0.09) 0%, transparent 50%);
+        }
+
+        .cta-tag {
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 14px;
+            position: relative;
+        }
+
+        .cta-block h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2rem, 3vw, 2.8rem);
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+            position: relative;
+        }
+
+        .cta-block h2 em {
+            font-style: normal;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cta-block p {
+            font-size: 0.9rem;
+            color: rgba(200, 200, 210, 0.75);
+            max-width: 480px;
+            margin: 0 auto 28px;
+            line-height: 1.7;
+            position: relative;
+        }
+
+        .cta-btns {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        .btn-primary {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--accent), #c20810);
+            border: none;
+            color: #fff;
+            padding: 14px 30px;
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.04);
+            box-shadow: 0 8px 28px rgba(229, 9, 20, 0.45);
+        }
+
+        .btn-outline {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ddd;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .btn-outline:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+            padding: 44px 48px 32px;
+        }
+
+        
+
+        
+
+        .footer-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+
+        .footer-tagline {
+            font-size: 0.82rem;
+            color: var(--muted);
+            line-height: 1.6;
+            max-width: 240px;
+        }
+
+        .footer-apps {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .app-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px 14px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            font-size: 0.72rem;
+            color: #ccc;
+        }
+
+        .app-btn:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        
+
+        
+
+        
+
+        
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .footer-copy {
+            color: var(--muted);
+            font-size: 0.75rem;
+        }
+
+        .footer-badges {
+            display: flex;
+            gap: 10px;
+        }
+
+        .footer-badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            padding: 4px 10px;
+            font-size: 0.65rem;
+            color: var(--muted);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* RESPONSIVE */
+        @media(max-width: 900px) {
+            nav {
+                padding: 14px 20px;
+                gap: 16px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .breadcrumb {
+                padding: 14px 20px;
+            }
+
+            .channels-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-info-section {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-main {
+                padding: 48px 20px 80px;
+            }
+
+            .cta-block {
+                padding: 40px 24px;
+            }
+
+            footer {
+                padding: 24px 20px;
+            }
+        }
+    
+        /* ── FOOTER LINKS ROW ── */
+        .footer-top { display: flex; justify-content: space-between; align-items: center; padding-bottom: 32px; border-bottom: 1px solid rgba(255,255,255,0.07); margin-bottom: 24px; flex-wrap: wrap; gap: 24px; }
+        .footer-brand { max-width: 280px; }
+        .footer-links-row { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+        .footer-links-row a { color: var(--muted); font-size: 0.82rem; text-decoration: none; transition: color 0.2s; }
+        .footer-links-row a:hover { color: #fff; }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <nav>
+    <div class="logo">StreamVerse</div>
+    <div class="nav-links">
+        <a href="home.html">Home</a>
+        <a href="movies.html">Movies</a>
+        <a href="tv.html">TV Shows</a>
+        <a href="sports.html">Sports</a>
+        <a href="kids.html">Kids</a>
+    </div>
+    <div class="nav-right">
+        <div class="search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2.5">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input type="text" placeholder="Search movies, shows...">
+        </div>
+        <button class="nav-btn">Subscribe</button>
+        <div class="avatar">U</div>
+    </div>
+</nav>
+
+    <!-- BREADCRUMB -->
+    <div class="breadcrumb">
+        <a href="#">Help Center</a>
+        <span class="sep">›</span>
+        <span class="current">Contact Us</span>
+    </div>
+
+    <!-- HERO -->
+    <div class="contact-hero">
+        <div class="contact-hero-bg"></div>
+        <div class="contact-hero-content">
+            <div class="hero-tag"><span class="dot"></span>Get in Touch</div>
+            <h1 class="hero-title">CONTACT <em>STREAMVERSE</em></h1>
+            <p class="hero-sub">Reach our dedicated support team via live chat, email, or phone. We're here to get your
+                streaming experience back on track — fast.</p>
+        </div>
+    </div>
+
+    <!-- STATUS BAR -->
+    <div class="status-bar">
+        <div class="status-pulse"></div>
+        All StreamVerse systems are fully operational — Support agents available now
+    </div>
+
+    <!-- STATS BAR -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-val">24/7</div>
+            <div class="stat-label">Live Chat</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-val">&lt;2 Min</div>
+            <div class="stat-label">Avg Response</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-val">98%</div>
+            <div class="stat-label">Satisfaction Rate</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-val">50M+</div>
+            <div class="stat-label">Users Helped</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-val">4–6 Hrs</div>
+            <div class="stat-label">Email Reply</div>
+        </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="contact-main">
+
+        <!-- CONTACT CHANNELS -->
+        <div class="channels-section">
+            <div class="section-heading">
+                <span class="label">✦ Choose Your Channel</span>
+                <h2>HOW WOULD YOU LIKE TO <em>REACH US?</em></h2>
+                <p>Pick the support channel that works best for you. Our team is standing by to help.</p>
+            </div>
+            <div class="channels-grid">
+                <div class="channel-card featured">
+                    <div class="channel-badge">Fastest</div>
+                    <div class="channel-icon-wrap"
+                        style="background:rgba(229,9,20,0.12);border:1px solid rgba(229,9,20,0.25);">💬</div>
+                    <h3>Live Chat</h3>
+                    <p>Chat instantly with a real StreamVerse support agent. No bots — just humans ready to resolve your
+                        issue on the spot.</p>
+                    <span class="channel-avail avail-green">Available 24/7</span>
+                    <button class="channel-action-btn btn-red" onclick="startChat()">Start Live Chat →</button>
+                </div>
+                <div class="channel-card">
+                    <div class="channel-icon-wrap"
+                        style="background:rgba(79,142,247,0.12);border:1px solid rgba(79,142,247,0.25);">📧</div>
+                    <h3>Email Support</h3>
+                    <p>Send us a detailed message with screenshots or attachments. Our team responds with a complete
+                        resolution within hours.</p>
+                    <span class="channel-avail avail-gold">Response in 4–6 hrs</span>
+                    <button class="channel-action-btn btn-ghost" onclick="scrollToForm()">Send Email →</button>
+                </div>
+                <div class="channel-card">
+                    <div class="channel-icon-wrap"
+                        style="background:rgba(0,201,167,0.12);border:1px solid rgba(0,201,167,0.25);">📞</div>
+                    <h3>Phone Support</h3>
+                    <p>Speak directly with a StreamVerse specialist for complex billing or technical account matters
+                        requiring personal attention.</p>
+                    <span class="channel-avail avail-blue">Mon–Sat, 9am–9pm IST</span>
+                    <button class="channel-action-btn btn-ghost">Call 1800-000-STREAM →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- FORM + INFO SIDEBAR -->
+        <div class="form-info-section" id="contact-form-section">
+
+            <!-- FORM -->
+            <div class="form-wrap">
+                <div class="form-header">
+                    <span class="form-label-tag">✦ Send a Message</span>
+                    <div class="form-title">SEND US A <em>MESSAGE</em></div>
+                    <div class="form-divider"></div>
+                </div>
+
+                <div id="form-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" placeholder="Rahul">
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" placeholder="Sharma">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" placeholder="rahul@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Registered Mobile</label>
+                            <input type="tel" placeholder="+91 98765 43210">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Topic / Category</label>
+                        <select>
+                            <option value="" disabled selected>Select a topic…</option>
+                            <option>Account & Login Issues</option>
+                            <option>Subscription & Billing</option>
+                            <option>Streaming & Playback</option>
+                            <option>Devices & App Setup</option>
+                            <option>Downloads & Offline</option>
+                            <option>Privacy & Security</option>
+                            <option>Offers & Promo Codes</option>
+                            <option>Live TV & Sports</option>
+                            <option>Other / General Enquiry</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <input type="text" placeholder="Brief description of your issue">
+                    </div>
+                    <div class="form-group">
+                        <label>Describe Your Issue</label>
+                        <textarea
+                            placeholder="Please share as much detail as possible — the more context you give us, the faster we can resolve your issue."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Attachments (Optional)</label>
+                        <div class="attach-area">
+                            <div class="attach-icon">📎</div>
+                            <div class="attach-text"><span>Click to upload</span> or drag and drop screenshots, error
+                                logs (PNG, JPG, PDF — max 10MB)</div>
+                        </div>
+                    </div>
+                    <div class="form-consent">
+                        <input type="checkbox" id="consent" checked>
+                        <label for="consent">I agree to StreamVerse's <a href="#">Privacy Policy</a> and <a
+                                href="#">Terms of Use</a>. I consent to being contacted by the support team regarding my
+                            submitted query.</label>
+                    </div>
+                    <button class="submit-btn" onclick="submitForm()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+                            <line x1="22" y1="2" x2="11" y2="13" />
+                            <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                        </svg>
+                        Submit Request
+                    </button>
+                </div>
+
+                <div class="success-msg" id="success-msg">
+                    <div class="success-icon">✅</div>
+                    <h3>REQUEST SUBMITTED!</h3>
+                    <p>Your message has been received. A StreamVerse support agent will reach out to you at your
+                        registered email within 4–6 hours.</p>
+                    <div class="ticket-id">Ticket #SV-20260323-7842</div>
+                </div>
+            </div>
+
+            <!-- SIDEBAR -->
+            <div class="info-sidebar">
+
+                <!-- Response Times -->
+                <div class="info-card">
+                    <span class="info-card-label">✦ Response Times</span>
+                    <div class="response-list">
+                        <div class="response-row">
+                            <div class="response-channel">
+                                <span class="response-channel-icon">💬</span>
+                                <span class="response-channel-name">Live Chat</span>
+                            </div>
+                            <span class="response-time rt-green">Under 2 min</span>
+                        </div>
+                        <div class="response-row">
+                            <div class="response-channel">
+                                <span class="response-channel-icon">📧</span>
+                                <span class="response-channel-name">Email</span>
+                            </div>
+                            <span class="response-time rt-gold">4–6 hours</span>
+                        </div>
+                        <div class="response-row">
+                            <div class="response-channel">
+                                <span class="response-channel-icon">📞</span>
+                                <span class="response-channel-name">Phone</span>
+                            </div>
+                            <span class="response-time rt-blue">Immediate</span>
+                        </div>
+                        <div class="response-row">
+                            <div class="response-channel">
+                                <span class="response-channel-icon">📝</span>
+                                <span class="response-channel-name">Contact Form</span>
+                            </div>
+                            <span class="response-time rt-gold">4–6 hours</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Office Hours -->
+                <div class="info-card">
+                    <span class="info-card-label">✦ Support Hours</span>
+                    <div class="hours-list">
+                        <div class="hours-row">
+                            <span class="hours-day">Live Chat</span>
+                            <span class="hours-time">24 / 7 / 365</span>
+                        </div>
+                        <div class="hours-row">
+                            <span class="hours-day">Monday – Friday</span>
+                            <span class="hours-time">9:00 AM – 9:00 PM</span>
+                        </div>
+                        <div class="hours-row">
+                            <span class="hours-day">Saturday</span>
+                            <span class="hours-time">10:00 AM – 6:00 PM</span>
+                        </div>
+                        <div class="hours-row">
+                            <span class="hours-day">Sunday</span>
+                            <span class="hours-time closed">Live Chat Only</span>
+                        </div>
+                        <div class="hours-row">
+                            <span class="hours-day">Public Holidays</span>
+                            <span class="hours-time closed">Live Chat Only</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="info-card">
+                    <span class="info-card-label">✦ Quick Self-Help</span>
+                    <div class="quick-links">
+                        <a href="#" class="quick-link">
+                            <div class="ql-left"><span class="ql-icon">🔑</span><span class="ql-text">Reset
+                                    Password</span></div>
+                            <span class="ql-arrow">›</span>
+                        </a>
+                        <a href="#" class="quick-link">
+                            <div class="ql-left"><span class="ql-icon">💳</span><span class="ql-text">Manage
+                                    Subscription</span></div>
+                            <span class="ql-arrow">›</span>
+                        </a>
+                        <a href="#" class="quick-link">
+                            <div class="ql-left"><span class="ql-icon">📺</span><span class="ql-text">Fix Streaming
+                                    Issues</span></div>
+                            <span class="ql-arrow">›</span>
+                        </a>
+                        <a href="#" class="quick-link">
+                            <div class="ql-left"><span class="ql-icon">📱</span><span class="ql-text">Device Setup
+                                    Guide</span></div>
+                            <span class="ql-arrow">›</span>
+                        </a>
+                        <a href="#" class="quick-link">
+                            <div class="ql-left"><span class="ql-icon">🎉</span><span class="ql-text">Redeem Promo
+                                    Code</span></div>
+                            <span class="ql-arrow">›</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Social -->
+                <div class="info-card">
+                    <span class="info-card-label">✦ Find Us On Social</span>
+                    <div class="social-grid">
+                        <a href="#" class="social-btn">
+                            <span class="social-icon">🐦</span>
+                            <div>
+                                <div class="social-name">Twitter / X</div>
+                                <div class="social-handle">@StreamVerseIN</div>
+                            </div>
+                        </a>
+                        <a href="#" class="social-btn">
+                            <span class="social-icon">📘</span>
+                            <div>
+                                <div class="social-name">Facebook</div>
+                                <div class="social-handle">StreamVerseIndia</div>
+                            </div>
+                        </a>
+                        <a href="#" class="social-btn">
+                            <span class="social-icon">📸</span>
+                            <div>
+                                <div class="social-name">Instagram</div>
+                                <div class="social-handle">@streamverse</div>
+                            </div>
+                        </a>
+                        <a href="#" class="social-btn">
+                            <span class="social-icon">▶️</span>
+                            <div>
+                                <div class="social-name">YouTube</div>
+                                <div class="social-handle">StreamVerse</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- KNOWLEDGE BASE SHORTCUTS -->
+        <div class="kb-section">
+            <div class="section-heading">
+                <span class="label">✦ Self-Service</span>
+                <h2>RESOLVE IT YOURSELF — <em>INSTANTLY</em></h2>
+                <p>Browse our knowledge base and fix common issues without waiting for support.</p>
+            </div>
+            <div class="kb-grid">
+                <a href="#" class="kb-card">
+                    <div class="kb-icon-wrap"
+                        style="background:rgba(229,9,20,0.1);border:1px solid rgba(229,9,20,0.2);">👤</div>
+                    <div class="kb-body">
+                        <h4>Account & Profile</h4>
+                        <p>Password resets, profile management, email updates, and linked devices.</p>
+                        <div class="kb-count">18 Articles ›</div>
+                    </div>
+                </a>
+                <a href="#" class="kb-card">
+                    <div class="kb-icon-wrap"
+                        style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);">💳</div>
+                    <div class="kb-body">
+                        <h4>Subscription & Billing</h4>
+                        <p>Upgrade, downgrade, cancel plans and manage payment methods.</p>
+                        <div class="kb-count">24 Articles ›</div>
+                    </div>
+                </a>
+                <a href="#" class="kb-card">
+                    <div class="kb-icon-wrap"
+                        style="background:rgba(79,142,247,0.1);border:1px solid rgba(79,142,247,0.2);">📺</div>
+                    <div class="kb-body">
+                        <h4>Streaming & Playback</h4>
+                        <p>Fix buffering, video quality, subtitles, audio sync, and playback errors.</p>
+                        <div class="kb-count">31 Articles ›</div>
+                    </div>
+                </a>
+                <a href="#" class="kb-card">
+                    <div class="kb-icon-wrap"
+                        style="background:rgba(0,201,167,0.1);border:1px solid rgba(0,201,167,0.2);">📱</div>
+                    <div class="kb-body">
+                        <h4>Devices & Apps</h4>
+                        <p>Set up StreamVerse on Smart TV, mobile, tablet, laptop, or game console.</p>
+                        <div class="kb-count">22 Articles ›</div>
+                    </div>
+                </a>
+                <a href="#" class="kb-card">
+                    <div class="kb-icon-wrap"
+                        style="background:rgba(229,9,20,0.1);border:1px solid rgba(229,9,20,0.2);">⬇️</div>
+                    <div class="kb-body">
+                        <h4>Downloads & Offline</h4>
+                        <p>Download content to watch without internet, manage download limits.</p>
+                        <div class="kb-count">12 Articles ›</div>
+                    </div>
+                </a>
+                <a href="#" class="kb-card">
+                    <div class="kb-icon-wrap"
+                        style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);">📡</div>
+                    <div class="kb-body">
+                        <h4>Live TV & Sports</h4>
+                        <p>Watch cricket, football, live channels and set match reminder alerts.</p>
+                        <div class="kb-count">14 Articles ›</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-block">
+            <div class="cta-tag">✦ Still Stuck?</div>
+            <h2>OUR TEAM IS READY TO <em>HELP YOU NOW</em></h2>
+            <p>Don't let a technical issue interrupt your binge. Jump into live chat for instant help from a real
+                StreamVerse agent — no hold music, no waiting.</p>
+            <div class="cta-btns">
+                <button class="btn-primary" onclick="startChat()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    Start Live Chat
+                </button>
+                <button class="btn-outline" onclick="scrollToForm()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14,2 14,8 20,8" />
+                    </svg>
+                    Send a Message
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+    <div class="footer-top">
+        <div class="footer-brand">
+            <div class="footer-logo">StreamVerse</div>
+            <div class="footer-tagline">India's most loved streaming platform. Watch anywhere, anytime.</div>
+            <div class="footer-apps">
+                <div class="app-btn">
+                    <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                    App Store
+                </div>
+                <div class="app-btn">
+                    <svg viewBox="0 0 24 24"><path d="m3 20.5v-17c0-.83 1-.95 1.4-.4l14.5 8.6c.38.24.38.76 0 1L4.4 21.1c-.4.5-1.4.33-1.4-.6z"/></svg>
+                    Play Store
+                </div>
+            </div>
+        </div>
+        <div class="footer-links-row">
+            <a href="about.html">About Us</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="help.html">Help &amp; Support</a>
+            <a href="privacy.html">Privacy &amp; Terms</a>
+            <a href="feedback.html">Feedback</a>
+            <a href="careers.html">Careers</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="footer-copy">© 2025 StreamVerse. Built with ❤️ by Payal, Diksha, Latika &amp; Smily.</div>
+        <div class="footer-badges">
+            <span class="footer-badge">4K UHD</span>
+            <span class="footer-badge">DOLBY ATMOS</span>
+            <span class="footer-badge">HDR 10+</span>
+            <span class="footer-badge">U/A CERTIFIED</span>
+        </div>
+    </div>
+</footer>
+
+    <script>
+        function scrollToForm() {
+            document.getElementById('contact-form-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function startChat() {
+            alert('Connecting you to a live StreamVerse support agent…');
+        }
+
+        function submitForm() {
+            document.getElementById('form-body').style.display = 'none';
+            document.getElementById('success-msg').style.display = 'block';
+        }
+    </script>
+<script src="script.js"></script>
+</body>
+</html>

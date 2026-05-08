@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamVerse – Feedback</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg2: #111118;
+            --surface: #1a1a24;
+            --accent: #e50914;
+            --accent2: #f5a623;
+            --gold: #FFD700;
+            --teal: #00c9a7;
+            --blue: #4f8ef7;
+            --text: #f0f0f0;
+            --muted: #888;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            padding: 16px 48px;
+            background: rgba(10,10,15,0.98);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .nav-links { display: flex; gap: 4px; flex: 1; }
+        .nav-links a {
+            text-decoration: none;
+            color: #bbb;
+            font-size: 0.88rem;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+            padding: 6px 14px;
+            border-radius: 6px;
+            transition: color 0.2s, background 0.2s;
+        }
+        .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.07); }
+        .nav-links a.active {
+            color: #fff;
+            background: rgba(229,9,20,0.1);
+            border-bottom: 2px solid var(--accent);
+            border-radius: 6px 6px 0 0;
+        }
+
+        .nav-right { display: flex; align-items: center; gap: 16px; margin-left: auto; }
+
+        .search-box {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px; padding: 7px 16px;
+            transition: border-color 0.2s;
+        }
+        .search-box:focus-within { border-color: rgba(229,9,20,0.5); }
+        .search-box input {
+            background: none; border: none; outline: none;
+            color: #fff; font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem; width: 160px;
+        }
+        .search-box input::placeholder { color: var(--muted); }
+
+        .nav-btn {
+            background: linear-gradient(135deg, var(--accent), #c20810);
+            border: none; color: #fff; padding: 8px 18px;
+            border-radius: 6px; font-family: 'Outfit', sans-serif;
+            font-size: 0.82rem; font-weight: 600; cursor: pointer;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .nav-btn:hover { opacity: 0.88; transform: scale(1.03); }
+
+        .avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            display: grid; place-items: center;
+            font-weight: 700; font-size: 0.85rem; cursor: pointer;
+            border: 2px solid transparent; transition: border-color 0.2s;
+        }
+        .avatar:hover { border-color: var(--accent2); }
+
+        /* ── HERO BANNER ── */
+        .about-hero {
+            margin-top: 68px;
+            position: relative;
+            height: 380px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .about-hero-bg {
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, #0f0015 0%, #0a0a1a 40%, #0a150f 70%, #150a00 100%);
+        }
+
+        .about-hero-bg::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(229,9,20,0.18) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 50%, rgba(245,166,35,0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 100%, rgba(0,201,167,0.1) 0%, transparent 50%);
+        }
+
+        /* floating decorative circles */
+        .about-hero-bg::after {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(229,9,20,0.06) 80px, transparent 80px),
+                radial-gradient(circle at 90% 80%, rgba(245,166,35,0.06) 120px, transparent 120px),
+                radial-gradient(circle at 60% 10%, rgba(79,142,247,0.05) 60px, transparent 60px);
+        }
+
+        .about-hero-content {
+            position: relative; z-index: 2;
+            text-align: center;
+            animation: heroFadeUp 0.8s ease both;
+        }
+
+        @keyframes heroFadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .about-hero-tag {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(229,9,20,0.12);
+            border: 1px solid rgba(229,9,20,0.3);
+            border-radius: 4px; padding: 5px 16px;
+            font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 2px; color: var(--accent);
+            text-transform: uppercase; margin-bottom: 20px;
+        }
+        .about-hero-tag .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--accent); animation: pulse 1.4s infinite;
+        }
+        @keyframes pulse {
+            0%,100% { opacity: 1; } 50% { opacity: 0.3; }
+        }
+
+        .about-hero-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            letter-spacing: 3px; line-height: 1;
+            margin-bottom: 16px;
+        }
+        .about-hero-title em {
+            font-style: normal;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .about-hero-sub {
+            font-size: 1rem; color: #aaa;
+            max-width: 520px; line-height: 1.7;
+        }
+
+        /* ── STATS BAR ── */
+        .stats-bar {
+            background: var(--surface);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            display: flex; justify-content: center;
+            gap: 0; flex-wrap: wrap;
+        }
+
+        .stat-item {
+            flex: 1; min-width: 160px;
+            padding: 28px 32px;
+            text-align: center;
+            border-right: 1px solid rgba(255,255,255,0.06);
+            position: relative;
+            transition: background 0.2s;
+        }
+        .stat-item:last-child { border-right: none; }
+        .stat-item:hover { background: rgba(255,255,255,0.03); }
+
+        .stat-val {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.6rem; letter-spacing: 2px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1; margin-bottom: 6px;
+        }
+        .stat-label { font-size: 0.75rem; color: var(--muted); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; }
+
+        /* ── MAIN CONTENT ── */
+        .about-main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 80px 48px 100px;
+        }
+
+        /* ── INTRO SECTION ── */
+        .intro-block {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            margin-bottom: 100px;
+            animation: fadeInUp 0.6s ease both;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .intro-text-label {
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 2px;
+            text-transform: uppercase; color: var(--accent2);
+            margin-bottom: 12px;
+        }
+
+        .intro-text h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2rem, 3.5vw, 3rem);
+            letter-spacing: 2px; line-height: 1.05;
+            margin-bottom: 20px;
+        }
+        .intro-text h2 em {
+            font-style: normal;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .intro-text p {
+            font-size: 0.95rem; line-height: 1.8;
+            color: rgba(200,200,210,0.85);
+        }
+
+        .intro-visual {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            background: var(--surface);
+        }
+
+        .intro-visual-inner {
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, #1a0010 0%, #0a0a20 50%, #001a15 100%);
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+        }
+
+        .intro-visual-inner::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse at 30% 40%, rgba(229,9,20,0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 60%, rgba(245,166,35,0.15) 0%, transparent 50%);
+        }
+
+        .visual-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3.5rem; letter-spacing: 4px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative; z-index: 2;
+            filter: drop-shadow(0 0 40px rgba(229,9,20,0.4));
+        }
+
+        .visual-badge-row {
+            position: absolute; bottom: 20px; left: 20px; right: 20px;
+            display: flex; gap: 10px; flex-wrap: wrap;
+            z-index: 2;
+        }
+
+        .visual-badge {
+            background: rgba(10,10,15,0.85);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; padding: 8px 14px;
+            font-size: 0.72rem; font-weight: 600;
+            backdrop-filter: blur(8px);
+        }
+        .visual-badge span { color: var(--accent2); }
+
+        /* ── FEATURES GRID ── */
+        .features-section { margin-bottom: 90px; }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 52px;
+        }
+        .section-heading .label {
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 2px;
+            text-transform: uppercase; color: var(--accent);
+            margin-bottom: 12px; display: block;
+        }
+        .section-heading h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2rem, 3vw, 2.8rem);
+            letter-spacing: 2px;
+        }
+        .section-heading h2 em {
+            font-style: normal;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .section-heading p {
+            font-size: 0.9rem; color: var(--muted);
+            margin-top: 10px; max-width: 500px; margin-left: auto; margin-right: auto;
+            line-height: 1.7;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: var(--surface);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 16px;
+            padding: 32px 28px;
+            transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .feature-card:hover {
+            border-color: rgba(229,9,20,0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }
+        .feature-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .feature-card:hover::before { opacity: 1; }
+
+        .feature-icon {
+            width: 52px; height: 52px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        .icon-red   { background: rgba(229,9,20,0.12); border: 1px solid rgba(229,9,20,0.2); }
+        .icon-gold  { background: rgba(245,166,35,0.12); border: 1px solid rgba(245,166,35,0.2); }
+        .icon-teal  { background: rgba(0,201,167,0.12); border: 1px solid rgba(0,201,167,0.2); }
+        .icon-blue  { background: rgba(79,142,247,0.12); border: 1px solid rgba(79,142,247,0.2); }
+        .icon-purple { background: rgba(168,85,247,0.12); border: 1px solid rgba(168,85,247,0.2); }
+
+        .feature-card h3 {
+            font-size: 1.05rem; font-weight: 700;
+            margin-bottom: 12px; letter-spacing: 0.2px;
+        }
+        .feature-card p {
+            font-size: 0.87rem; line-height: 1.75;
+            color: rgba(180,180,195,0.85);
+        }
+
+        /* ── ORIGINALS HIGHLIGHT ── */
+        .originals-block {
+            border-radius: 20px; overflow: hidden;
+            position: relative;
+            background: linear-gradient(135deg, #1a0010 0%, #0a0a20 50%, #0f150a 100%);
+            padding: 56px 52px;
+            margin-bottom: 90px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 40px;
+            align-items: center;
+        }
+        .originals-block::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse at 0% 50%, rgba(229,9,20,0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at 100% 50%, rgba(245,166,35,0.15) 0%, transparent 50%);
+        }
+        .originals-content { position: relative; z-index: 2; }
+        .originals-tag {
+            font-size: 0.68rem; font-weight: 700; letter-spacing: 2px;
+            text-transform: uppercase; color: var(--accent2); margin-bottom: 10px;
+        }
+        .originals-block h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2rem, 3vw, 2.8rem); letter-spacing: 2px;
+            margin-bottom: 14px;
+        }
+        .originals-block h2 em {
+            font-style: normal;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .originals-block p {
+            font-size: 0.92rem; line-height: 1.75;
+            color: rgba(200,200,210,0.85); max-width: 520px;
+        }
+        .originals-cta { position: relative; z-index: 2; flex-shrink: 0; }
+        .btn-explore {
+            display: flex; align-items: center; gap: 10px;
+            background: linear-gradient(135deg, var(--accent), #c20810);
+            border: none; color: #fff;
+            padding: 16px 32px; border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem; font-weight: 700;
+            cursor: pointer; letter-spacing: 0.3px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+        }
+        .btn-explore:hover { transform: scale(1.04); box-shadow: 0 8px 28px rgba(229,9,20,0.5); }
+
+        /* ── LANGUAGES / PLATFORM TAGS ── */
+        .platform-section { margin-bottom: 90px; }
+
+        .tag-cloud {
+            display: flex; flex-wrap: wrap; gap: 12px;
+            justify-content: center; margin-top: 36px;
+        }
+        .platform-tag {
+            padding: 10px 22px; border-radius: 24px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.85rem; font-weight: 500; color: #ccc;
+            transition: all 0.2s; cursor: default;
+        }
+        .platform-tag:hover { background: rgba(229,9,20,0.1); border-color: rgba(229,9,20,0.3); color: #fff; }
+        .platform-tag.accent { background: rgba(229,9,20,0.1); border-color: rgba(229,9,20,0.3); color: var(--accent); }
+        .platform-tag.gold   { background: rgba(245,166,35,0.1); border-color: rgba(245,166,35,0.3); color: var(--accent2); }
+        .platform-tag.teal   { background: rgba(0,201,167,0.1); border-color: rgba(0,201,167,0.3); color: var(--teal); }
+        .platform-tag.blue   { background: rgba(79,142,247,0.1); border-color: rgba(79,142,247,0.3); color: var(--blue); }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid rgba(255,255,255,0.07);
+            padding: 44px 48px 32px;
+        }
+        .footer-top {
+            display: flex; gap: 60px;
+            margin-bottom: 36px; flex-wrap: wrap;
+        }
+        .footer-brand { flex: 1; min-width: 200px; }
+        .footer-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem; letter-spacing: 3px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text; margin-bottom: 12px;
+        }
+        .footer-tagline { font-size: 0.82rem; color: var(--muted); line-height: 1.6; max-width: 240px; }
+        .footer-apps { display: flex; gap: 10px; margin-top: 16px; }
+        .app-btn {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; padding: 8px 14px;
+            cursor: pointer; transition: border-color 0.2s;
+            font-size: 0.72rem; color: #ccc;
+        }
+        .app-btn:hover { border-color: rgba(255,255,255,0.25); }
+        .app-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+        .footer-col h4 { font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #fff; margin-bottom: 14px; }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+        .footer-col ul li a { color: var(--muted); font-size: 0.78rem; text-decoration: none; transition: color 0.2s; }
+        .footer-col ul li a:hover { color: #fff; }
+
+        .footer-bottom {
+            display: flex; justify-content: space-between;
+            align-items: center; flex-wrap: wrap; gap: 12px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .footer-copy { color: var(--muted); font-size: 0.75rem; }
+        .footer-badges { display: flex; gap: 10px; }
+        .footer-badge {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 4px; padding: 4px 10px;
+            font-size: 0.65rem; color: var(--muted); font-weight: 600; letter-spacing: 0.5px;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media(max-width:900px) {
+            nav { padding: 14px 20px; gap: 16px; }
+            .nav-links { display: none; }
+            .about-main { padding: 48px 20px 80px; }
+            .intro-block { grid-template-columns: 1fr; gap: 36px; }
+            .originals-block { grid-template-columns: 1fr; padding: 36px 28px; }
+            .originals-cta { display: none; }
+            footer { padding: 24px 20px; }
+        }
+    
+        /* ── FOOTER LINKS ROW ── */
+        .footer-links-row { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+        .footer-links-row a { color: var(--muted); font-size: 0.82rem; text-decoration: none; transition: color 0.2s; }
+        .footer-links-row a:hover { color: #fff; }
+
+        /* ── POLICY / FEEDBACK PAGE ── */
+        .page-section { margin-bottom: 56px; }
+        .page-section h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.6rem; letter-spacing: 1.5px;
+            margin-bottom: 18px; color: #fff;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .page-section p { font-size: 0.92rem; color: rgba(200,200,210,0.85); line-height: 1.85; margin-bottom: 12px; }
+        .page-section ul { padding-left: 22px; }
+        .page-section ul li { font-size: 0.9rem; color: rgba(200,200,210,0.8); line-height: 1.8; margin-bottom: 6px; }
+        .policy-tabs { display: flex; gap: 12px; margin-bottom: 44px; flex-wrap: wrap; }
+        .policy-tab {
+            padding: 10px 24px; border-radius: 8px;
+            font-size: 0.85rem; font-weight: 600; cursor: pointer;
+            transition: all 0.2s; border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.05); color: #bbb;
+        }
+        .policy-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .policy-tab:hover:not(.active) { background: rgba(255,255,255,0.1); color: #fff; }
+        .info-box {
+            background: linear-gradient(135deg, rgba(229,9,20,0.08), rgba(245,166,35,0.05));
+            border: 1px solid rgba(229,9,20,0.2); border-radius: 16px;
+            padding: 28px 32px; margin: 28px 0;
+        }
+        .info-box h3 { font-size: 1rem; font-weight: 700; color: var(--accent2); margin-bottom: 10px; }
+        .info-box p { font-size: 0.88rem; color: #bbb; line-height: 1.75; margin: 0; }
+        .form-group { margin-bottom: 22px; }
+        .form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: #ccc; margin-bottom: 8px; letter-spacing: 0.3px; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; background: var(--surface);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
+            padding: 13px 18px; color: #fff;
+            font-family: 'Outfit', sans-serif; font-size: 0.9rem;
+            outline: none; transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--accent); }
+        .form-group textarea { height: 130px; resize: vertical; }
+        .form-group select option { background: var(--bg2); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .submit-btn {
+            background: linear-gradient(135deg, var(--accent), #c20810);
+            border: none; color: #fff; padding: 15px 40px;
+            border-radius: 10px; font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem; font-weight: 700; cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s; letter-spacing: 0.3px;
+        }
+        .submit-btn:hover { transform: scale(1.04); box-shadow: 0 8px 28px rgba(229,9,20,0.45); }
+        .star-row { display: flex; gap: 10px; margin: 12px 0 28px; }
+        .star { font-size: 2rem; cursor: pointer; color: #333; transition: color 0.15s, transform 0.15s; }
+        .star:hover, .star.active { color: var(--gold); transform: scale(1.15); }
+        .tag-cloud { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+        .platform-tag {
+            padding: 9px 20px; border-radius: 24px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.82rem; font-weight: 500; color: #ccc;
+            transition: all 0.2s; cursor: default;
+        }
+        .platform-tag:hover { background: rgba(229,9,20,0.1); border-color: rgba(229,9,20,0.3); color: #fff; }
+        .toc-box {
+            background: var(--surface); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px; padding: 24px 28px; margin-bottom: 44px;
+        }
+        .toc-box h4 { font-size: 0.8rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+        .toc-box ol { padding-left: 18px; }
+        .toc-box ol li { font-size: 0.85rem; color: #aaa; line-height: 1.9; }
+        .toc-box ol li a { color: var(--accent2); text-decoration: none; }
+        .toc-box ol li a:hover { text-decoration: underline; }
+        @media(max-width: 768px) {
+            .form-row { grid-template-columns: 1fr; }
+        }
+
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">StreamVerse</div>
+    <div class="nav-links">
+        <a href="home.html">Home</a>
+        <a href="movies.html">Movies</a>
+        <a href="tv.html">TV Shows</a>
+        <a href="sports.html">Sports</a>
+        <a href="kids.html">Kids</a>
+    </div>
+    <div class="nav-right">
+        <div class="search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2.5">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input type="text" placeholder="Search movies, shows...">
+        </div>
+        <button class="nav-btn">Subscribe</button>
+        <div class="avatar">U</div>
+    </div>
+</nav>
+
+
+<!-- HERO BANNER -->
+<div class="about-hero">
+    <div class="about-hero-bg"></div>
+    <div class="about-hero-content">
+        <div class="about-hero-tag"><span class="dot"></span>We Value Your Opinion</div>
+        <h1 class="about-hero-title">SHARE YOUR<br><em>FEEDBACK</em></h1>
+        <p class="about-hero-sub">Help us improve StreamVerse — rate the project, share your thoughts, and let the team know what you loved.</p>
+    </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+    <div class="stat-item"><div class="stat-val">4</div><div class="stat-label">Team Members</div></div>
+    <div class="stat-item"><div class="stat-val">10+</div><div class="stat-label">Pages Built</div></div>
+    <div class="stat-item"><div class="stat-val">100%</div><div class="stat-label">Student Made</div></div>
+    <div class="stat-item"><div class="stat-val">2025</div><div class="stat-label">Project Year</div></div>
+</div>
+
+<div class="about-main">
+
+    <!-- RATE THE PROJECT -->
+    <div class="features-section">
+        <div class="section-heading">
+            <span class="label">⭐ Rate Us</span>
+            <h2>HOW WOULD YOU <em>RATE</em> THIS PROJECT?</h2>
+            <p>Your rating helps Payal, Diksha, Latika &amp; Smily understand how well they did.</p>
+        </div>
+        <div style="display:flex; justify-content:center; margin-bottom:60px">
+            <div style="text-align:center">
+                <div class="star-row" style="justify-content:center">
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                    <span class="star">★</span>
+                </div>
+                <p style="color:var(--muted); font-size:0.82rem; margin-top:10px">Click a star to rate</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FEEDBACK FORM -->
+    <div class="originals-block" style="margin-bottom:60px; grid-template-columns:1fr; padding:48px 52px">
+        <div class="originals-content" style="width:100%">
+            <div class="originals-tag">💬 FEEDBACK FORM</div>
+            <h2>TELL US WHAT YOU <em>THINK</em></h2>
+            <p style="margin-bottom:36px">Share your experience — what worked, what didn't, and any suggestions for the team.</p>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Your Name</label>
+                    <input type="text" placeholder="Optional">
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="Optional">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Feedback For</label>
+                <select>
+                    <option>Overall Project — StreamVerse</option>
+                    <option>Payal – UI Design & Hero Sections</option>
+                    <option>Diksha – Layout, Cards & Navigation</option>
+                    <option>Latika – Content & Sports Page</option>
+                    <option>Smily – TV Shows & Inner Pages</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Category</label>
+                <select>
+                    <option>Overall Experience</option>
+                    <option>Design & Visuals</option>
+                    <option>Code Quality</option>
+                    <option>Content & Information</option>
+                    <option>Performance & Animations</option>
+                    <option>New Feature Suggestion</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Your Message</label>
+                <textarea placeholder="What did you love about StreamVerse? What can the team improve? Any suggestions are welcome!"></textarea>
+            </div>
+
+            <button class="submit-btn" onclick="this.textContent='✓ Submitted! Thank you 🎉'; this.style.background='linear-gradient(135deg,#16a34a,#15803d)'">
+                Submit Feedback →
+            </button>
+        </div>
+    </div>
+
+    <!-- QUICK TAGS -->
+    <div class="platform-section">
+        <div class="section-heading">
+            <span class="label">🏷️ Quick Reactions</span>
+            <h2>WHAT BEST <em>DESCRIBES</em> STREAMVERSE?</h2>
+            <p>Click the tags that resonate with you most.</p>
+        </div>
+        <div class="tag-cloud">
+            <span class="platform-tag accent">🎨 Great Design</span>
+            <span class="platform-tag gold">💻 Clean Code</span>
+            <span class="platform-tag teal">🏏 Loved Sports Section</span>
+            <span class="platform-tag blue">📺 Amazing TV Page</span>
+            <span class="platform-tag">🎬 Great Movies Section</span>
+            <span class="platform-tag">✨ Smooth Animations</span>
+            <span class="platform-tag accent">🌙 Beautiful Dark Theme</span>
+            <span class="platform-tag gold">📱 Responsive Layout</span>
+            <span class="platform-tag teal">🚀 Impressive for Students</span>
+            <span class="platform-tag blue">⚡ Fast & Smooth</span>
+            <span class="platform-tag">🏆 Looks Like a Real OTT</span>
+            <span class="platform-tag">❤️ Loved It!</span>
+        </div>
+    </div>
+
+</div>
+
+
+<footer>
+    <div class="footer-top">
+        <div class="footer-brand">
+            <div class="footer-logo">StreamVerse</div>
+            <div class="footer-tagline">India's most loved streaming platform. Watch anywhere, anytime.</div>
+            <div class="footer-apps">
+                <div class="app-btn">
+                    <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                    App Store
+                </div>
+                <div class="app-btn">
+                    <svg viewBox="0 0 24 24"><path d="m3 20.5v-17c0-.83 1-.95 1.4-.4l14.5 8.6c.38.24.38.76 0 1L4.4 21.1c-.4.5-1.4.33-1.4-.6z"/></svg>
+                    Play Store
+                </div>
+            </div>
+        </div>
+        <div class="footer-links-row">
+            <a href="about.html">About Us</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="help.html">Help &amp; Support</a>
+            <a href="privacy.html">Privacy &amp; Terms</a>
+            <a href="feedback.html">Feedback</a>
+            <a href="careers.html">Careers</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="footer-copy">© 2025 StreamVerse. Built with ❤️ by Payal, Diksha, Latika &amp; Smily.</div>
+        <div class="footer-badges">
+            <span class="footer-badge">4K UHD</span>
+            <span class="footer-badge">DOLBY ATMOS</span>
+            <span class="footer-badge">HDR 10+</span>
+            <span class="footer-badge">U/A CERTIFIED</span>
+        </div>
+    </div>
+</footer>
+
+<script>
+// Star rating
+document.querySelectorAll('.star').forEach((star, i, stars) => {
+    star.addEventListener('mouseover', () => stars.forEach((s,j) => s.style.color = j<=i ? 'var(--gold)' : '#333'));
+    star.addEventListener('mouseout', () => stars.forEach((s) => s.style.color = s.classList.contains('active') ? 'var(--gold)' : '#333'));
+    star.addEventListener('click', () => {
+        stars.forEach((s,j) => { s.classList.toggle('active', j<=i); s.style.color = j<=i ? 'var(--gold)' : '#333'; });
+    });
+});
+
+// Policy tabs
+function switchTab(el, tab) {
+    document.querySelectorAll('.policy-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+}
+</script>
+<script src="script.js"></script>
+</body>
+</html>

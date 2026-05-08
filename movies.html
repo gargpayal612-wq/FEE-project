@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamVerse – Movies</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg2: #111118;
+            --surface: #1a1a24;
+            --accent: #e50914;
+            --accent2: #f5a623;
+            --gold: #FFD700;
+            --teal: #00c9a7;
+            --blue: #4f8ef7;
+            --text: #f0f0f0;
+            --muted: #888;
+            --card-w: 180px;
+            --card-h: 260px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar { width: 6px; height: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            padding: 16px 48px;
+            background: linear-gradient(to bottom, rgba(10,10,15,0.98) 70%, transparent);
+            backdrop-filter: blur(8px);
+            transition: background 0.3s;
+        }
+
+        .logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            flex-shrink: 0;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .nav-links { display: flex; gap: 4px; flex: 1; }
+        .nav-links a {
+            text-decoration: none;
+            color: #bbb;
+            font-size: 0.88rem;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+            padding: 6px 14px;
+            border-radius: 6px;
+            transition: color 0.2s, background 0.2s;
+        }
+        .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.07); }
+        .nav-links a.active {
+            color: #fff;
+            background: rgba(229,9,20,0.1);
+            border-bottom: 2px solid var(--accent);
+            border-radius: 6px 6px 0 0;
+        }
+
+        .nav-right { display: flex; align-items: center; gap: 16px; margin-left: auto; }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 7px 16px;
+            transition: border-color 0.2s, width 0.3s;
+        }
+        .search-box:focus-within { border-color: rgba(229,9,20,0.5); }
+        .search-box input {
+            background: none; border: none; outline: none;
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            width: 160px;
+        }
+        .search-box input::placeholder { color: var(--muted); }
+
+        .nav-btn {
+            background: linear-gradient(135deg, var(--accent), #c20810);
+            border: none; color: #fff;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: 0.3px;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .nav-btn:hover { opacity: 0.88; transform: scale(1.03); }
+
+        .avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            display: grid; place-items: center;
+            font-weight: 700; font-size: 0.85rem;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+        .avatar:hover { border-color: var(--accent2); }
+
+        /* ── HERO ── */
+        .hero {
+            height: 92vh;
+            min-height: 580px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 120px 60px 40px;
+        }
+
+        .hero-bg-img {
+            position: absolute; inset: 0;
+            background-image: url('https://images.ottplay.com/images/pushpa-2-1712495363.jpg');
+            background-size: cover;
+            background-position: center 20%;
+            animation: heroZoom 18s ease-in-out infinite alternate;
+        }
+
+        @keyframes heroZoom {
+            from { transform: scale(1.02); }
+            to   { transform: scale(1.07); }
+        }
+
+        .hero-bg {
+            position: absolute; inset: 0;
+            background:
+                linear-gradient(to right, rgba(10,10,15,0.97) 32%, rgba(10,10,15,0.55) 60%, rgba(10,10,15,0.15) 100%),
+                linear-gradient(to top, rgba(10,10,15,1) 0%, rgba(10,10,15,0.4) 35%, transparent 65%);
+        }
+
+        .hero-grain {
+            position: absolute; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative; z-index: 2;
+            max-width: 560px;
+            animation: heroFadeUp 0.8s ease both;
+        }
+
+        @keyframes heroFadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center; gap: 8px;
+            background: rgba(229,9,20,0.12);
+            border: 1px solid rgba(229,9,20,0.35);
+            border-radius: 4px;
+            padding: 5px 14px;
+            font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 2px; color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .hero-badge .pulse-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: var(--accent);
+            animation: pulse 1.4s infinite;
+        }
+
+        @keyframes pulse {
+            0%,100% { opacity: 1; transform: scale(1); }
+            50%      { opacity: 0.35; transform: scale(0.8); }
+        }
+
+        .hero-ind-tag {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(0,201,167,0.1);
+            border: 1px solid rgba(0,201,167,0.25);
+            border-radius: 20px;
+            padding: 4px 14px 4px 8px;
+            margin-bottom: 14px;
+            font-size: 0.72rem; font-weight: 600;
+            color: var(--teal); letter-spacing: 0.5px;
+        }
+
+        .hero-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(3rem, 5.5vw, 5.5rem);
+            line-height: 0.92;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 40px rgba(0,0,0,0.5);
+        }
+        .hero-title em {
+            font-style: normal;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-meta {
+            display: flex; align-items: center;
+            gap: 12px; flex-wrap: wrap;
+            margin-bottom: 14px;
+            font-size: 0.82rem; color: #aaa;
+        }
+        .hero-meta .year { color: var(--accent2); font-weight: 600; }
+        .hero-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: #555; }
+        .rating-badge {
+            background: rgba(255,215,0,0.12);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 4px; padding: 2px 8px;
+            color: var(--gold); font-weight: 600; font-size: 0.78rem;
+        }
+        .imdb-badge {
+            background: #f5c518;
+            border-radius: 3px; padding: 2px 6px;
+            color: #000; font-weight: 800; font-size: 0.7rem;
+            letter-spacing: 0.3px;
+        }
+
+        .genre-tags { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+        .genre-tag {
+            padding: 4px 14px; border-radius: 20px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.12);
+            font-size: 0.75rem; color: #ccc;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .genre-tag:hover { border-color: var(--accent); color: #fff; cursor: pointer; }
+
+        .hero-desc {
+            font-size: 0.88rem; line-height: 1.75;
+            color: rgba(200,200,210,0.85);
+            margin-bottom: 30px; max-width: 440px;
+        }
+
+        .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 28px; }
+
+        .btn-play {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--accent); color: #fff;
+            border: none; border-radius: 8px;
+            padding: 14px 30px;
+            font-size: 0.95rem; font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            letter-spacing: 0.4px;
+        }
+        .btn-play:hover { transform: scale(1.04); box-shadow: 0 8px 32px rgba(229,9,20,0.55); }
+        .btn-play svg { width: 18px; height: 18px; fill: #fff; }
+
+        .btn-info {
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.18);
+            color: #fff; border-radius: 8px;
+            padding: 14px 24px;
+            font-size: 0.95rem; font-weight: 500;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: background 0.2s;
+            letter-spacing: 0.4px;
+            backdrop-filter: blur(4px);
+        }
+        .btn-info:hover { background: rgba(255,255,255,0.18); }
+        .btn-info svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+        .btn-watchlist {
+            display: flex; align-items: center; gap: 8px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.18);
+            color: #ccc; border-radius: 8px;
+            padding: 14px 20px;
+            font-size: 0.9rem; font-weight: 500;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .btn-watchlist:hover { border-color: var(--accent2); color: var(--accent2); }
+        .btn-watchlist svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+        /* Hero side panel */
+        .hero-side {
+            position: absolute;
+            right: 60px; bottom: 90px;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+            animation: heroFadeUp 1s 0.3s ease both;
+        }
+
+        .info-chip-row { display: flex; gap: 10px; }
+        .info-chip {
+            background: rgba(10,10,15,0.88);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-size: 0.75rem;
+            backdrop-filter: blur(12px);
+            text-align: center;
+            min-width: 80px;
+        }
+        .info-chip .chip-val { font-weight: 700; color: #fff; margin-bottom: 3px; font-size: 0.82rem; }
+        .info-chip .chip-label { color: var(--muted); font-size: 0.65rem; letter-spacing: 0.5px; }
+        .info-chip.highlight { border-color: var(--accent); background: rgba(229,9,20,0.15); }
+        .info-chip.highlight .chip-label { color: var(--accent); }
+
+        .hero-dots { display: flex; gap: 8px; }
+        .hero-dots span {
+            width: 28px; height: 3px;
+            border-radius: 2px;
+            background: rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: background 0.3s, width 0.3s;
+        }
+        .hero-dots span.active { background: var(--accent); width: 44px; }
+
+        .hero-mute {
+            position: absolute;
+            right: 60px; top: 50%;
+            transform: translateY(-50%);
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            background: rgba(10,10,15,0.7);
+            border: 1px solid rgba(255,255,255,0.15);
+            display: grid; place-items: center;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: border-color 0.2s;
+            z-index: 3;
+        }
+        .hero-mute:hover { border-color: var(--accent); }
+        .hero-mute svg { width: 18px; height: 18px; stroke: #fff; fill: none; stroke-width: 2; }
+
+        /* ── MAIN ── */
+        main { padding: 0 0 80px; }
+
+        /* ── CATEGORY PILLS ── */
+        .category-bar {
+            display: flex; gap: 10px;
+            padding: 30px 48px 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .category-bar::-webkit-scrollbar { display: none; }
+
+        .cat-pill {
+            flex-shrink: 0;
+            padding: 10px 20px;
+            border-radius: 24px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #bbb;
+            font-size: 0.85rem; font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .cat-pill:hover { background: rgba(255,255,255,0.12); color: #fff; border-color: rgba(255,255,255,0.2); }
+        .cat-pill.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+
+        /* ── INDUSTRY TABS ── */
+        .ind-tabs {
+            display: flex; gap: 0;
+            padding: 20px 48px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .ind-tab {
+            padding: 10px 22px;
+            font-size: 0.82rem; font-weight: 600;
+            cursor: pointer; color: var(--muted);
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+            margin-bottom: -1px;
+        }
+        .ind-tab:hover { color: #fff; }
+        .ind-tab.on-bw  { color: var(--accent2); border-bottom-color: var(--accent2); }
+        .ind-tab.on-tw  { color: var(--teal);    border-bottom-color: var(--teal); }
+        .ind-tab.on-hw  { color: var(--blue);    border-bottom-color: var(--blue); }
+        .ind-tab.on-all { color: var(--accent);  border-bottom-color: var(--accent); }
+
+        /* ── SECTION ── */
+        .section { margin-top: 48px; }
+
+        .section-header {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            padding: 0 48px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            display: flex; align-items: center;
+            gap: 12px;
+            font-size: 1.28rem; font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+        .section-title .icon { font-size: 1.4rem; }
+        .section-label {
+            font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            padding: 3px 10px; border-radius: 3px; margin-left: 6px;
+        }
+        .lbl-bw { background: rgba(245,166,35,0.12); color: var(--accent2); border: 1px solid rgba(245,166,35,0.25); }
+        .lbl-tw { background: rgba(0,201,167,0.1);   color: var(--teal);    border: 1px solid rgba(0,201,167,0.2); }
+        .lbl-hw { background: rgba(79,142,247,0.1);  color: var(--blue);    border: 1px solid rgba(79,142,247,0.2); }
+        .lbl-mix { background: rgba(255,255,255,0.05); color: #aaa;         border: 1px solid rgba(255,255,255,0.1); }
+
+        .see-all {
+            font-size: 0.82rem; color: var(--accent);
+            cursor: pointer; font-weight: 500;
+            letter-spacing: 0.3px; text-decoration: none;
+            display: flex; align-items: center; gap: 4px;
+            transition: gap 0.2s;
+        }
+        .see-all:hover { gap: 8px; }
+
+        /* ── ROW ── */
+        .row-wrap { position: relative; }
+
+        .row {
+            display: flex; gap: 16px;
+            padding: 8px 48px 16px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
+        }
+        .row::-webkit-scrollbar { display: none; }
+
+        .scroll-btn {
+            position: absolute; top: 50%;
+            transform: translateY(-50%);
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            background: rgba(15,15,22,0.95);
+            border: 1px solid rgba(255,255,255,0.14);
+            color: #fff; font-size: 1.2rem;
+            cursor: pointer;
+            display: grid; place-items: center;
+            z-index: 10;
+            transition: background 0.2s, opacity 0.2s, transform 0.2s;
+            opacity: 0;
+            backdrop-filter: blur(8px);
+        }
+        .row-wrap:hover .scroll-btn { opacity: 1; }
+        .scroll-btn:hover { background: rgba(229,9,20,0.75); transform: translateY(-50%) scale(1.08); }
+        .scroll-btn.left { left: 6px; }
+        .scroll-btn.right { right: 6px; }
+
+        /* ── PORTRAIT CARD ── */
+        .card {
+            flex-shrink: 0;
+            width: var(--card-w);
+            cursor: pointer;
+            transition: transform 0.28s;
+            position: relative;
+        }
+        .card:hover { transform: scale(1.07) translateY(-4px); z-index: 5; }
+
+        .card-thumb {
+            width: 100%; height: var(--card-h);
+            border-radius: 10px; overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+        .card-thumb img {
+            width: 100%; height: 100%;
+            object-fit: cover; display: block;
+            transition: transform 0.4s;
+        }
+        .card:hover .card-thumb img { transform: scale(1.07); }
+
+        .card-thumb::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 55%);
+            border-radius: 10px;
+            opacity: 0; transition: opacity 0.28s;
+        }
+        .card:hover .card-thumb::after { opacity: 1; }
+
+        .card-play {
+            position: absolute; inset: 0;
+            display: grid; place-items: center;
+            opacity: 0; transition: opacity 0.28s; z-index: 2;
+        }
+        .card:hover .card-play { opacity: 1; }
+
+        .card-play-btn {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: rgba(229,9,20,0.92);
+            display: grid; place-items: center;
+            box-shadow: 0 4px 24px rgba(229,9,20,0.6);
+            transition: transform 0.2s;
+        }
+        .card:hover .card-play-btn { transform: scale(1.1); }
+        .card-play-btn svg { width: 18px; height: 18px; fill: #fff; margin-left: 2px; }
+
+        .card-badge {
+            position: absolute; top: 8px; left: 8px; z-index: 3;
+            font-size: 0.6rem; font-weight: 700;
+            letter-spacing: 1px; text-transform: uppercase;
+            padding: 3px 8px; border-radius: 3px;
+        }
+        .badge-new  { background: var(--accent); color: #fff; }
+        .badge-hot  { background: var(--accent2); color: #000; }
+        .badge-free { background: #16a34a; color: #fff; }
+        .badge-4k   { background: #7c3aed; color: #fff; }
+        .badge-top  { background: var(--gold); color: #000; }
+        .badge-hit  { background: linear-gradient(135deg,#e50914,#f5a623); color: #fff; }
+
+        /* Industry flag top-right */
+        .card-flag {
+            position: absolute; top: 8px; right: 8px; z-index: 3;
+            font-size: 0.58rem; font-weight: 700;
+            letter-spacing: 0.8px; text-transform: uppercase;
+            padding: 3px 7px; border-radius: 3px;
+            backdrop-filter: blur(4px);
+        }
+        .flag-bw { background: rgba(245,166,35,0.25); color: var(--accent2); border: 1px solid rgba(245,166,35,0.3); }
+        .flag-tw { background: rgba(0,201,167,0.2);   color: var(--teal);    border: 1px solid rgba(0,201,167,0.25); }
+        .flag-hw { background: rgba(79,142,247,0.2);  color: var(--blue);    border: 1px solid rgba(79,142,247,0.25); }
+
+        .card-info { padding: 10px 4px 0; }
+        .card-title {
+            font-size: 0.82rem; font-weight: 600;
+            white-space: nowrap; overflow: hidden;
+            text-overflow: ellipsis; margin-bottom: 4px;
+        }
+        .card-sub {
+            font-size: 0.72rem; color: var(--muted);
+            display: flex; align-items: center; gap: 5px;
+        }
+        .card-rating { color: var(--gold); font-size: 0.7rem; }
+
+        /* ── WIDE CARD ── */
+        .wide-card {
+            flex-shrink: 0;
+            width: 300px; height: 172px;
+            border-radius: 12px; overflow: hidden;
+            cursor: pointer; position: relative;
+            transition: transform 0.28s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+        .wide-card:hover { transform: scale(1.04) translateY(-4px); z-index: 5; }
+        .wide-card img {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.4s;
+        }
+        .wide-card:hover img { transform: scale(1.07); }
+        .wide-card-inner {
+            position: absolute; inset: 0;
+            display: flex; flex-direction: column;
+            justify-content: flex-end;
+            padding: 16px;
+            background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, transparent 60%);
+            z-index: 2;
+        }
+        .wide-card-title { font-size: 0.96rem; font-weight: 700; margin-bottom: 4px; }
+        .wide-card-sub { font-size: 0.72rem; color: #aaa; }
+        .wide-ind {
+            position: absolute; top: 10px; right: 10px; z-index: 3;
+            font-size: 0.6rem; font-weight: 700;
+            padding: 3px 8px; border-radius: 3px;
+            text-transform: uppercase; letter-spacing: 0.8px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* ── CONTINUE WATCHING ── */
+        .continue-card {
+            flex-shrink: 0; width: 260px;
+            cursor: pointer; transition: transform 0.28s;
+        }
+        .continue-card:hover { transform: scale(1.04) translateY(-4px); z-index: 5; }
+
+        .continue-thumb {
+            width: 100%; height: 148px;
+            border-radius: 10px; overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+        .continue-thumb img {
+            width: 100%; height: 100%; object-fit: cover;
+            display: block; transition: transform 0.4s;
+        }
+        .continue-card:hover .continue-thumb img { transform: scale(1.06); }
+
+        .continue-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
+            opacity: 0; transition: opacity 0.28s;
+            display: grid; place-items: center;
+        }
+        .continue-card:hover .continue-overlay { opacity: 1; }
+
+        .continue-progress-bar {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            height: 4px; background: rgba(255,255,255,0.15);
+        }
+        .continue-progress { height: 100%; background: var(--accent); border-radius: 0 2px 2px 0; }
+
+        .continue-info { padding: 10px 4px 0; }
+        .continue-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+        .continue-ep { font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+        .continue-ep .pct { color: var(--accent2); font-weight: 600; }
+
+        /* ── TOP 10 ── */
+        .top10-card {
+            flex-shrink: 0; width: 165px;
+            cursor: pointer; transition: transform 0.28s;
+            position: relative;
+        }
+        .top10-card:hover { transform: scale(1.06) translateY(-4px); z-index: 5; }
+
+        .top10-num {
+            position: absolute; left: -12px; bottom: 36px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 5.8rem; line-height: 1;
+            -webkit-text-stroke: 2px rgba(255,255,255,0.13);
+            color: transparent; z-index: 3;
+            pointer-events: none;
+        }
+        .top10-thumb {
+            width: 100%; height: 225px;
+            border-radius: 10px; overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+        .top10-thumb img {
+            width: 100%; height: 100%; object-fit: cover;
+            display: block; transition: transform 0.4s;
+        }
+        .top10-card:hover .top10-thumb img { transform: scale(1.06); }
+        .top10-title {
+            font-size: 0.8rem; font-weight: 600;
+            margin-top: 9px; padding: 0 4px;
+            white-space: nowrap; overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ── PROMO BANNER ── */
+        .promo-banner {
+            margin: 48px 48px 0;
+            border-radius: 18px; overflow: hidden;
+            height: 140px; position: relative;
+            background: linear-gradient(135deg, #1a0533 0%, #0d1b3e 50%, #0f2a1e 100%);
+            display: flex; align-items: center;
+            padding: 0 44px; cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .promo-banner:hover { transform: scale(1.01); }
+        .promo-banner::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse at 15% 50%, rgba(229,9,20,0.28) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 50%, rgba(245,166,35,0.22) 0%, transparent 50%);
+        }
+        .promo-content { position: relative; z-index: 2; }
+        .promo-tag { font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent2); margin-bottom: 7px; }
+        .promo-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 2px; margin-bottom: 6px; }
+        .promo-features { display: flex; gap: 16px; flex-wrap: wrap; }
+        .promo-feature { font-size: 0.78rem; color: #aaa; display: flex; align-items: center; gap: 5px; }
+        .promo-feature::before { content: '✓'; color: var(--accent2); font-weight: 700; }
+        .promo-btn {
+            margin-left: auto; position: relative; z-index: 2;
+            background: linear-gradient(135deg, var(--accent), #c20810);
+            border: none; color: #fff;
+            padding: 14px 32px; border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.92rem; font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            letter-spacing: 0.3px; white-space: nowrap;
+        }
+        .promo-btn:hover { transform: scale(1.04); box-shadow: 0 8px 28px rgba(229,9,20,0.5); }
+
+        /* ── INDIA PROMO BANNER ── */
+        .promo-india {
+            margin: 48px 48px 0;
+            border-radius: 18px; overflow: hidden;
+            min-height: 130px; position: relative;
+            display: flex; align-items: center;
+            padding: 0 44px; cursor: pointer;
+            background: linear-gradient(135deg, #0f1a0a 0%, #1a1000 40%, #100a1a 100%);
+        }
+        .promo-india::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse at 15% 50%, rgba(245,166,35,0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at 85% 50%, rgba(0,201,167,0.15) 0%, transparent 50%);
+        }
+        .india-content { position: relative; z-index: 2; }
+        .india-tag { font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--teal); margin-bottom: 6px; }
+        .india-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 2px; margin-bottom: 6px; }
+        .india-title em { font-style: normal; background: linear-gradient(90deg, var(--accent2), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .india-sub { font-size: 0.8rem; color: #aaa; }
+        .india-flags { margin-left: auto; position: relative; z-index: 2; display: flex; gap: 10px; align-items: center; }
+        .ind-flag-btn {
+            padding: 10px 22px; border-radius: 6px;
+            font-family: 'Outfit', sans-serif; font-size: 0.82rem; font-weight: 700;
+            cursor: pointer; border: 1px solid; transition: all 0.2s; letter-spacing: 0.3px;
+        }
+        .ind-flag-btn.bw { background: rgba(245,166,35,0.15); border-color: rgba(245,166,35,0.4); color: var(--accent2); }
+        .ind-flag-btn.bw:hover { background: rgba(245,166,35,0.28); }
+        .ind-flag-btn.tw { background: rgba(0,201,167,0.12); border-color: rgba(0,201,167,0.35); color: var(--teal); }
+        .ind-flag-btn.tw:hover { background: rgba(0,201,167,0.22); }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid rgba(255,255,255,0.07);
+            padding: 44px 48px 32px;
+            margin-top: 32px;
+        }
+        
+        
+        .footer-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem; letter-spacing: 3px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+        .footer-tagline { font-size: 0.82rem; color: var(--muted); line-height: 1.6; max-width: 240px; }
+        .footer-apps { display: flex; gap: 10px; margin-top: 16px; }
+        .app-btn {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; padding: 8px 14px;
+            cursor: pointer; transition: border-color 0.2s;
+            font-size: 0.72rem; color: #ccc;
+        }
+        .app-btn:hover { border-color: rgba(255,255,255,0.25); }
+        .app-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+        
+        
+        
+        
+        
+        
+        
+
+
+        .footer-top { display: flex; justify-content: space-between; align-items: center; padding-bottom: 32px; border-bottom: 1px solid rgba(255,255,255,0.07); margin-bottom: 24px; flex-wrap: wrap; gap: 24px; }
+        .footer-brand { max-width: 280px; }
+        .footer-links-row { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+        .footer-links-row a { color: var(--muted); font-size: 0.82rem; text-decoration: none; transition: color 0.2s; }
+        .footer-links-row a:hover { color: #fff; }
+        .footer-bottom {
+            display: flex; justify-content: space-between;
+            align-items: center; flex-wrap: wrap; gap: 12px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .footer-copy { color: var(--muted); font-size: 0.75rem; }
+        .footer-badges { display: flex; gap: 10px; }
+        .footer-badge {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 4px; padding: 4px 10px;
+            font-size: 0.65rem; color: var(--muted); font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .section { animation: fadeInUp 0.5s ease both; }
+        .section:nth-child(2)  { animation-delay: 0.05s; }
+        .section:nth-child(3)  { animation-delay: 0.1s; }
+        .section:nth-child(4)  { animation-delay: 0.15s; }
+        .section:nth-child(5)  { animation-delay: 0.2s; }
+        .section:nth-child(6)  { animation-delay: 0.25s; }
+        .section:nth-child(7)  { animation-delay: 0.3s; }
+        .section:nth-child(8)  { animation-delay: 0.35s; }
+
+        /* ── RESPONSIVE ── */
+        @media(max-width:900px) {
+            nav { padding: 14px 20px; gap: 16px; }
+            .nav-links { display: none; }
+            .hero { padding: 100px 20px 40px; }
+            .hero-side { display: none; }
+            .hero-mute { display: none; }
+            .category-bar { padding-left: 20px; padding-right: 20px; }
+            .ind-tabs { padding-left: 20px; }
+            .section-header { padding: 0 20px; }
+            .row { padding: 8px 20px 16px; }
+            .promo-banner, .promo-india { margin: 40px 20px 0; padding: 0 20px; }
+            .india-flags { display: none; }
+            footer { padding: 24px 20px; }
+            :root { --card-w: 148px; --card-h: 215px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+    <div class="logo">StreamVerse</div>
+    <div class="nav-links">
+        <a href="home.html">Home</a>
+        <a href="#" class="active">Movies</a>
+        <a href="tv.html">TV Shows</a>
+        <a href="sports.html">Sports</a>
+        <a href="kids.html">Kids</a>
+    </div>
+    <div class="nav-right">
+        <div class="search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2.5">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input type="text" placeholder="Search Bollywood, Tollywood, Hollywood...">
+        </div>
+        <button class="nav-btn">Subscribe</button>
+        <div class="avatar">U</div>
+    </div>
+</nav>
+
+<!-- ══ HERO — Pushpa 2 ══ -->
+<section class="hero">
+    <div class="hero-bg-img"></div>
+    <div class="hero-bg"></div>
+    <div class="hero-grain"></div>
+
+    <div class="hero-mute">
+        <svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+    </div>
+
+    <div class="hero-content">
+        <div class="hero-ind-tag">🎬 Tollywood</div>
+        <div class="hero-badge"><span class="pulse-dot"></span>Now Streaming</div>
+        <h1 class="hero-title">PUSHPA<br><em>THE RULE</em></h1>
+        <div class="hero-meta">
+            <span class="year">2024</span><span class="dot"></span>
+            <span>3h 21m</span><span class="dot"></span>
+            <span>A · Telugu</span><span class="dot"></span>
+            <span class="rating-badge">⭐ 7.9</span>
+            <span class="imdb-badge">IMDb</span>
+        </div>
+        <div class="genre-tags">
+            <span class="genre-tag">Action</span>
+            <span class="genre-tag">Drama</span>
+            <span class="genre-tag">Crime</span>
+        </div>
+        <p class="hero-desc">Pushpa Raj takes on the establishment once more — expanding his smuggling empire with fire and fury while SP Bhanwar Singh Shekawat closes in for the final showdown. India's biggest blockbuster ever.</p>
+        <div class="hero-btns">
+            <button class="btn-play">
+                <svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+                Play Now
+            </button>
+            <button class="btn-info">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                More Info
+            </button>
+            <button class="btn-watchlist">
+                <svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                Watchlist
+            </button>
+        </div>
+    </div>
+
+    <div class="hero-side">
+        <div class="info-chip-row">
+            <div class="info-chip highlight">
+                <div class="chip-val">#1</div>
+                <div class="chip-label">IN INDIA</div>
+            </div>
+            <div class="info-chip">
+                <div class="chip-val">3h 21m</div>
+                <div class="chip-label">RUNTIME</div>
+            </div>
+            <div class="info-chip">
+                <div class="chip-val">4K</div>
+                <div class="chip-label">ULTRA HD</div>
+            </div>
+        </div>
+        <div class="hero-dots">
+            <span class="active"></span><span></span><span></span><span></span>
+        </div>
+    </div>
+</section>
+
+<!-- ══ MAIN ══ -->
+<main>
+
+    <!-- CATEGORY PILLS -->
+    <div class="category-bar">
+        <div class="cat-pill active">All</div>
+        <div class="cat-pill">🔥 Trending</div>
+        <div class="cat-pill">🇮🇳 Bollywood</div>
+        <div class="cat-pill">🎬 Tollywood</div>
+        <div class="cat-pill">🎥 Hollywood</div>
+        <div class="cat-pill">👻 Horror</div>
+        <div class="cat-pill">😂 Comedy</div>
+        <div class="cat-pill">🎭 Drama</div>
+        <div class="cat-pill">💥 Action</div>
+        <div class="cat-pill">💕 Romance</div>
+        <div class="cat-pill">🚀 Sci-Fi</div>
+        <div class="cat-pill">🏆 Award Winners</div>
+        <div class="cat-pill">🎞 Classics</div>
+    </div>
+
+    <!-- INDUSTRY TABS -->
+    <div class="ind-tabs">
+        <div class="ind-tab on-all">🌏 All Industries</div>
+        <div class="ind-tab">🇮🇳 Bollywood</div>
+        <div class="ind-tab">🎬 Tollywood</div>
+        <div class="ind-tab">🎥 Hollywood</div>
+    </div>
+
+    <!-- CONTINUE WATCHING -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">▶️</span> Continue Watching</div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+
+                <div class="continue-card">
+                    <div class="continue-thumb">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEbKpDlwjAeCPlN8-Ox82Dwc4EzDBZI_S2eg&s" alt="Stranger Things" onerror="this.onerror=null;this.src='https://picsum.photos/seed/cw1/500/280'">
+                        <div class="continue-overlay"><div class="card-play-btn" style="width:44px;height:44px"><svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#fff;margin-left:2px"><path d="M5 3l14 9-14 9V3z"/></svg></div></div>
+                        <div class="continue-progress-bar"><div class="continue-progress" style="width:62%"></div></div>
+                        
+                    </div>
+                    <div class="continue-info">
+                        <div class="continue-title">Stranger Things S4</div>
+                        <div class="continue-ep">S4 E6 <span class="pct">· 62% watched</span></div>
+                    </div>
+                </div>
+
+                <div class="continue-card">
+                    <div class="continue-thumb">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNhVTautPIUN9DAy6n-DJaGF7dO2wF8x0Z0w&s" alt="John Wick 4" onerror="this.onerror=null;this.src='https://picsum.photos/seed/cw2/500/280'">
+                        <div class="continue-overlay"><div class="card-play-btn" style="width:44px;height:44px"><svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#fff;margin-left:2px"><path d="M5 3l14 9-14 9V3z"/></svg></div></div>
+                        <div class="continue-progress-bar"><div class="continue-progress" style="width:28%"></div></div>
+                    </div>
+                    <div class="continue-info">
+                        <div class="continue-title">John Wick: Chapter 4</div>
+                        <div class="continue-ep">Movie <span class="pct">· 28% watched</span></div>
+                    </div>
+                </div>
+
+                <div class="continue-card">
+                    <div class="continue-thumb">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDqTHT9o21CSmJcqShr_Eo0O9cnNfG6PrRgg&s" alt="Dune" onerror="this.onerror=null;this.src='https://picsum.photos/seed/cw3/500/280'">
+                        <div class="continue-overlay"><div class="card-play-btn" style="width:44px;height:44px"><svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#fff;margin-left:2px"><path d="M5 3l14 9-14 9V3z"/></svg></div></div>
+                        <div class="continue-progress-bar"><div class="continue-progress" style="width:85%"></div></div>
+                    </div>
+                    <div class="continue-info">
+                        <div class="continue-title">Dune: Part Two</div>
+                        <div class="continue-ep">Movie <span class="pct">· 85% watched</span></div>
+                    </div>
+                </div>
+
+                <div class="continue-card">
+                    <div class="continue-thumb">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZgarY79EPQu_BBe86NdqmVxRhgH0N6AgLEA&s" alt="Interstellar" onerror="this.onerror=null;this.src='https://picsum.photos/seed/cw4/500/280'">
+                        <div class="continue-overlay"><div class="card-play-btn" style="width:44px;height:44px"><svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#fff;margin-left:2px"><path d="M5 3l14 9-14 9V3z"/></svg></div></div>
+                        <div class="continue-progress-bar"><div class="continue-progress" style="width:15%"></div></div>
+                    </div>
+                    <div class="continue-info">
+                        <div class="continue-title">Interstellar</div>
+                        <div class="continue-ep">Movie <span class="pct">· 15% watched</span></div>
+                    </div>
+                </div>
+
+                <div class="continue-card">
+                    <div class="continue-thumb">
+                        <img src="https://m.media-amazon.com/images/M/MV5BZjllNTdiM2QtYjQ0Ni00ZGM1LWFlYmUtNWY0YjMzYWIxOTYxXkEyXkFqcGc@._V1_.jpg" alt="Pushpa 2" onerror="this.onerror=null;this.src='https://picsum.photos/seed/cw5/500/280'">
+                        <div class="continue-overlay"><div class="card-play-btn" style="width:44px;height:44px"><svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#fff;margin-left:2px"><path d="M5 3l14 9-14 9V3z"/></svg></div></div>
+                        <div class="continue-progress-bar"><div class="continue-progress" style="width:47%"></div></div>
+                    </div>
+                    <div class="continue-info">
+                        <div class="continue-title">Pushpa 2: The Rule</div>
+                        <div class="continue-ep">Movie <span class="pct">· 47% watched</span></div>
+                    </div>
+                </div>
+
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- TRENDING ACROSS ALL INDUSTRIES -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">🔥</span> Trending Across All Industries <span class="section-label lbl-mix">BW · TW · HW</span></div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+
+                <div class="wide-card">
+                    <img src="https://image.tmdb.org/t/p/w500/rLb2cwF3Pazuxaj0sRXQ037tGI1.jpg" alt="Oppenheimer" onerror="this.onerror=null;this.src='https://picsum.photos/seed/tr1/600/340'">
+                    <div class="wide-card-inner"><div><div class="wide-card-title">Oppenheimer</div><div class="wide-card-sub">Hollywood · Drama · ⭐ 8.9</div></div></div>
+                    <div class="wide-ind flag-hw">HW</div>
+                </div>
+
+                <div class="wide-card">
+                    <img src="https://miro.medium.com/v2/resize:fit:1200/1*3PWG4m-Sh3wV4hTiWUJxgQ.jpeg" alt="Pushpa 2" onerror="this.onerror=null;this.src='https://picsum.photos/seed/tr2/600/340'">
+                    <div class="wide-card-inner"><div><div class="wide-card-title">Pushpa 2: The Rule</div><div class="wide-card-sub">Tollywood · Action · ⭐ 7.9</div></div></div>
+                    <div class="wide-ind flag-tw">TW</div>
+                </div>
+
+                <div class="wide-card">
+                    <img src="https://bollywoodmascot.com/wp-content/uploads/Jawan-Teaser-Release-Date-Announced-Get-Ready-for-Shahrukh-Khans-Latest-Film-1024x576.jpg" alt="Jawan" onerror="this.onerror=null;this.src='https://picsum.photos/seed/tr3/600/340'">
+                    <div class="wide-card-inner"><div><div class="wide-card-title">Jawan</div><div class="wide-card-sub">Bollywood · Action · ⭐ 5.9</div></div></div>
+                    <div class="wide-ind flag-bw">BW</div>
+                </div>
+
+                <div class="wide-card">
+                    <img src="https://i.ytimg.com/vi/yjRHZEUamCc/maxresdefault.jpg" alt="John Wick 4" onerror="this.onerror=null;this.src='https://picsum.photos/seed/tr4/600/340'">
+                    <div class="wide-card-inner"><div><div class="wide-card-title">John Wick: Chapter 4</div><div class="wide-card-sub">Hollywood · Action · ⭐ 7.7</div></div></div>
+                    <div class="wide-ind flag-hw">HW</div>
+                </div>
+
+                <div class="wide-card">
+                    <img src="https://i.ytimg.com/vi/Izg9e8aZ2pM/maxresdefault.jpg" alt="Stree 2" onerror="this.onerror=null;this.src='https://picsum.photos/seed/tr5/600/340'">
+                    <div class="wide-card-inner"><div><div class="wide-card-title">Stree 2</div><div class="wide-card-sub">Bollywood · Horror Comedy · ⭐ 8.1</div></div></div>
+                    <div class="wide-ind flag-bw">BW</div>
+                </div>
+
+                <div class="wide-card">
+                    <img src="https://d1uzk9o9cg136f.cloudfront.net/f/16782943/rc/2022/09/13/11dfdfa5d84ad4c1b53b0573897e4acb6cff4e2d_xlarge.jpg" alt="RRR" onerror="this.onerror=null;this.src='https://picsum.photos/seed/tr6/600/340'">
+                    <div class="wide-card-inner"><div><div class="wide-card-title">RRR</div><div class="wide-card-sub">Tollywood · Action · ⭐ 7.8</div></div></div>
+                    <div class="wide-ind flag-tw">TW</div>
+                </div>
+
+                <div class="wide-card">
+                    <img src="https://cdn.shopify.com/s/files/1/2393/5817/files/MY_BARBIE_WMO_FEATURED_IMAGE_CAR_1920x1080_1R1.jpg?v=1690291095" alt="Barbie" onerror="this.onerror=null;this.src='https://picsum.photos/seed/tr7/600/340'">
+                    <div class="wide-card-inner"><div><div class="wide-card-title">Barbie</div><div class="wide-card-sub">Hollywood · Comedy · ⭐ 7.0</div></div></div>
+                    <div class="wide-ind flag-hw">HW</div>
+                </div>
+
+                <div class="wide-card">
+                    <img src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/ca36ab143998347.6284aaf906458.png" alt="KGF 2" onerror="this.onerror=null;this.src='https://picsum.photos/seed/tr8/600/340'">
+                    <div class="wide-card-inner"><div><div class="wide-card-title">KGF: Chapter 2</div><div class="wide-card-sub">Tollywood · Action · ⭐ 8.2</div></div></div>
+                    <div class="wide-ind flag-tw">TW</div>
+                </div>
+
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- TOP 10 IN INDIA -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">🏆</span> Top 10 Movies in India Today</div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+
+                <div class="top10-card">
+                    <div class="top10-num">1</div>
+                    <div class="top10-thumb"><img src="https://m.media-amazon.com/images/M/MV5BZjllNTdiM2QtYjQ0Ni00ZGM1LWFlYmUtNWY0YjMzYWIxOTYxXkEyXkFqcGc@._V1_.jpg" alt="Pushpa 2" onerror="this.onerror=null;this.src='https://picsum.photos/seed/t10a/320/440'"></div>
+                    <div class="top10-title">Pushpa 2: The Rule</div>
+                </div>
+
+                <div class="top10-card">
+                    <div class="top10-num">2</div>
+                    <div class="top10-thumb"><img src="https://image.tmdb.org/t/p/w500/rLb2cwF3Pazuxaj0sRXQ037tGI1.jpg" alt="Oppenheimer" onerror="this.onerror=null;this.src='https://picsum.photos/seed/t10b/320/440'"></div>
+                    <div class="top10-title">Oppenheimer</div>
+                </div>
+
+                <div class="top10-card">
+                    <div class="top10-num">3</div>
+                    <div class="top10-thumb"><img src="https://m.media-amazon.com/images/M/MV5BZTEyYzVjYjEtNWYzZi00NWRhLTgyZjUtNDlkZjBiNWIxYTEwXkEyXkFqcGc@._V1_.jpg" alt="Stree 2" onerror="this.onerror=null;this.src='https://picsum.photos/seed/t10c/320/440'"></div>
+                    <div class="top10-title">Stree 2</div>
+                </div>
+
+                <div class="top10-card">
+                    <div class="top10-num">4</div>
+                    <div class="top10-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBo76mu-rGK7QbZTzOPpDtU0m28hYgsdUgsA&s" alt="RRR" onerror="this.onerror=null;this.src='https://picsum.photos/seed/t10d/320/440'"></div>
+                    <div class="top10-title">RRR</div>
+                </div>
+
+                <div class="top10-card">
+                    <div class="top10-num">5</div>
+                    <div class="top10-thumb"><img src="https://m.media-amazon.com/images/S/pv-target-images/6d3d1461d50778271845ce7ec81ba2c5d76a20f7f84e5061cd099aabaedc77f9.jpg" alt="John Wick 4" onerror="this.onerror=null;this.src='https://picsum.photos/seed/t10e/320/440'"></div>
+                    <div class="top10-title">John Wick: Ch. 4</div>
+                </div>
+
+                <div class="top10-card">
+                    <div class="top10-num">6</div>
+                    <div class="top10-thumb"><img src="https://image.tmdb.org/t/p/w342/velWPhVMQeQKcxggNEU8YmIo52R.jpg" alt="Interstellar" onerror="this.onerror=null;this.src='https://picsum.photos/seed/t10f/320/440'"></div>
+                    <div class="top10-title">Interstellar</div>
+                </div>
+
+                <div class="top10-card">
+                    <div class="top10-num">7</div>
+                    <div class="top10-thumb"><img src="https://filmfare.wwmindia.com/content/2023/aug/jawan21691407612.jpg" alt="Jawan" onerror="this.onerror=null;this.src='https://picsum.photos/seed/t10g/320/440'"></div>
+                    <div class="top10-title">Jawan</div>
+                </div>
+
+                <div class="top10-card">
+                    <div class="top10-num">8</div>
+                    <div class="top10-thumb"><img src="https://cdn.shopify.com/s/files/1/1416/8662/products/inception_2010_imax_original_film_art_2000x.jpg?v=1551890318" alt="Inception" onerror="this.onerror=null;this.src='https://picsum.photos/seed/t10h/320/440'"></div>
+                    <div class="top10-title">Inception</div>
+                </div>
+
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- BOLLYWOOD BLOCKBUSTERS -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">🎦</span> Bollywood Blockbusters <span class="section-label lbl-bw">Bollywood</span></div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BNDdkNTY1MDQtY2I5MC00OTFlLTg5OWQtZWE2YzE5NWFiMDgzXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Pathaan" onerror="this.onerror=null;this.src='https://picsum.photos/seed/bw1/342/513'"><div class="card-badge badge-hit">HIT</div><div class="card-flag flag-bw">BW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Pathaan</div><div class="card-sub"><span class="card-rating">⭐ 5.6</span><span>·</span><span>2023</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://filmfare.wwmindia.com/content/2023/aug/jawan21691407612.jpg" alt="Jawan" onerror="this.onerror=null;this.src='https://picsum.photos/seed/bw2/342/513'"><div class="card-badge badge-new">NEW</div><div class="card-flag flag-bw">BW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Jawan</div><div class="card-sub"><span class="card-rating">⭐ 5.9</span><span>·</span><span>2023</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://static1.colliderimages.com/wordpress/wp-content/uploads/2022/12/animal-poster.jpeg" alt="Animal" onerror="this.onerror=null;this.src='https://picsum.photos/seed/bw3/342/513'"><div class="card-badge badge-hot">HOT</div><div class="card-flag flag-bw">BW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Animal</div><div class="card-sub"><span class="card-rating">⭐ 6.1</span><span>·</span><span>2023</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://tse1.mm.bing.net/th/id/OIP.-b9gtap1USCbh_f4Sc17xQAAAA?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Stree 2" onerror="this.onerror=null;this.src='https://picsum.photos/seed/bw4/342/513'"><div class="card-badge badge-top">2024</div><div class="card-flag flag-bw">BW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Stree 2</div><div class="card-sub"><span class="card-rating">⭐ 8.1</span><span>·</span><span>2024</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://image.tmdb.org/t/p/original/brCBYKGQaxZZcwmFF6OIxZLdKVU.jpg" alt="Gadar 2" onerror="this.onerror=null;this.src='https://picsum.photos/seed/bw5/342/513'"><div class="card-badge badge-top">BLOCK</div><div class="card-flag flag-bw">BW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Gadar 2</div><div class="card-sub"><span class="card-rating">⭐ 5.9</span><span>·</span><span>2023</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://deadline.com/wp-content/uploads/2023/10/image_6483441-1.jpg" alt="Tiger 3" onerror="this.onerror=null;this.src='https://picsum.photos/seed/bw6/342/513'"><div class="card-flag flag-bw">BW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Tiger 3</div><div class="card-sub"><span class="card-rating">⭐ 5.3</span><span>·</span><span>2023</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://images.fandango.com/ImageRenderer/820/0/redesign/static/img/default_poster.png/0/images/masterrepository/fandango/219250/KabirSingh_01.jpg" alt="Kabir Singh" onerror="this.onerror=null;this.src='https://picsum.photos/seed/bw7/342/513'"><div class="card-badge badge-4k">4K</div><div class="card-flag flag-bw">BW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Kabir Singh</div><div class="card-sub"><span class="card-rating">⭐ 7.1</span><span>·</span><span>2019</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://upload.wikimedia.org/wikipedia/en/8/80/Dilwale_Dulhania_Le_Jayenge_poster.jpg" alt="DDLJ" onerror="this.onerror=null;this.src='https://picsum.photos/seed/bw8/342/513'"><div class="card-badge badge-free">CLASSIC</div><div class="card-flag flag-bw">BW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">DDLJ</div><div class="card-sub"><span class="card-rating">⭐ 8.1</span><span>·</span><span>1995</span></div></div></div>
+
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- TOLLYWOOD BLOCKBUSTERS -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">🎬</span> Tollywood Blockbusters <span class="section-label lbl-tw">Tollywood</span></div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+
+                <div class="card"><div class="card-thumb"><img src="https://tse1.mm.bing.net/th/id/OIP.3ER-5SlDsQyVeLkh1CrdUgHaJQ?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Pushpa 2" onerror="this.onerror=null;this.src='https://picsum.photos/seed/tw1/342/513'"><div class="card-badge badge-top">RECORD</div><div class="card-flag flag-tw">TW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Pushpa 2: The Rule</div><div class="card-sub"><span class="card-rating">⭐ 7.9</span><span>·</span><span>2024</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://image.tmdb.org/t/p/original/nEufeZlyAOLqO2brrs0yeF1lgXO.jpg" alt="RRR" onerror="this.onerror=null;this.src='https://picsum.photos/seed/tw2/342/513'"><div class="card-badge badge-hit">OSCAR NOM</div><div class="card-flag flag-tw">TW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">RRR</div><div class="card-sub"><span class="card-rating">⭐ 7.8</span><span>·</span><span>2022</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://images.filmibeat.com/img/popcorn/movie_posters/kgfchapter2-20220302101703-17883.jpg" alt="KGF 2" onerror="this.onerror=null;this.src='https://picsum.photos/seed/tw3/342/513'"><div class="card-badge badge-top">BLOCKBUSTER</div><div class="card-flag flag-tw">TW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">KGF: Chapter 2</div><div class="card-sub"><span class="card-rating">⭐ 8.2</span><span>·</span><span>2022</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BOGNlNmRkMjctNDgxMC00NzFhLWIzY2YtZDk3ZDE0NWZhZDBlXkEyXkFqcGdeQXVyODIwMDI1NjM@._V1_FMjpg_UX1000_.jpg" alt="Baahubali 2" onerror="this.onerror=null;this.src='https://picsum.photos/seed/tw4/342/513'"><div class="card-badge badge-free">LEGEND</div><div class="card-flag flag-tw">TW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Baahubali 2</div><div class="card-sub"><span class="card-rating">⭐ 8.2</span><span>·</span><span>2017</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://media5.bollywoodhungama.in/wp-content/uploads/2021/07/Kalki-2898-AD-2.jpg" alt="Kalki 2898 AD" onerror="this.onerror=null;this.src='https://picsum.photos/seed/tw5/342/513'"><div class="card-badge badge-new">2024</div><div class="card-flag flag-tw">TW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Kalki 2898 AD</div><div class="card-sub"><span class="card-rating">⭐ 6.4</span><span>·</span><span>2024</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://stat4.bollywoodhungama.in/wp-content/uploads/2022/10/Kantara.jpeg" alt="Kantara" onerror="this.onerror=null;this.src='https://picsum.photos/seed/tw6/342/513'"><div class="card-badge badge-top">AWARD</div><div class="card-flag flag-tw">TW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Kantara</div><div class="card-sub"><span class="card-rating">⭐ 8.3</span><span>·</span><span>2022</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://image.tmdb.org/t/p/original/kSMXcu6t6976bQY1lhN4v9utjFi.jpg" alt="Vikram" onerror="this.onerror=null;this.src='https://picsum.photos/seed/tw7/342/513'"><div class="card-flag flag-tw">TW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Vikram</div><div class="card-sub"><span class="card-rating">⭐ 8.4</span><span>·</span><span>2022</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://image.tmdb.org/t/p/original/jFHbrNh6LMnKKSz7nlflFyrwK5T.jpg" alt="Pushpa Rise" onerror="this.onerror=null;this.src='https://picsum.photos/seed/tw8/342/513'"><div class="card-badge badge-4k">4K</div><div class="card-flag flag-tw">TW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Pushpa: The Rise</div><div class="card-sub"><span class="card-rating">⭐ 7.6</span><span>·</span><span>2021</span></div></div></div>
+
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- INDIA PROMO BANNER -->
+    <div class="promo-india">
+        <div class="india-content">
+            <div class="india-tag">✦ Indian Cinema Spotlight</div>
+            <div class="india-title">Bollywood · <em>Tollywood</em></div>
+            <div class="india-sub">Stream the biggest Indian blockbusters in 4K · Hindi · Telugu · Tamil · Malayalam</div>
+        </div>
+        <div class="india-flags">
+            <button class="ind-flag-btn bw">🇮🇳 Bollywood Hub</button>
+            <button class="ind-flag-btn tw">🎬 Tollywood Hub</button>
+        </div>
+    </div>
+
+    <!-- HORROR & SUSPENSE -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">👻</span> Horror &amp; Suspense <span class="section-label lbl-mix">All Industries</span></div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+
+                <div class="card"><div class="card-thumb"><img src="https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/deb0eb159275023.639b110868ba6.jpg" alt="Wednesday" onerror="this.onerror=null;this.src='https://picsum.photos/seed/hor1/342/513'"><div class="card-badge badge-new">NEW</div><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Wednesday</div><div class="card-sub"><span class="card-rating">⭐ 8.1</span><span>·</span><span>2022</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://d32qys9a6wm9no.cloudfront.net/images/movies/poster/e4/474219a925254885b6326de776ba142d_original.jpg?t=1721809969" alt="Stree 2" onerror="this.onerror=null;this.src='https://picsum.photos/seed/hor2/342/513'"><div class="card-badge badge-hot">HOT</div><div class="card-flag flag-bw">BW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Stree 2</div><div class="card-sub"><span class="card-rating">⭐ 8.1</span><span>·</span><span>2024</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://flxt.tmsimg.com/assets/p15880871_b_v8_ab.jpg" alt="Haunting of Hill House" onerror="this.onerror=null;this.src='https://picsum.photos/seed/hor3/342/513'"><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Haunting of Hill House</div><div class="card-sub"><span class="card-rating">⭐ 8.6</span><span>·</span><span>2018</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://media.themoviedb.org/t/p/w440_and_h660_face/c6e1g5X4ZO6wv0h6qBlcNeCvOKs.jpg" alt="Smile" onerror="this.onerror=null;this.src='https://picsum.photos/seed/hor4/342/513'"><div class="card-badge badge-4k">4K</div><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Smile</div><div class="card-sub"><span class="card-rating">⭐ 6.5</span><span>·</span><span>2022</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://image.tmdb.org/t/p/w342/d9nBoowhjiiYc4FBNtQkPY7c11H.jpg" alt="M3GAN" onerror="this.onerror=null;this.src='https://picsum.photos/seed/hor5/342/513'"><div class="card-badge badge-new">NEW</div><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">M3GAN</div><div class="card-sub"><span class="card-rating">⭐ 6.4</span><span>·</span><span>2023</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://image.tmdb.org/t/p/w342/wVYREutTvI2tmxr6ujrHT704wGF.jpg" alt="The Conjuring" onerror="this.onerror=null;this.src='https://picsum.photos/seed/hor6/342/513'"><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">The Conjuring</div><div class="card-sub"><span class="card-rating">⭐ 7.5</span><span>·</span><span>2013</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://tse4.mm.bing.net/th/id/OIP.bxtFvBUPbTxa60fsRvUR5AHaLH?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Hereditary" onerror="this.onerror=null;this.src='https://picsum.photos/seed/hor7/342/513'"><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Hereditary</div><div class="card-sub"><span class="card-rating">⭐ 7.3</span><span>·</span><span>2018</span></div></div></div>
+
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- PROMO BANNER -->
+    <div class="promo-banner">
+        <div class="promo-content">
+            <div class="promo-tag">✦ Limited Time Offer</div>
+            <div class="promo-title">StreamVerse Premium</div>
+            <div class="promo-features">
+                <span class="promo-feature">4K Ultra HD</span>
+                <span class="promo-feature">Dolby Atmos</span>
+                <span class="promo-feature">No Ads</span>
+                <span class="promo-feature">Download Offline</span>
+                <span class="promo-feature">5 Screens</span>
+            </div>
+        </div>
+        <button class="promo-btn">Upgrade Now →</button>
+    </div>
+
+    <!-- COMEDY PICKS -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">😂</span> Comedy Picks <span class="section-label lbl-mix">All Industries</span></div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+
+                <div class="card"><div class="card-thumb"><img src="https://upload.wikimedia.org/wikipedia/en/0/0b/Barbie_2023_poster.jpg" alt="Barbie" onerror="this.onerror=null;this.src='https://picsum.photos/seed/com1/342/513'"><div class="card-badge badge-hot">HOT</div><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Barbie</div><div class="card-sub"><span class="card-rating">⭐ 7.0</span><span>·</span><span>2023</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BZjQwYzBlYzUtZjhhOS00ZDQ0LWE0NzAtYTk4MjgzZTNkZWEzXkEyXkFqcGc@._V1_.jpg" alt="The Office" onerror="this.onerror=null;this.src='https://picsum.photos/seed/com2/342/513'"><div class="card-badge badge-free">FREE</div><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">The Office</div><div class="card-sub"><span class="card-rating">⭐ 8.9</span><span>·</span><span>2005</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdkzQD1u9v1Ho3s1d7NS9tnUtOfJj5A1-KbQ&s" alt="Grand Budapest Hotel" onerror="this.onerror=null;this.src='https://picsum.photos/seed/com3/342/513'"><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Grand Budapest Hotel</div><div class="card-sub"><span class="card-rating">⭐ 8.1</span><span>·</span><span>2014</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BZTEyYzVjYjEtNWYzZi00NWRhLTgyZjUtNDlkZjBiNWIxYTEwXkEyXkFqcGc@._V1_.jpg" alt="Stree 2" onerror="this.onerror=null;this.src='https://picsum.photos/seed/com4/342/513'"><div class="card-badge badge-hot">HOT</div><div class="card-flag flag-bw">BW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Stree 2</div><div class="card-sub"><span class="card-rating">⭐ 8.1</span><span>·</span><span>2024</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://resizing.flixster.com/-XZAfHZM39UwaGJIFWKAE8fS0ak=/v3/t/assets/p167014_p_v10_be.jpg" alt="Superbad" onerror="this.onerror=null;this.src='https://picsum.photos/seed/com5/342/513'"><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Superbad</div><div class="card-sub"><span class="card-rating">⭐ 7.6</span><span>·</span><span>2007</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://resizing.flixster.com/JysRb3DWAU1VI5ywAvY4JwgiWZ0=/ems.cHJkLWVtcy1hc3NldHMvdHZzZXJpZXMvUlRUVjg3MDUxNi53ZWJw" alt="Brooklyn Nine-Nine" onerror="this.onerror=null;this.src='https://picsum.photos/seed/com6/342/513'"><div class="card-badge badge-new">NEW</div><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Brooklyn Nine-Nine</div><div class="card-sub"><span class="card-rating">⭐ 8.4</span><span>·</span><span>2013</span></div></div></div>
+
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- ACTION & ADVENTURE -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">💥</span> Action &amp; Adventure <span class="section-label lbl-mix">All Industries</span></div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/S/pv-target-images/6d3d1461d50778271845ce7ec81ba2c5d76a20f7f84e5061cd099aabaedc77f9.jpg" alt="John Wick 4" onerror="this.onerror=null;this.src='https://picsum.photos/seed/act1/342/513'"><div class="card-badge badge-4k">4K</div><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">John Wick: Chapter 4</div><div class="card-sub"><span class="card-rating">⭐ 7.7</span><span>·</span><span>2023</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BOTE5M2UzOWUtOTM0My00YmM5LTg1NmItOWI1MGYwNTdmMjRhXkEyXkFqcGc@._V1_.jpg" alt="Pathaan" onerror="this.onerror=null;this.src='https://picsum.photos/seed/act2/342/513'"><div class="card-badge badge-hot">HOT</div><div class="card-flag flag-bw">BW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Pathaan</div><div class="card-sub"><span class="card-rating">⭐ 5.6</span><span>·</span><span>2023</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BZjllNTdiM2QtYjQ0Ni00ZGM1LWFlYmUtNWY0YjMzYWIxOTYxXkEyXkFqcGc@._V1_.jpg" alt="Pushpa 2" onerror="this.onerror=null;this.src='https://picsum.photos/seed/act3/342/513'"><div class="card-badge badge-top">RECORD</div><div class="card-flag flag-tw">TW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Pushpa 2</div><div class="card-sub"><span class="card-rating">⭐ 7.9</span><span>·</span><span>2024</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BMDBkZDNjMWEtOTdmMi00NmExLTg5MmMtNTFlYTJlNWY5YTdmXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Top Gun Maverick" onerror="this.onerror=null;this.src='https://picsum.photos/seed/act4/342/513'"><div class="card-badge badge-new">NEW</div><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Top Gun: Maverick</div><div class="card-sub"><span class="card-rating">⭐ 8.2</span><span>·</span><span>2022</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BNWMwODYyMjQtMTczMi00NTQ1LWFkYjItMGJhMWRkY2E3NDAyXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="RRR" onerror="this.onerror=null;this.src='https://picsum.photos/seed/act5/342/513'"><div class="card-badge badge-hit">OSCAR NOM</div><div class="card-flag flag-tw">TW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">RRR</div><div class="card-sub"><span class="card-rating">⭐ 7.8</span><span>·</span><span>2022</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/S/pv-target-images/7c7fa54b32abf631190d8a2436ab53c8e60c68ac065c4ddc7775fb1f65f83ff1._UR2000,3000_.png" alt="Avengers Endgame" onerror="this.onerror=null;this.src='https://picsum.photos/seed/act6/342/513'"><div class="card-badge badge-4k">4K</div><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Avengers: Endgame</div><div class="card-sub"><span class="card-rating">⭐ 8.4</span><span>·</span><span>2019</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://thumbnails.thecrimson.com/photos/2022/03/28/202438_1355231.jpg.1349x2000_q95_crop-smart_upscale.jpg" alt="The Batman" onerror="this.onerror=null;this.src='https://picsum.photos/seed/act7/342/513'"><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">The Batman</div><div class="card-sub"><span class="card-rating">⭐ 7.8</span><span>·</span><span>2022</span></div></div></div>
+
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- DRAMA & ROMANCE -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">🎭</span> Drama &amp; Romance <span class="section-label lbl-mix">All Industries</span></div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+
+                <div class="card"><div class="card-thumb"><img src="https://image.tmdb.org/t/p/w342/rLb2cwF3Pazuxaj0sRXQ037tGI1.jpg" alt="Oppenheimer" onerror="this.onerror=null;this.src='https://picsum.photos/seed/drm1/342/513'"><div class="card-badge badge-new">NEW</div><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Oppenheimer</div><div class="card-sub"><span class="card-rating">⭐ 8.9</span><span>·</span><span>2023</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BNGEwYjgwOGQtYjg5ZS00Njc1LTk2ZGEtM2QwZWQ2NjdhZTE5XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="The Godfather" onerror="this.onerror=null;this.src='https://picsum.photos/seed/drm2/342/513'"><div class="card-badge badge-free">CLASSIC</div><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">The Godfather</div><div class="card-sub"><span class="card-rating">⭐ 9.2</span><span>·</span><span>1972</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://upload.wikimedia.org/wikipedia/en/8/80/Dilwale_Dulhania_Le_Jayenge_poster.jpg" alt="DDLJ" onerror="this.onerror=null;this.src='https://picsum.photos/seed/drm3/342/513'"><div class="card-badge badge-hot">HOT</div><div class="card-flag flag-bw">BW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">DDLJ</div><div class="card-sub"><span class="card-rating">⭐ 8.1</span><span>·</span><span>1995</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BYjk1Y2U4MjQtY2ZiNS00OWQyLWI3MmYtZWUwNmRjYWRiNWNhXkEyXkFqcGc@._V1_QL75_UX190_CR0,0,190,281_.jpg" alt="Parasite" onerror="this.onerror=null;this.src='https://picsum.photos/seed/drm4/342/513'"><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Parasite</div><div class="card-sub"><span class="card-rating">⭐ 8.5</span><span>·</span><span>2019</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/I/91vIHsL-zjL._AC_UF1000,1000_QL80_.jpg" alt="Interstellar" onerror="this.onerror=null;this.src='https://picsum.photos/seed/drm5/342/513'"><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Interstellar</div><div class="card-sub"><span class="card-rating">⭐ 8.7</span><span>·</span><span>2014</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/6/69/Kantara-_Chapter_1_poster.jpg/250px-Kantara-_Chapter_1_poster.jpg" alt="Kantara" onerror="this.onerror=null;this.src='https://picsum.photos/seed/drm6/342/513'"><div class="card-badge badge-top">AWARD</div><div class="card-flag flag-tw">TW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Kantara</div><div class="card-sub"><span class="card-rating">⭐ 8.3</span><span>·</span><span>2022</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/46/Video_Game_Cover_-_The_Last_of_Us.jpg/250px-Video_Game_Cover_-_The_Last_of_Us.jpg" alt="The Last of Us" onerror="this.onerror=null;this.src='https://picsum.photos/seed/drm7/342/513'"><div class="card-badge badge-new">NEW</div><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">The Last of Us</div><div class="card-sub"><span class="card-rating">⭐ 8.8</span><span>·</span><span>2023</span></div></div></div>
+
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- SCI-FI & FANTASY -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">🚀</span> Sci-Fi &amp; Fantasy <span class="section-label lbl-mix">All Industries</span></div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+
+                <div class="card"><div class="card-thumb"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/5/52/Dune_Part_Two_poster.jpeg/250px-Dune_Part_Two_poster.jpeg" alt="Dune" onerror="this.onerror=null;this.src='https://picsum.photos/seed/sci1/342/513'"><div class="card-badge badge-top">TOP 10</div><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Dune: Part Two</div><div class="card-sub"><span class="card-rating">⭐ 8.5</span><span>·</span><span>2024</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://media5.bollywoodhungama.in/wp-content/uploads/2021/07/Kalki-2898-AD-2.jpg" alt="Kalki 2898 AD" onerror="this.onerror=null;this.src='https://picsum.photos/seed/sci2/342/513'"><div class="card-badge badge-new">2024</div><div class="card-flag flag-tw">TW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Kalki 2898 AD</div><div class="card-sub"><span class="card-rating">⭐ 6.4</span><span>·</span><span>2024</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/I/91vIHsL-zjL._AC_UF1000,1000_QL80_.jpg" alt="Interstellar" onerror="this.onerror=null;this.src='https://picsum.photos/seed/sci3/342/513'"><div class="card-badge badge-4k">4K</div><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Interstellar</div><div class="card-sub"><span class="card-rating">⭐ 8.7</span><span>·</span><span>2014</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BZjhkNjM0ZTMtNGM5MC00ZTQ3LTk3YmYtZTkzYzdiNWE0ZTA2XkEyXkFqcGc@._V1_.jpg" alt="Inception" onerror="this.onerror=null;this.src='https://picsum.photos/seed/sci4/342/513'"><div class="card-badge badge-4k">4K</div><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Inception</div><div class="card-sub"><span class="card-rating">⭐ 8.8</span><span>·</span><span>2010</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRn4fXO43sQ43bHqNABS4WrKniwXfdhHOjzdA&s" alt="Stranger Things" onerror="this.onerror=null;this.src='https://picsum.photos/seed/sci5/342/513'"><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Stranger Things</div><div class="card-sub"><span class="card-rating">⭐ 8.7</span><span>·</span><span>2022</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://preview.redd.it/official-poster-for-the-guardians-of-the-galaxy-vol-3-v0-uzqvcih10d3a1.jpg?auto=webp&s=3f1b2fe12dc3d392d1c8d9963d6394622feac186" alt="Guardians 3" onerror="this.onerror=null;this.src='https://picsum.photos/seed/sci6/342/513'"><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Guardians Vol. 3</div><div class="card-sub"><span class="card-rating">⭐ 7.9</span><span>·</span><span>2023</span></div></div></div>
+
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/I/81g0Jdv73DL._AC_UF1000,1000_QL80_.jpg" alt="Dune Part One" onerror="this.onerror=null;this.src='https://picsum.photos/seed/sci7/342/513'"><div class="card-badge badge-new">NEW</div><div class="card-flag flag-hw">HW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Dune: Part One</div><div class="card-sub"><span class="card-rating">⭐ 8.0</span><span>·</span><span>2021</span></div></div></div>
+
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+</main>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+    <div class="footer-top">
+        <div class="footer-brand">
+            <div class="footer-logo">StreamVerse</div>
+            <div class="footer-tagline">India's most loved streaming platform. Watch anywhere, anytime.</div>
+            <div class="footer-apps">
+                <div class="app-btn"><svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>App Store</div>
+                <div class="app-btn"><svg viewBox="0 0 24 24"><path d="m3 20.5v-17c0-.83 1-.95 1.4-.4l14.5 8.6c.38.24.38.76 0 1L4.4 21.1c-.4.5-1.4.33-1.4-.6z"/></svg>Play Store</div>
+            </div>
+        </div>
+        <div class="footer-links-row">
+            <a href="about.html">About Us</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="help.html">Help &amp; Support</a>
+            <a href="privacy.html">Privacy &amp; Terms</a>
+            <a href="feedback.html">Feedback</a>
+            <a href="#">Careers</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="footer-copy">© 2025 StreamVerse Entertainment Pvt. Ltd. All rights reserved.</div>
+        <div class="footer-badges">
+            <span class="footer-badge">4K UHD</span>
+            <span class="footer-badge">DOLBY ATMOS</span>
+            <span class="footer-badge">HDR 10+</span>
+            <span class="footer-badge">U/A CERTIFIED</span>
+        </div>
+    </div>
+</footer>
+
+<script>
+    function scrollRow(btn, dir) {
+        const wrap = btn.closest('.row-wrap');
+        const row = wrap.querySelector('.row');
+        row.scrollBy({ left: dir * 640, behavior: 'smooth' });
+    }
+
+    document.querySelectorAll('.cat-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+            document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+        });
+    });
+
+    // Industry tabs
+    document.querySelectorAll('.ind-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.ind-tab').forEach(t => t.className = 'ind-tab');
+            const txt = tab.textContent;
+            if (txt.includes('Bollywood'))      tab.classList.add('on-bw');
+            else if (txt.includes('Tollywood')) tab.classList.add('on-tw');
+            else if (txt.includes('Hollywood')) tab.classList.add('on-hw');
+            else                                tab.classList.add('on-all');
+        });
+    });
+
+    // Hero dots auto-rotate
+    let heroIdx = 0;
+    const heroDots = document.querySelectorAll('.hero-dots span');
+    setInterval(() => {
+        heroDots.forEach(d => d.classList.remove('active'));
+        heroIdx = (heroIdx + 1) % heroDots.length;
+        heroDots[heroIdx].classList.add('active');
+    }, 4000);
+
+    heroDots.forEach((dot, i) => {
+        dot.addEventListener('click', () => {
+            heroDots.forEach(d => d.classList.remove('active'));
+            dot.classList.add('active');
+            heroIdx = i;
+        });
+    });
+
+    // Mute button toggle
+    const muteBtn = document.querySelector('.hero-mute');
+    let muted = true;
+    const muteIcon = `<svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
+    const unmuteIcon = `<svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`;
+
+    muteBtn.addEventListener('click', () => {
+        muted = !muted;
+        muteBtn.style.borderColor = muted ? 'rgba(255,255,255,0.15)' : 'var(--accent2)';
+        muteBtn.innerHTML = muted ? muteIcon : unmuteIcon;
+    });
+</script>
+<script src="script.js"></script>
+</body>
+</html>

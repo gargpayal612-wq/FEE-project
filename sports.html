@@ -1,0 +1,1891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamVerse – Sports</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg2: #111118;
+            --surface: #1a1a24;
+            --accent: #e50914;
+            --accent2: #f5a623;
+            --gold: #FFD700;
+            --green: #16a34a;
+            --blue: #0ea5e9;
+            --text: #f0f0f0;
+            --muted: #888;
+            --card-w: 180px;
+            --card-h: 260px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar { width: 6px; height: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            padding: 16px 48px;
+            background: linear-gradient(to bottom, rgba(10,10,15,0.98) 70%, transparent);
+            backdrop-filter: blur(8px);
+            transition: background 0.3s;
+        }
+
+        .logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            flex-shrink: 0;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .nav-links { display: flex; gap: 4px; flex: 1; }
+        .nav-links a {
+            text-decoration: none;
+            color: #bbb;
+            font-size: 0.88rem;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+            padding: 6px 14px;
+            border-radius: 6px;
+            transition: color 0.2s, background 0.2s;
+        }
+        .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.07); }
+        .nav-links a.active {
+            color: #fff;
+            background: rgba(229,9,20,0.1);
+            border-bottom: 2px solid var(--accent);
+            border-radius: 6px 6px 0 0;
+        }
+
+        .nav-right { display: flex; align-items: center; gap: 16px; margin-left: auto; }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 7px 16px;
+            transition: border-color 0.2s;
+        }
+        .search-box:focus-within { border-color: rgba(229,9,20,0.5); }
+        .search-box input {
+            background: none; border: none; outline: none;
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            width: 160px;
+        }
+        .search-box input::placeholder { color: var(--muted); }
+
+        .nav-btn {
+            background: linear-gradient(135deg, var(--accent), #c20810);
+            border: none; color: #fff;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: 0.3px;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .nav-btn:hover { opacity: 0.88; transform: scale(1.03); }
+
+        .avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            display: grid; place-items: center;
+            font-weight: 700; font-size: 0.85rem;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+        .avatar:hover { border-color: var(--accent2); }
+
+        /* ── HERO ── */
+        .hero {
+            height: 92vh;
+            min-height: 580px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 120px 60px 40px;
+        }
+
+        .hero-bg-img {
+            position: absolute; inset: 0;
+            background-image: url('https://img.ipl.com/upload/20250913/b0ca37b31956c310c645c6e5b980d43c.jpg');
+            background-size: cover;
+            background-position: center 30%;
+            animation: heroZoom 18s ease-in-out infinite alternate;
+        }
+
+        @keyframes heroZoom {
+            from { transform: scale(1.02); }
+            to   { transform: scale(1.07); }
+        }
+
+        .hero-bg {
+            position: absolute; inset: 0;
+            background:
+                linear-gradient(to right, rgba(10,10,15,0.97) 32%, rgba(10,10,15,0.55) 60%, rgba(10,10,15,0.15) 100%),
+                linear-gradient(to top, rgba(10,10,15,1) 0%, rgba(10,10,15,0.4) 35%, transparent 65%);
+        }
+
+        /* Grain texture overlay */
+        .hero-grain {
+            position: absolute; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative; z-index: 2;
+            max-width: 560px;
+            animation: heroFadeUp 0.8s ease both;
+        }
+
+        @keyframes heroFadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center; gap: 8px;
+            background: rgba(220,38,38,0.12);
+            border: 1px solid rgba(220,38,38,0.35);
+            border-radius: 4px;
+            padding: 5px 14px;
+            font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 2px; color: #ef4444;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .hero-badge .pulse-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: #ef4444;
+            animation: pulse 1.4s infinite;
+        }
+
+        @keyframes pulse {
+            0%,100% { opacity: 1; transform: scale(1); }
+            50%      { opacity: 0.35; transform: scale(0.8); }
+        }
+
+        .hero-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(3.2rem, 6vw, 5.5rem);
+            line-height: 0.92;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 40px rgba(0,0,0,0.5);
+        }
+        .hero-title em {
+            font-style: normal;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-meta {
+            display: flex; align-items: center;
+            gap: 12px; flex-wrap: wrap;
+            margin-bottom: 14px;
+            font-size: 0.82rem; color: #aaa;
+        }
+        .hero-meta .year { color: var(--accent2); font-weight: 600; }
+        .hero-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: #555; }
+
+        .rating-badge {
+            background: rgba(255,215,0,0.12);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 4px; padding: 2px 8px;
+            color: var(--gold); font-weight: 600; font-size: 0.78rem;
+        }
+
+        .live-badge-hero {
+            background: rgba(220,38,38,0.2);
+            border: 1px solid rgba(220,38,38,0.5);
+            border-radius: 4px;
+            padding: 2px 10px;
+            color: #ef4444;
+            font-weight: 700;
+            font-size: 0.78rem;
+            animation: pulse 1.4s infinite;
+        }
+
+        .genre-tags { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+        .genre-tag {
+            padding: 4px 14px; border-radius: 20px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.12);
+            font-size: 0.75rem; color: #ccc;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .genre-tag:hover { border-color: var(--accent); color: #fff; cursor: pointer; }
+
+        .hero-desc {
+            font-size: 0.88rem; line-height: 1.75;
+            color: rgba(200,200,210,0.85);
+            margin-bottom: 30px; max-width: 440px;
+        }
+
+        .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 28px; }
+
+        .btn-play {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--accent); color: #fff;
+            border: none; border-radius: 8px;
+            padding: 14px 30px;
+            font-size: 0.95rem; font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            letter-spacing: 0.4px;
+        }
+        .btn-play:hover { transform: scale(1.04); box-shadow: 0 8px 32px rgba(229,9,20,0.55); }
+        .btn-play svg { width: 18px; height: 18px; fill: #fff; }
+
+        .btn-info {
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.18);
+            color: #fff; border-radius: 8px;
+            padding: 14px 24px;
+            font-size: 0.95rem; font-weight: 500;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: background 0.2s;
+            letter-spacing: 0.4px;
+            backdrop-filter: blur(4px);
+        }
+        .btn-info:hover { background: rgba(255,255,255,0.18); }
+        .btn-info svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+        .btn-watchlist {
+            display: flex; align-items: center; gap: 8px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.18);
+            color: #ccc; border-radius: 8px;
+            padding: 14px 20px;
+            font-size: 0.9rem; font-weight: 500;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .btn-watchlist:hover { border-color: var(--accent2); color: var(--accent2); }
+
+        /* Hero side panel */
+        .hero-side {
+            position: absolute;
+            right: 60px; bottom: 80px;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+            animation: heroFadeUp 1s 0.3s ease both;
+        }
+
+        /* Volume / Mute button */
+        .hero-mute {
+            position: absolute;
+            right: 60px; top: 50%;
+            transform: translateY(-50%);
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            background: rgba(10,10,15,0.7);
+            border: 1px solid rgba(255,255,255,0.15);
+            display: grid; place-items: center;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: border-color 0.2s;
+            z-index: 3;
+        }
+        .hero-mute:hover { border-color: var(--accent); }
+        .hero-mute svg { width: 18px; height: 18px; stroke: #fff; fill: none; stroke-width: 2; }
+
+        /* Score chips in hero side */
+        .score-chip-row { display: flex; gap: 10px; }
+        .score-chip {
+            background: rgba(10,10,15,0.88);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-size: 0.75rem;
+            backdrop-filter: blur(12px);
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s, transform 0.2s;
+            min-width: 90px;
+        }
+        .score-chip:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.25); }
+        .score-chip.live-chip { border-color: var(--accent); background: rgba(229,9,20,0.15); }
+        .score-chip .chip-score { font-family: 'Bebas Neue'; font-size: 1.1rem; letter-spacing: 2px; color: var(--accent2); margin-bottom: 2px; }
+        .score-chip .chip-label { color: var(--muted); font-size: 0.65rem; letter-spacing: 0.5px; }
+        .score-chip.live-chip .chip-label { color: #ef4444; }
+
+        .hero-dots { display: flex; gap: 8px; }
+        .hero-dots span {
+            width: 28px; height: 3px;
+            border-radius: 2px;
+            background: rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: background 0.3s, width 0.3s;
+        }
+        .hero-dots span.active { background: var(--accent); width: 44px; }
+
+        /* SCORE TICKER */
+        .score-ticker {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 0 48px;
+            display: flex;
+            align-items: stretch;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .score-ticker::-webkit-scrollbar { display: none; }
+
+        .ticker-label {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            padding: 0 20px 0 0;
+            border-right: 1px solid rgba(255,255,255,0.08);
+            gap: 8px;
+        }
+        .ticker-live-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: #ef4444;
+            animation: pulse 1.4s infinite;
+        }
+        .ticker-label-text {
+            font-size: 0.65rem; font-weight: 700;
+            letter-spacing: 2px; text-transform: uppercase;
+            color: #ef4444;
+        }
+
+        .score-card {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 24px;
+            border-right: 1px solid rgba(255,255,255,0.06);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .score-card:hover { background: rgba(255,255,255,0.04); }
+        .score-sport-icon { font-size: 1rem; }
+        .score-teams { display: flex; flex-direction: column; gap: 3px; }
+        .score-team {
+            display: flex; align-items: center;
+            gap: 8px; font-size: 0.76rem; font-weight: 500;
+        }
+        .score-team.winner { color: #fff; font-weight: 700; }
+        .score-team.loser { color: var(--muted); }
+        .score-num {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1rem; letter-spacing: 1px;
+            min-width: 28px; text-align: right;
+        }
+        .score-num.highlight { color: var(--accent2); }
+        .score-status {
+            font-size: 0.6rem; font-weight: 700;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            padding: 2px 7px; border-radius: 3px; align-self: center;
+        }
+        .status-live {
+            background: rgba(220,38,38,0.15); color: #ef4444;
+            border: 1px solid rgba(220,38,38,0.3);
+            animation: pulse 1.4s infinite;
+        }
+        .status-ft {
+            background: rgba(255,255,255,0.08); color: var(--muted);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .status-soon {
+            background: rgba(245,166,35,0.12); color: var(--accent2);
+            border: 1px solid rgba(245,166,35,0.25);
+        }
+
+        /* ── MAIN ── */
+        main { padding: 0 0 80px; }
+
+        /* ── CATEGORY PILLS ── */
+        .category-bar {
+            display: flex; gap: 10px;
+            padding: 30px 48px 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .category-bar::-webkit-scrollbar { display: none; }
+
+        .cat-pill {
+            flex-shrink: 0;
+            padding: 10px 20px;
+            border-radius: 24px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #bbb;
+            font-size: 0.85rem; font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .cat-pill:hover { background: rgba(255,255,255,0.12); color: #fff; border-color: rgba(255,255,255,0.2); }
+        .cat-pill.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+
+        /* ── SECTION ── */
+        .section { margin-top: 48px; }
+
+        .section-header {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            padding: 0 48px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            display: flex; align-items: center;
+            gap: 12px;
+            font-size: 1.28rem; font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+        .section-title .icon { font-size: 1.4rem; }
+        .section-label {
+            font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            color: var(--muted); padding: 3px 10px;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.05);
+            margin-left: 6px;
+        }
+
+        .see-all {
+            font-size: 0.82rem; color: var(--accent);
+            cursor: pointer; font-weight: 500;
+            letter-spacing: 0.3px; text-decoration: none;
+            display: flex; align-items: center; gap: 4px;
+            transition: gap 0.2s;
+        }
+        .see-all:hover { gap: 8px; }
+
+        /* ── ROW WRAP with scroll buttons ── */
+        .row-wrap { position: relative; }
+
+        .row {
+            display: flex; gap: 16px;
+            padding: 8px 48px 16px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
+        }
+        .row::-webkit-scrollbar { display: none; }
+
+        .scroll-btn {
+            position: absolute; top: 50%;
+            transform: translateY(-50%);
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            background: rgba(15,15,22,0.95);
+            border: 1px solid rgba(255,255,255,0.14);
+            color: #fff; font-size: 1.2rem;
+            cursor: pointer;
+            display: grid; place-items: center;
+            z-index: 10;
+            transition: background 0.2s, opacity 0.2s, transform 0.2s;
+            opacity: 0;
+            backdrop-filter: blur(8px);
+        }
+        .row-wrap:hover .scroll-btn { opacity: 1; }
+        .scroll-btn:hover { background: rgba(229,9,20,0.75); transform: translateY(-50%) scale(1.08); }
+        .scroll-btn.left { left: 6px; }
+        .scroll-btn.right { right: 6px; }
+
+        /* MATCH CARD */
+        .match-card {
+            flex-shrink: 0; width: 300px;
+            border-radius: 14px;
+            background: var(--surface);
+            border: 1px solid rgba(255,255,255,0.07);
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.28s, border-color 0.2s;
+            position: relative;
+        }
+        .match-card:hover { transform: scale(1.03) translateY(-4px); z-index: 5; border-color: rgba(229,9,20,0.3); }
+
+        .match-card-img {
+            width: 100%; height: 160px;
+            object-fit: cover; display: block;
+            transition: transform 0.4s;
+        }
+        .match-card:hover .match-card-img { transform: scale(1.04); }
+
+        .match-card-overlay {
+            position: absolute; top: 0; left: 0; right: 0; height: 160px;
+            background: linear-gradient(to top, rgba(26,26,36,1) 0%, transparent 60%);
+        }
+
+        .match-card-live {
+            position: absolute; top: 10px; left: 10px;
+            background: #dc2626; color: #fff;
+            font-size: 0.6rem; font-weight: 700;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            padding: 3px 8px; border-radius: 3px;
+            animation: livePulse 1.5s infinite;
+        }
+        @keyframes livePulse {
+            0%,100% { box-shadow: 0 0 0 0 rgba(220,38,38,0.5) }
+            50%      { box-shadow: 0 0 0 5px rgba(220,38,38,0) }
+        }
+
+        .match-card-sport {
+            position: absolute; top: 10px; right: 10px;
+            background: rgba(0,0,0,0.6);
+            font-size: 0.65rem; font-weight: 600;
+            letter-spacing: 1px; text-transform: uppercase;
+            padding: 3px 9px; border-radius: 3px;
+            color: #ddd; border: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .match-body { padding: 14px 16px 16px; }
+        .match-league {
+            font-size: 0.65rem; font-weight: 700;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            color: var(--accent2); margin-bottom: 10px;
+        }
+
+        .match-teams {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            gap: 8px; margin-bottom: 10px;
+        }
+        .match-team {
+            display: flex; flex-direction: column;
+            align-items: center; gap: 4px; flex: 1;
+        }
+        .team-flag {
+            width: 36px; height: 36px;
+            border-radius: 50%; object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+        .team-abbr { font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+
+        .match-score-block {
+            display: flex; flex-direction: column;
+            align-items: center; gap: 2px; flex-shrink: 0;
+        }
+        .match-score {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem; letter-spacing: 4px; line-height: 1;
+        }
+        .match-time-label { font-size: 0.6rem; color: var(--muted); letter-spacing: 1px; }
+
+        .match-footer {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .match-venue { font-size: 0.68rem; color: var(--muted); }
+        .match-watch-btn {
+            background: var(--accent); color: #fff;
+            border: none; padding: 5px 14px;
+            border-radius: 4px; font-size: 0.72rem;
+            font-weight: 600; font-family: 'Outfit', sans-serif;
+            cursor: pointer; letter-spacing: 0.5px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .match-watch-btn:hover { transform: scale(1.04); box-shadow: 0 4px 14px rgba(229,9,20,0.4); }
+
+        .match-card.upcoming { opacity: 0.88; }
+        .match-upcoming-time {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem; letter-spacing: 2px; color: var(--accent2);
+        }
+
+        /* WIDE MATCH CARD */
+        .wide-match {
+            flex-shrink: 0; width: 340px; height: 192px;
+            border-radius: 14px; overflow: hidden;
+            cursor: pointer; position: relative;
+            transition: transform 0.28s;
+            border: 1px solid rgba(255,255,255,0.07);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+        .wide-match:hover { transform: scale(1.03) translateY(-4px); z-index: 5; }
+        .wide-match img {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.4s;
+        }
+        .wide-match:hover img { transform: scale(1.05); }
+        .wide-match-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.1) 60%);
+            z-index: 2;
+        }
+        .wide-match-body {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            padding: 14px 16px; z-index: 3;
+        }
+        .wide-match-league {
+            font-size: 0.62rem; font-weight: 700;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            color: var(--accent2); margin-bottom: 5px;
+        }
+        .wide-match-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+        .wide-match-sub { font-size: 0.72rem; color: #aaa; }
+        .wide-match-live {
+            position: absolute; top: 10px; left: 10px; z-index: 4;
+            background: #dc2626; color: #fff;
+            font-size: 0.6rem; font-weight: 700;
+            letter-spacing: 1.5px; padding: 3px 8px; border-radius: 3px;
+            animation: livePulse 1.5s infinite;
+        }
+
+        /* SPORT CATEGORY CARD */
+        .sport-cat-card {
+            flex-shrink: 0; width: 150px; height: 90px;
+            border-radius: 12px; overflow: hidden;
+            cursor: pointer; position: relative;
+            transition: transform 0.28s;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .sport-cat-card:hover { transform: scale(1.06) translateY(-4px); z-index: 5; }
+        .sport-cat-card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
+        .sport-cat-card:hover img { transform: scale(1.08); }
+        .sport-cat-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
+        }
+        .sport-cat-body {
+            position: absolute; inset: 0;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center; gap: 4px;
+        }
+        .sport-cat-icon { font-size: 1.6rem; }
+        .sport-cat-name { font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+
+        /* PORTRAIT CARD */
+        .card {
+            flex-shrink: 0; width: var(--card-w);
+            cursor: pointer; transition: transform 0.28s;
+            position: relative;
+        }
+        .card:hover { transform: scale(1.07) translateY(-4px); z-index: 5; }
+
+        .card-thumb {
+            width: 100%; height: var(--card-h);
+            border-radius: 10px; overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+        .card-thumb img {
+            width: 100%; height: 100%; object-fit: cover;
+            display: block; transition: transform 0.4s;
+        }
+        .card:hover .card-thumb img { transform: scale(1.07); }
+
+        .card-thumb::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 55%);
+            border-radius: 10px; opacity: 0; transition: opacity 0.28s;
+        }
+        .card:hover .card-thumb::after { opacity: 1; }
+
+        .card-play {
+            position: absolute; inset: 0;
+            display: grid; place-items: center;
+            opacity: 0; transition: opacity 0.28s; z-index: 2;
+        }
+        .card:hover .card-play { opacity: 1; }
+
+        .card-play-btn {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: rgba(229,9,20,0.92);
+            display: grid; place-items: center;
+            box-shadow: 0 4px 24px rgba(229,9,20,0.6);
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+        .card:hover .card-play-btn { transform: scale(1.1); }
+
+        .card-badge {
+            position: absolute; top: 8px; left: 8px; z-index: 3;
+            font-size: 0.6rem; font-weight: 700;
+            letter-spacing: 1px; text-transform: uppercase;
+            padding: 3px 8px; border-radius: 3px;
+        }
+        .badge-new  { background: var(--accent); color: #fff; }
+        .badge-hot  { background: var(--accent2); color: #000; }
+        .badge-free { background: #16a34a; color: #fff; }
+        .badge-4k   { background: #7c3aed; color: #fff; }
+
+        .card-info { padding: 10px 4px 0; }
+        .card-title {
+            font-size: 0.82rem; font-weight: 600;
+            white-space: nowrap; overflow: hidden;
+            text-overflow: ellipsis; margin-bottom: 4px;
+        }
+        .card-sub { font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+        .card-rating { color: var(--gold); font-size: 0.7rem; }
+
+        /* STANDINGS */
+        .standings-section { margin: 48px 48px 0; }
+
+        .standings-header {
+            display: flex; align-items: center;
+            justify-content: space-between; margin-bottom: 20px;
+        }
+        .standings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .standings-box {
+            background: var(--surface); border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.07); overflow: hidden;
+        }
+        .standings-box-header {
+            display: flex; align-items: center; gap: 10px;
+            padding: 14px 18px;
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+        .standings-box-title { font-size: 0.82rem; font-weight: 700; letter-spacing: 0.5px; }
+        .standings-sport-tag {
+            font-size: 0.6rem; font-weight: 700;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            background: rgba(255,255,255,0.07);
+            padding: 2px 8px; border-radius: 3px; color: var(--muted);
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        thead th {
+            font-size: 0.65rem; font-weight: 700;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            color: var(--muted); padding: 8px 18px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        thead th:not(:first-child) { text-align: center; }
+        tbody tr {
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            transition: background 0.15s; cursor: pointer;
+        }
+        tbody tr:hover { background: rgba(255,255,255,0.03); }
+        tbody tr:last-child { border-bottom: none; }
+        tbody td { padding: 9px 18px; font-size: 0.78rem; }
+        tbody td:not(:first-child) { text-align: center; color: var(--muted); }
+        .team-rank { font-weight: 700; color: var(--muted); width: 24px; }
+        .team-name-cell { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+        .team-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.15); }
+        .team-dot.qualify { background: var(--green); }
+        .team-dot.danger { background: var(--accent); }
+        .pts-col { font-weight: 700; color: var(--text) !important; }
+        .form-badges { display: flex; gap: 3px; justify-content: center; }
+        .form-w, .form-l, .form-d {
+            width: 18px; height: 18px; border-radius: 3px;
+            font-size: 0.6rem; font-weight: 700;
+            display: grid; place-items: center; color: #fff;
+        }
+        .form-w { background: #16a34a; }
+        .form-l { background: #dc2626; }
+        .form-d { background: #888; }
+
+        /* TOP 10 CARD */
+        .top10-card {
+            flex-shrink: 0; width: 165px;
+            cursor: pointer; transition: transform 0.28s;
+            position: relative;
+        }
+        .top10-card:hover { transform: scale(1.06) translateY(-4px); z-index: 5; }
+        .top10-num {
+            position: absolute; left: -12px; bottom: 36px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 5.8rem; line-height: 1;
+            -webkit-text-stroke: 2px rgba(255,255,255,0.13);
+            color: transparent; z-index: 3; pointer-events: none;
+        }
+        .top10-thumb {
+            width: 100%; height: 225px;
+            border-radius: 10px; overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+        .top10-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
+        .top10-card:hover .top10-thumb img { transform: scale(1.06); }
+        .top10-title {
+            font-size: 0.8rem; font-weight: 600;
+            margin-top: 9px; padding: 0 4px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+
+        /* PROMO BANNER */
+        .promo-banner {
+            margin: 48px 48px 0;
+            border-radius: 18px; overflow: hidden;
+            height: 140px; position: relative;
+            background: linear-gradient(135deg, #0a1628 0%, #1a0533 50%, #0d1f10 100%);
+            display: flex; align-items: center;
+            padding: 0 44px; cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .promo-banner:hover { transform: scale(1.01); }
+        .promo-banner::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse at 15% 50%, rgba(229,9,20,0.28) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 50%, rgba(245,166,35,0.22) 0%, transparent 50%);
+        }
+        .promo-content { position: relative; z-index: 2; }
+        .promo-tag { font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent2); margin-bottom: 7px; }
+        .promo-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 2px; margin-bottom: 6px; }
+        .promo-features { display: flex; gap: 16px; flex-wrap: wrap; }
+        .promo-feature { font-size: 0.78rem; color: #aaa; display: flex; align-items: center; gap: 5px; }
+        .promo-feature::before { content: '✓'; color: var(--accent2); font-weight: 700; }
+        .promo-btn {
+            margin-left: auto; position: relative; z-index: 2;
+            background: linear-gradient(135deg, var(--accent), #c20810);
+            border: none; color: #fff;
+            padding: 14px 32px; border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.92rem; font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            letter-spacing: 0.3px; white-space: nowrap;
+        }
+        .promo-btn:hover { transform: scale(1.04); box-shadow: 0 8px 28px rgba(229,9,20,0.5); }
+
+        /* SCHEDULE STRIP */
+        .schedule-strip {
+            margin: 48px 48px 0;
+            background: var(--surface);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px;
+            padding: 24px 32px;
+        }
+        .schedule-header {
+            display: flex; align-items: center;
+            justify-content: space-between; margin-bottom: 20px;
+        }
+        .schedule-title { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .schedule-date { font-size: 0.78rem; color: var(--accent2); font-weight: 600; }
+        .schedule-row { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; }
+        .schedule-row::-webkit-scrollbar { display: none; }
+        .schedule-item {
+            flex-shrink: 0; width: 200px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 10px; padding: 14px;
+            cursor: pointer; transition: border-color 0.2s, background 0.2s;
+            position: relative; overflow: hidden;
+        }
+        .schedule-item:hover { border-color: rgba(229,9,20,0.4); background: rgba(229,9,20,0.05); }
+        .schedule-item.now { border-color: var(--accent); background: rgba(229,9,20,0.08); }
+        .schedule-item.now::before {
+            content: 'LIVE';
+            position: absolute; top: 8px; right: 8px;
+            background: var(--accent); color: #fff;
+            font-size: 0.55rem; font-weight: 800;
+            letter-spacing: 1px; padding: 2px 6px; border-radius: 3px;
+        }
+        .sch-time { font-size: 0.72rem; color: var(--accent2); font-weight: 700; margin-bottom: 6px; }
+        .sch-show { font-size: 0.82rem; font-weight: 600; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .sch-channel { font-size: 0.68rem; color: var(--muted); }
+        .sch-thumb { width: 100%; height: 80px; border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
+        .sch-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid rgba(255,255,255,0.07);
+            padding: 44px 48px 32px;
+            margin-top: 32px;
+        }
+        
+        
+        .footer-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem; letter-spacing: 3px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+        .footer-tagline { font-size: 0.82rem; color: var(--muted); line-height: 1.6; max-width: 240px; }
+        .footer-apps { display: flex; gap: 10px; margin-top: 16px; }
+        .app-btn {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; padding: 8px 14px;
+            cursor: pointer; transition: border-color 0.2s;
+            font-size: 0.72rem; color: #ccc;
+        }
+        .app-btn:hover { border-color: rgba(255,255,255,0.25); }
+        .app-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+        
+        
+        
+        
+        
+        
+        
+
+
+        .footer-top { display: flex; justify-content: space-between; align-items: center; padding-bottom: 32px; border-bottom: 1px solid rgba(255,255,255,0.07); margin-bottom: 24px; flex-wrap: wrap; gap: 24px; }
+        .footer-brand { max-width: 280px; }
+        .footer-links-row { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+        .footer-links-row a { color: var(--muted); font-size: 0.82rem; text-decoration: none; transition: color 0.2s; }
+        .footer-links-row a:hover { color: #fff; }
+        .footer-bottom {
+            display: flex; justify-content: space-between;
+            align-items: center; flex-wrap: wrap; gap: 12px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .footer-copy { color: var(--muted); font-size: 0.75rem; }
+        .footer-badges { display: flex; gap: 10px; }
+        .footer-badge {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 4px; padding: 4px 10px;
+            font-size: 0.65rem; color: var(--muted); font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .section { animation: fadeInUp 0.5s ease both; }
+        .section:nth-child(2)  { animation-delay: 0.05s; }
+        .section:nth-child(3)  { animation-delay: 0.1s; }
+        .section:nth-child(4)  { animation-delay: 0.15s; }
+        .section:nth-child(5)  { animation-delay: 0.2s; }
+        .section:nth-child(6)  { animation-delay: 0.25s; }
+        .section:nth-child(7)  { animation-delay: 0.3s; }
+        .section:nth-child(8)  { animation-delay: 0.35s; }
+    </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+    <div class="logo">StreamVerse</div>
+    <div class="nav-links">
+        <a href="home.html">Home</a>
+        <a href="movies.html">Movies</a
+        <a href="tv.html">TV Shows</a>
+        <a href="#" class="active">Sports</a>
+        <a href="kids.html">Kids</a>
+    </div>
+    <div class="nav-right">
+        <div class="search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2.5">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input type="text" placeholder="Search sports, teams...">
+        </div>
+        <button class="nav-btn">Sports Pass</button>
+        <div class="avatar">U</div>
+    </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+    <div class="hero-bg-img"></div>
+    <div class="hero-bg"></div>
+    <div class="hero-grain"></div>
+
+    <div class="hero-mute">
+        <svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+    </div>
+
+    <div class="hero-content">
+        <div class="hero-badge"><span class="pulse-dot"></span>Live Now · ICC Champions Trophy</div>
+        <h1 class="hero-title">INDIA<br><em>vs PAK</em></h1>
+        <div class="hero-meta">
+            <span class="year">2025</span>
+            <span class="dot"></span>
+            <span>Dubai, UAE</span>
+            <span class="dot"></span>
+            <span class="live-badge-hero">● LIVE</span>
+            <span class="rating-badge">🏏 IND 210/4</span>
+        </div>
+        <div class="genre-tags">
+            <span class="genre-tag">Cricket</span>
+            <span class="genre-tag">ODI</span>
+            <span class="genre-tag">Champions Trophy</span>
+            <span class="genre-tag">4K</span>
+        </div>
+        <p class="hero-desc">India vs Pakistan in the ICC Champions Trophy 2025 — the biggest rivalry in cricket is live right now. Don't miss a single ball.</p>
+        <div class="hero-btns">
+            <button class="btn-play">
+                <svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+                Watch Live
+            </button>
+            <button class="btn-info">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Match Info
+            </button>
+            <button class="btn-watchlist">
+                <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" width="16" height="16" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                Remind Me
+            </button>
+        </div>
+    </div>
+
+    <div class="hero-side">
+        <div class="score-chip-row">
+            <div class="score-chip live-chip">
+                <div class="chip-score">210/4</div>
+                <div class="chip-label">● IND LIVE</div>
+            </div>
+            <div class="score-chip">
+                <div class="chip-score">32.2</div>
+                <div class="chip-label">OVERS</div>
+            </div>
+            <div class="score-chip">
+                <div class="chip-score">—</div>
+                <div class="chip-label">PAK BAT</div>
+            </div>
+        </div>
+        <div class="hero-dots">
+            <span class="active"></span><span></span><span></span><span></span>
+        </div>
+    </div>
+</section>
+
+<!-- SCORE TICKER -->
+<div class="score-ticker">
+    <div class="ticker-label">
+        <div class="ticker-live-dot"></div>
+        <div class="ticker-label-text">Live Scores</div>
+    </div>
+    <div class="score-card">
+        <div class="score-sport-icon">🏏</div>
+        <div class="score-teams">
+            <div class="score-team winner">IND <span class="score-num highlight">210/4</span></div>
+            <div class="score-team loser">PAK <span class="score-num">—</span></div>
+        </div>
+        <div class="score-status status-live">32 OV</div>
+    </div>
+    <div class="score-card">
+        <div class="score-sport-icon">⚽</div>
+        <div class="score-teams">
+            <div class="score-team winner">Real Madrid <span class="score-num highlight">2</span></div>
+            <div class="score-team loser">Barcelona <span class="score-num">1</span></div>
+        </div>
+        <div class="score-status status-live">78'</div>
+    </div>
+    <div class="score-card">
+        <div class="score-sport-icon">🎾</div>
+        <div class="score-teams">
+            <div class="score-team winner">Djokovic <span class="score-num highlight">2</span></div>
+            <div class="score-team loser">Alcaraz <span class="score-num">1</span></div>
+        </div>
+        <div class="score-status status-live">SET 3</div>
+    </div>
+    <div class="score-card">
+        <div class="score-sport-icon">🏀</div>
+        <div class="score-teams">
+            <div class="score-team winner">LAL <span class="score-num highlight">108</span></div>
+            <div class="score-team loser">GSW <span class="score-num">102</span></div>
+        </div>
+        <div class="score-status status-ft">FT</div>
+    </div>
+    <div class="score-card">
+        <div class="score-sport-icon">🏑</div>
+        <div class="score-teams">
+            <div class="score-team">IND <span class="score-num">—</span></div>
+            <div class="score-team">AUS <span class="score-num">—</span></div>
+        </div>
+        <div class="score-status status-soon">6 PM</div>
+    </div>
+    <div class="score-card">
+        <div class="score-sport-icon">🥊</div>
+        <div class="score-teams">
+            <div class="score-team">Fury</div>
+            <div class="score-team">Usyk</div>
+        </div>
+        <div class="score-status status-soon">TOM</div>
+    </div>
+</div>
+
+<!-- FILTER PILLS -->
+<div class="category-bar">
+    <div class="cat-pill active">All Sports</div>
+    <div class="cat-pill">🏏 Cricket</div>
+    <div class="cat-pill">⚽ Football</div>
+    <div class="cat-pill">🎾 Tennis</div>
+    <div class="cat-pill">🏀 Basketball</div>
+    <div class="cat-pill">🏑 Hockey</div>
+    <div class="cat-pill">🏋️ Wrestling</div>
+    <div class="cat-pill">🥊 Boxing</div>
+    <div class="cat-pill">🏎️ Formula 1</div>
+    <div class="cat-pill">🏊 Aquatics</div>
+    <div class="cat-pill">🏸 Badminton</div>
+    <div class="cat-pill">🤼 Kabaddi</div>
+</div>
+
+<main>
+
+    <!-- LIVE MATCHES -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title">
+                <span class="icon">🔴</span> Live Matches
+                <span class="section-label" style="color:#ef4444;background:rgba(220,38,38,0.1);">ON AIR NOW</span>
+            </div>
+            <a class="see-all" href="#">All Live →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+                <!-- IND vs PAK -->
+                <div class="match-card">
+                    <img class="match-card-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTx5v6U12yM_Mibd71DW87-cieJ0EXvDmzxdQ&s" alt="">
+                    <div class="match-card-overlay"></div>
+                    <div class="match-card-live">● LIVE</div>
+                    <div class="match-card-sport">Cricket</div>
+                    <div class="match-body">
+                        <div class="match-league">🏆 ICC Champions Trophy 2025</div>
+                        <div class="match-teams">
+                            <div class="match-team">
+                                <img class="team-flag" src="https://picsum.photos/seed/ind/80/80" alt="IND">
+                                <div class="team-abbr">IND</div>
+                            </div>
+                            <div class="match-score-block">
+                                <div class="match-score" style="color:var(--accent2)">210<span style="font-size:1rem;color:var(--muted)">/4</span></div>
+                                <div class="match-time-label">32.2 OV · BAT</div>
+                            </div>
+                            <div class="match-team">
+                                <img class="team-flag" src="https://picsum.photos/seed/pak/80/80" alt="PAK">
+                                <div class="team-abbr">PAK</div>
+                            </div>
+                        </div>
+                        <div class="match-footer">
+                            <div class="match-venue">📍 Dubai Intl. Stadium</div>
+                            <button class="match-watch-btn">Watch Live</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- El Clasico -->
+                <div class="match-card">
+                    <img class="match-card-img" src="https://cdn.resfu.com/media/img_news/barcelona-crowned-2024-25-la-liga-champions--besoccer.png" alt="">
+                    <div class="match-card-overlay"></div>
+                    <div class="match-card-live">● LIVE</div>
+                    <div class="match-card-sport">Football</div>
+                    <div class="match-body">
+                        <div class="match-league">⚽ La Liga 2024–25</div>
+                        <div class="match-teams">
+                            <div class="match-team">
+                                <img class="team-flag" src="https://picsum.photos/seed/rm/80/80" alt="RMA">
+                                <div class="team-abbr">RMA</div>
+                            </div>
+                            <div class="match-score-block">
+                                <div class="match-score">2<span style="color:var(--muted);font-size:1rem"> – </span>1</div>
+                                <div class="match-time-label">78' LIVE</div>
+                            </div>
+                            <div class="match-team">
+                                <img class="team-flag" src="https://picsum.photos/seed/barca/80/80" alt="FCB">
+                                <div class="team-abbr">FCB</div>
+                            </div>
+                        </div>
+                        <div class="match-footer">
+                            <div class="match-venue">📍 Santiago Bernabéu</div>
+                            <button class="match-watch-btn">Watch Live</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Wimbledon -->
+                <div class="match-card">
+                    <img class="match-card-img" src="https://i.ytimg.com/vi/0isAUQ-fs4I/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLB235wYCSWctKLDlyVQH7-nSjUQbQ" alt="">
+                    <div class="match-card-overlay"></div>
+                    <div class="match-card-live">● LIVE</div>
+                    <div class="match-card-sport">Tennis</div>
+                    <div class="match-body">
+                        <div class="match-league">🎾 Wimbledon 2025 · SF</div>
+                        <div class="match-teams">
+                            <div class="match-team">
+                                <img class="team-flag" src="https://picsum.photos/seed/djok/80/80" alt="DJOK">
+                                <div class="team-abbr">DJOK</div>
+                            </div>
+                            <div class="match-score-block">
+                                <div class="match-score" style="color:var(--accent2)">2<span style="color:var(--muted);font-size:1rem"> – </span>1</div>
+                                <div class="match-time-label">SET 3 · 4–3</div>
+                            </div>
+                            <div class="match-team">
+                                <img class="team-flag" src="https://picsum.photos/seed/alc/80/80" alt="ALC">
+                                <div class="team-abbr">ALC</div>
+                            </div>
+                        </div>
+                        <div class="match-footer">
+                            <div class="match-venue">📍 Centre Court</div>
+                            <button class="match-watch-btn">Watch Live</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- PKL -->
+                <div class="match-card">
+                    <img class="match-card-img" src="https://www.prokabaddi.com/static-assets/waf-images/5a/49/81/16-9/nbDktODqt0.png?v=2.39&w=600" alt="">
+                    <div class="match-card-overlay"></div>
+                    <div class="match-card-live">● LIVE</div>
+                    <div class="match-card-sport">Kabaddi</div>
+                    <div class="match-body">
+                        <div class="match-league">🤼 Pro Kabaddi League S11</div>
+                        <div class="match-teams">
+                            <div class="match-team">
+                                <img class="team-flag" src="https://picsum.photos/seed/mumbai/80/80" alt="MUM">
+                                <div class="team-abbr">MUM</div>
+                            </div>
+                            <div class="match-score-block">
+                                <div class="match-score">34<span style="color:var(--muted);font-size:1rem"> – </span>30</div>
+                                <div class="match-time-label">2ND HALF</div>
+                            </div>
+                            <div class="match-team">
+                                <img class="team-flag" src="https://picsum.photos/seed/delhi/80/80" alt="DEL">
+                                <div class="team-abbr">DEL</div>
+                            </div>
+                        </div>
+                        <div class="match-footer">
+                            <div class="match-venue">📍 NSCI Dome, Mumbai</div>
+                            <button class="match-watch-btn">Watch Live</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- BROWSE BY SPORT -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">🏅</span> Browse by Sport</div>
+            <a class="see-all" href="#">All Sports →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+                <div class="sport-cat-card"><img src="https://picsum.photos/seed/cricket_cat/300/180" alt="Cricket">
+                    <div class="sport-cat-overlay"></div>
+                    <div class="sport-cat-body"><div class="sport-cat-icon">🏏</div><div class="sport-cat-name">Cricket</div></div>
+                </div>
+                <div class="sport-cat-card"><img src="https://picsum.photos/seed/football_cat/300/180" alt="Football">
+                    <div class="sport-cat-overlay"></div>
+                    <div class="sport-cat-body"><div class="sport-cat-icon">⚽</div><div class="sport-cat-name">Football</div></div>
+                </div>
+                <div class="sport-cat-card"><img src="https://picsum.photos/seed/tennis_cat/300/180" alt="Tennis">
+                    <div class="sport-cat-overlay"></div>
+                    <div class="sport-cat-body"><div class="sport-cat-icon">🎾</div><div class="sport-cat-name">Tennis</div></div>
+                </div>
+                <div class="sport-cat-card"><img src="https://picsum.photos/seed/basketball_cat/300/180" alt="NBA">
+                    <div class="sport-cat-overlay"></div>
+                    <div class="sport-cat-body"><div class="sport-cat-icon">🏀</div><div class="sport-cat-name">NBA</div></div>
+                </div>
+                <div class="sport-cat-card"><img src="https://picsum.photos/seed/hockey_cat/300/180" alt="Hockey">
+                    <div class="sport-cat-overlay"></div>
+                    <div class="sport-cat-body"><div class="sport-cat-icon">🏑</div><div class="sport-cat-name">Hockey</div></div>
+                </div>
+                <div class="sport-cat-card"><img src="https://picsum.photos/seed/f1_cat/300/180" alt="Formula 1">
+                    <div class="sport-cat-overlay"></div>
+                    <div class="sport-cat-body"><div class="sport-cat-icon">🏎️</div><div class="sport-cat-name">Formula 1</div></div>
+                </div>
+                <div class="sport-cat-card"><img src="https://picsum.photos/seed/boxing_cat/300/180" alt="Boxing">
+                    <div class="sport-cat-overlay"></div>
+                    <div class="sport-cat-body"><div class="sport-cat-icon">🥊</div><div class="sport-cat-name">Boxing</div></div>
+                </div>
+                <div class="sport-cat-card"><img src="https://picsum.photos/seed/badminton_cat/300/180" alt="Badminton">
+                    <div class="sport-cat-overlay"></div>
+                    <div class="sport-cat-body"><div class="sport-cat-icon">🏸</div><div class="sport-cat-name">Badminton</div></div>
+                </div>
+                <div class="sport-cat-card"><img src="https://picsum.photos/seed/kabaddi_cat/300/180" alt="Kabaddi">
+                    <div class="sport-cat-overlay"></div>
+                    <div class="sport-cat-body"><div class="sport-cat-icon">🤼</div><div class="sport-cat-name">Kabaddi</div></div>
+                </div>
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- UPCOMING MATCHES -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title">
+                <span class="icon">📅</span> Upcoming Matches
+                <span class="section-label">Next 7 Days</span>
+            </div>
+            <a class="see-all" href="#">Full Schedule →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+                <div class="match-card upcoming">
+                    <img class="match-card-img" src="https://img.cricketnmore.com/uploads/2025/02/aus-vs-eng-dream11-prediction-fourth-odi-australia-vs-england-icc-champions-trophy-2025.jpg" alt="">
+                    <div class="match-card-overlay"></div>
+                    <div class="match-card-sport">Cricket</div>
+                    <div class="match-body">
+                        <div class="match-league">🏆 ICC Champions Trophy 2025</div>
+                        <div class="match-teams">
+                            <div class="match-team"><img class="team-flag" src="https://picsum.photos/seed/aus/80/80" alt="AUS"><div class="team-abbr">AUS</div></div>
+                            <div class="match-score-block">
+                                <div class="match-upcoming-time">7 PM</div>
+                                <div class="match-time-label">TODAY · DEC 23</div>
+                            </div>
+                            <div class="match-team"><img class="team-flag" src="https://picsum.photos/seed/eng/80/80" alt="ENG"><div class="team-abbr">ENG</div></div>
+                        </div>
+                        <div class="match-footer">
+                            <div class="match-venue">📍 Lord's, London</div>
+                            <button class="match-watch-btn">Set Reminder</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="match-card upcoming">
+                    <img class="match-card-img" src="https://i.ytimg.com/vi/sUyl8PD3BU0/maxresdefault.jpg" alt="">
+                    <div class="match-card-overlay"></div>
+                    <div class="match-card-sport">Football</div>
+                    <div class="match-body">
+                        <div class="match-league">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</div>
+                        <div class="match-teams">
+                            <div class="match-team"><img class="team-flag" src="https://picsum.photos/seed/mci/80/80" alt="MCI"><div class="team-abbr">MCI</div></div>
+                            <div class="match-score-block">
+                                <div class="match-upcoming-time">9:30 PM</div>
+                                <div class="match-time-label">TOM · DEC 24</div>
+                            </div>
+                            <div class="match-team"><img class="team-flag" src="https://picsum.photos/seed/liv/80/80" alt="LIV"><div class="team-abbr">LIV</div></div>
+                        </div>
+                        <div class="match-footer">
+                            <div class="match-venue">📍 Etihad Stadium</div>
+                            <button class="match-watch-btn">Set Reminder</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="match-card upcoming">
+                    <img class="match-card-img" src="https://www.livemint.com/lm-img/img/2025/10/14/600x338/India_vs_Pakistan_1760454101377_1760454101628.jpeg" alt="">
+                    <div class="match-card-overlay"></div>
+                    <div class="match-card-sport">Hockey</div>
+                    <div class="match-body">
+                        <div class="match-league">🏑 Asia Cup Hockey 2025</div>
+                        <div class="match-teams">
+                            <div class="match-team"><img class="team-flag" src="https://picsum.photos/seed/indh/80/80" alt="IND"><div class="team-abbr">IND</div></div>
+                            <div class="match-score-block">
+                                <div class="match-upcoming-time">6 PM</div>
+                                <div class="match-time-label">DEC 25 · WED</div>
+                            </div>
+                            <div class="match-team"><img class="team-flag" src="https://picsum.photos/seed/pak2/80/80" alt="PAK"><div class="team-abbr">PAK</div></div>
+                        </div>
+                        <div class="match-footer">
+                            <div class="match-venue">📍 Kalinga Stadium, OD</div>
+                            <button class="match-watch-btn">Set Reminder</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="match-card upcoming">
+                    <img class="match-card-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOMnX6mHFkmBYtLd95vKAXjJRQYVUur-p8Rg&s" alt="">
+                    <div class="match-card-overlay"></div>
+                    <div class="match-card-sport">Formula 1</div>
+                    <div class="match-body">
+                        <div class="match-league">🏎️ F1 2025 · Abu Dhabi GP</div>
+                        <div class="match-teams">
+                            <div class="match-team"><img class="team-flag" src="https://picsum.photos/seed/ver/80/80" alt="VER"><div class="team-abbr">VER</div></div>
+                            <div class="match-score-block">
+                                <div class="match-upcoming-time">3 PM</div>
+                                <div class="match-time-label">DEC 26 · THU</div>
+                            </div>
+                            <div class="match-team"><img class="team-flag" src="https://picsum.photos/seed/ham/80/80" alt="HAM"><div class="team-abbr">HAM</div></div>
+                        </div>
+                        <div class="match-footer">
+                            <div class="match-venue">📍 Yas Marina Circuit</div>
+                            <button class="match-watch-btn">Set Reminder</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- CRICKET HIGHLIGHTS -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">🏏</span> Cricket Highlights</div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+                <div class="card">
+                    <div class="card-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTypCVMdQSWyvblAC47wRxYcFeK_1kR-VRJYA&s" alt="">
+                        <div class="card-badge badge-new">NEW</div>
+                        <div class="card-play"><div class="card-play-btn">▶</div></div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">IND vs PAK – Full Match</div>
+                        <div class="card-sub"><span class="card-rating">⭐ 9.4</span><span>·</span><span>Champions Trophy</span></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgpeQCYNdevTnq-KvwOZlw8doTUfswxBnAmA&s" alt="">
+                        <div class="card-badge badge-hot">HOT</div>
+                        <div class="card-play"><div class="card-play-btn">▶</div></div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">Rohit's 150 vs Australia</div>
+                        <div class="card-sub"><span class="card-rating">⭐ 9.1</span><span>·</span><span>ODI Series</span></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkSuprGAY6Sz_MoHfxBbbwABZjYOt7F1nBKw&s" alt="">
+                        <div class="card-play"><div class="card-play-btn">▶</div></div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">IPL 2025 – Best Catches</div>
+                        <div class="card-sub"><span class="card-rating">⭐ 8.7</span><span>·</span><span>IPL</span></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQamH0qDePJ_KqH3nTh7yyWc9LCvLBy6t_G_g&s" alt="">
+                        <div class="card-badge badge-4k">4K</div>
+                        <div class="card-play"><div class="card-play-btn">▶</div></div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">Top 10 Sixes of 2024</div>
+                        <div class="card-sub"><span class="card-rating">⭐ 8.9</span><span>·</span><span>Highlights</span></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-thumb"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3b/2024_T20_World_Cup_Final_Match_Poster.jpeg/250px-2024_T20_World_Cup_Final_Match_Poster.jpeg" alt="">
+                        <div class="card-badge badge-free">FREE</div>
+                        <div class="card-play"><div class="card-play-btn">▶</div></div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">T20 World Cup Final 2024</div>
+                        <div class="card-sub"><span class="card-rating">⭐ 9.5</span><span>·</span><span>Highlights</span></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUzrDjF3w_KjDoutU4Dw6GKu-bsYCPPNwotg&s" alt="">
+                        <div class="card-badge badge-new">NEW</div>
+                        <div class="card-play"><div class="card-play-btn">▶</div></div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">Bumrah's Hat-trick vs SA</div>
+                        <div class="card-sub"><span class="card-rating">⭐ 9.0</span><span>·</span><span>Test Series</span></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRO7YwOQ1FTHOXuEEUqIlSf4x-_XWb3-zahzQ&s" alt="">
+                        <div class="card-play"><div class="card-play-btn">▶</div></div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">Virat's 50th ODI Century</div>
+                        <div class="card-sub"><span class="card-rating">⭐ 9.8</span><span>·</span><span>ODI</span></div>
+                    </div>
+                </div>
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- PROMO BANNER -->
+    <div class="promo-banner">
+        <div class="promo-content">
+            <div class="promo-tag">✦ StreamVerse Sports Pass</div>
+            <div class="promo-title">Every Match. Every Sport. Live.</div>
+            <div class="promo-features">
+                <div class="promo-feature">Cricket · Football · Tennis · F1</div>
+                <div class="promo-feature">4K Streams</div>
+                <div class="promo-feature">No Ads</div>
+                <div class="promo-feature">All Devices</div>
+            </div>
+        </div>
+        <button class="promo-btn">Get Sports Pass</button>
+    </div>
+
+    <!-- MATCH SCHEDULE STRIP -->
+    <div class="schedule-strip">
+        <div class="schedule-header">
+            <div class="schedule-title">📅 Today's Schedule</div>
+            <div class="schedule-date">Mon, 23 Dec 2025</div>
+        </div>
+        <div class="schedule-row">
+            <div class="schedule-item now">
+                <div class="sch-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTx5v6U12yM_Mibd71DW87-cieJ0EXvDmzxdQ&s" alt=""></div>
+                <div class="sch-time">2:30 PM</div>
+                <div class="sch-show">IND vs PAK</div>
+                <div class="sch-channel">🏏 ICC Champions Trophy</div>
+            </div>
+            <div class="schedule-item">
+                <div class="sch-thumb"><img src="https://espnpressroom.com/us/files/2025/10/10_26_25-ElClasico--scaled.jpg" alt=""></div>
+                <div class="sch-time">5:00 PM</div>
+                <div class="sch-show">El Clásico</div>
+                <div class="sch-channel">⚽ La Liga 2024–25</div>
+            </div>
+            <div class="schedule-item">
+                <div class="sch-thumb"><img src="https://i.ytimg.com/vi/0isAUQ-fs4I/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLB235wYCSWctKLDlyVQH7-nSjUQbQ" alt=""></div>
+                <div class="sch-time">6:00 PM</div>
+                <div class="sch-show">Wimbledon SF</div>
+                <div class="sch-channel">🎾 Djokovic vs Alcaraz</div>
+            </div>
+            <div class="schedule-item">
+                <div class="sch-thumb"><img src="https://www.prokabaddi.com/static-assets/waf-images/5a/49/81/16-9/nbDktODqt0.png?v=2.39&w=600" alt=""></div>
+                <div class="sch-time">7:00 PM</div>
+                <div class="sch-show">PKL Season 11</div>
+                <div class="sch-channel">🤼 Mumbai vs Delhi</div>
+            </div>
+            <div class="schedule-item">
+                <div class="sch-thumb"><img src="https://img.cricketnmore.com/uploads/2025/02/aus-vs-eng-dream11-prediction-fourth-odi-australia-vs-england-icc-champions-trophy-2025.jpg" alt=""></div>
+                <div class="sch-time">7:00 PM</div>
+                <div class="sch-show">AUS vs ENG</div>
+                <div class="sch-channel">🏏 ICC Champions Trophy</div>
+            </div>
+            <div class="schedule-item">
+                <div class="sch-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOMnX6mHFkmBYtLd95vKAXjJRQYVUur-p8Rg&s" alt=""></div>
+                <div class="sch-time">9:30 PM</div>
+                <div class="sch-show">Abu Dhabi GP Quali</div>
+                <div class="sch-channel">🏎️ Formula 1 · 2025</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- POINTS TABLES -->
+    <section class="standings-section">
+        <div class="standings-header">
+            <div class="section-title"><span class="icon">📊</span> Points Tables</div>
+            <a class="see-all" href="#">All Tables →</a>
+        </div>
+        <div class="standings-grid">
+            <!-- IPL -->
+            <div class="standings-box">
+                <div class="standings-box-header">
+                    <span style="font-size:1.1rem">🏏</span>
+                    <div class="standings-box-title">IPL 2025 – Points Table</div>
+                    <div class="standings-sport-tag">Cricket</div>
+                </div>
+                <table>
+                    <thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>L</th><th>PTS</th><th>Form</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td class="team-rank">1</td>
+                            <td><div class="team-name-cell"><div class="team-dot qualify"></div>MI</div></td>
+                            <td>10</td><td>8</td><td>2</td>
+                            <td class="pts-col">16</td>
+                            <td><div class="form-badges"><div class="form-w">W</div><div class="form-w">W</div><div class="form-l">L</div><div class="form-w">W</div><div class="form-w">W</div></div></td>
+                        </tr>
+                        <tr>
+                            <td class="team-rank">2</td>
+                            <td><div class="team-name-cell"><div class="team-dot qualify"></div>CSK</div></td>
+                            <td>10</td><td>7</td><td>3</td>
+                            <td class="pts-col">14</td>
+                            <td><div class="form-badges"><div class="form-w">W</div><div class="form-l">L</div><div class="form-w">W</div><div class="form-w">W</div><div class="form-d">D</div></div></td>
+                        </tr>
+                        <tr>
+                            <td class="team-rank">3</td>
+                            <td><div class="team-name-cell"><div class="team-dot qualify"></div>RCB</div></td>
+                            <td>10</td><td>6</td><td>4</td>
+                            <td class="pts-col">12</td>
+                            <td><div class="form-badges"><div class="form-l">L</div><div class="form-w">W</div><div class="form-w">W</div><div class="form-w">W</div><div class="form-l">L</div></div></td>
+                        </tr>
+                        <tr>
+                            <td class="team-rank">4</td>
+                            <td><div class="team-name-cell"><div class="team-dot qualify"></div>KKR</div></td>
+                            <td>10</td><td>5</td><td>5</td>
+                            <td class="pts-col">10</td>
+                            <td><div class="form-badges"><div class="form-w">W</div><div class="form-d">D</div><div class="form-l">L</div><div class="form-w">W</div><div class="form-l">L</div></div></td>
+                        </tr>
+                        <tr>
+                            <td class="team-rank">5</td>
+                            <td><div class="team-name-cell"><div class="team-dot danger"></div>SRH</div></td>
+                            <td>10</td><td>3</td><td>7</td>
+                            <td class="pts-col">6</td>
+                            <td><div class="form-badges"><div class="form-l">L</div><div class="form-l">L</div><div class="form-l">L</div><div class="form-w">W</div><div class="form-l">L</div></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- EPL -->
+            <div class="standings-box">
+                <div class="standings-box-header">
+                    <span style="font-size:1.1rem">⚽</span>
+                    <div class="standings-box-title">Premier League 2024–25</div>
+                    <div class="standings-sport-tag">Football</div>
+                </div>
+                <table>
+                    <thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>PTS</th><th>Form</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td class="team-rank">1</td>
+                            <td><div class="team-name-cell"><div class="team-dot qualify"></div>Liverpool</div></td>
+                            <td>18</td><td>13</td><td>3</td>
+                            <td class="pts-col">42</td>
+                            <td><div class="form-badges"><div class="form-w">W</div><div class="form-w">W</div><div class="form-w">W</div><div class="form-d">D</div><div class="form-w">W</div></div></td>
+                        </tr>
+                        <tr>
+                            <td class="team-rank">2</td>
+                            <td><div class="team-name-cell"><div class="team-dot qualify"></div>Arsenal</div></td>
+                            <td>18</td><td>12</td><td>2</td>
+                            <td class="pts-col">38</td>
+                            <td><div class="form-badges"><div class="form-w">W</div><div class="form-w">W</div><div class="form-l">L</div><div class="form-w">W</div><div class="form-w">W</div></div></td>
+                        </tr>
+                        <tr>
+                            <td class="team-rank">3</td>
+                            <td><div class="team-name-cell"><div class="team-dot qualify"></div>Man City</div></td>
+                            <td>18</td><td>11</td><td>3</td>
+                            <td class="pts-col">36</td>
+                            <td><div class="form-badges"><div class="form-l">L</div><div class="form-w">W</div><div class="form-w">W</div><div class="form-w">W</div><div class="form-d">D</div></div></td>
+                        </tr>
+                        <tr>
+                            <td class="team-rank">4</td>
+                            <td><div class="team-name-cell"><div class="team-dot qualify"></div>Chelsea</div></td>
+                            <td>18</td><td>10</td><td>4</td>
+                            <td class="pts-col">34</td>
+                            <td><div class="form-badges"><div class="form-w">W</div><div class="form-d">D</div><div class="form-w">W</div><div class="form-w">W</div><div class="form-l">L</div></div></td>
+                        </tr>
+                        <tr>
+                            <td class="team-rank">5</td>
+                            <td><div class="team-name-cell"><div class="team-dot danger"></div>Man Utd</div></td>
+                            <td>18</td><td>5</td><td>4</td>
+                            <td class="pts-col">19</td>
+                            <td><div class="form-badges"><div class="form-l">L</div><div class="form-l">L</div><div class="form-d">D</div><div class="form-l">L</div><div class="form-w">W</div></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- TOP 10 MOMENTS -->
+    <section class="section" style="margin-top:44px">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">🏆</span> Top 10 Moments of 2025</div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+                <div class="top10-card">
+                    <div class="top10-num">1</div>
+                    <div class="top10-thumb"><img src="https://i.redd.it/otd-in-2023-virat-kohli-became-the-first-human-ever-to-v0-lbedmvkvsb1g1.jpg?width=736&format=pjpg&auto=webp&s=dac9f9490eec64428a91c18988c598749e51ddd0" alt=""></div>
+                    <div class="top10-title">Virat's 50th Century</div>
+                </div>
+                <div class="top10-card">
+                    <div class="top10-num">2</div>
+                    <div class="top10-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtVzqNnihI_UKG8RahUyyl3rIBJYdrIPBpcg&s" alt=""></div>
+                    <div class="top10-title">Real Madrid Comeback</div>
+                </div>
+                <div class="top10-card">
+                    <div class="top10-num">3</div>
+                    <div class="top10-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS63CGWr6niZhSq7iRf6tqJAxpmQ1aMiNxX1A&s" alt=""></div>
+                    <div class="top10-title">Djokovic Wimbledon Win</div>
+                </div>
+                <div class="top10-card">
+                    <div class="top10-num">4</div>
+                    <div class="top10-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRA4alEwl06d6UduOTctHTahNva093CQ6rqGA&s" alt=""></div>
+                    <div class="top10-title">IND Hockey Gold</div>
+                </div>
+                <div class="top10-card">
+                    <div class="top10-num">5</div>
+                    <div class="top10-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEOMU_HC56cMcwRqnhoAWru2fnk3iE-6xXcA&s" alt=""></div>
+                    <div class="top10-title">F1 Abu Dhabi Thriller</div>
+                </div>
+                <div class="top10-card">
+                    <div class="top10-num">6</div>
+                    <div class="top10-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8l8xfTtyZvlwn3Nwvm1zBb1p4O5lcy_R5Zg&s" alt=""></div>
+                    <div class="top10-title">PKL Grand Final</div>
+                </div>
+                <div class="top10-card">
+                    <div class="top10-num">7</div>
+                    <div class="top10-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvYkvF1Rkq1cJ96FSrE8h35BFRLCidwYKVoQ&s" alt=""></div>
+                    <div class="top10-title">T20 World Cup Final</div>
+                </div>
+                <div class="top10-card">
+                    <div class="top10-num">8</div>
+                    <div class="top10-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtEwUAS_z-JaH1H6Sb0v9U_RdKI-iiy2sBlg&s" alt=""></div>
+                    <div class="top10-title">NBA Finals Game 7</div>
+                </div>
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- FOOTBALL HIGHLIGHTS -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">⚽</span> Football Highlights</div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+                <div class="wide-match">
+                    <img src="https://espnpressroom.com/us/files/2025/10/10_26_25-ElClasico--scaled.jpg" alt="">
+                    <div class="wide-match-overlay"></div>
+                    <div class="wide-match-live">● LIVE</div>
+                    <div class="wide-match-body">
+                        <div class="wide-match-league">La Liga 2024–25</div>
+                        <div class="wide-match-title">El Clásico – Real Madrid vs Barça</div>
+                        <div class="wide-match-sub">2 – 1 · 78' Live</div>
+                    </div>
+                </div>
+                <div class="wide-match">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVAltcCsAdvIkLoSwDn2Ni9rdTPFv05w4lKA&s" alt="">
+                    <div class="wide-match-overlay"></div>
+                    <div class="wide-match-body">
+                        <div class="wide-match-league">UEFA Champions League</div>
+                        <div class="wide-match-title">Man City vs PSG – Full Match</div>
+                        <div class="wide-match-sub">Highlights · 3 – 2 · FT</div>
+                    </div>
+                </div>
+                <div class="wide-match">
+                    <img src="https://i.ytimg.com/vi/bkNK0TgufT8/maxresdefault.jpg" alt="">
+                    <div class="wide-match-overlay"></div>
+                    <div class="wide-match-body">
+                        <div class="wide-match-league">Premier League</div>
+                        <div class="wide-match-title">Arsenal vs Chelsea – Derby Day</div>
+                        <div class="wide-match-sub">Highlights · 1 – 1 · FT</div>
+                    </div>
+                </div>
+                <div class="wide-match">
+                    <img src="https://i.ytimg.com/vi/0Yym9aDL-lU/maxresdefault.jpg" alt="">
+                    <div class="wide-match-overlay"></div>
+                    <div class="wide-match-body">
+                        <div class="wide-match-league">ISL 2024–25</div>
+                        <div class="wide-match-title">Mumbai City vs Bengaluru FC</div>
+                        <div class="wide-match-sub">Highlights · 2 – 0 · FT</div>
+                    </div>
+                </div>
+                <div class="wide-match">
+                    <img src="https://ss-i.thgim.com/public/incoming/hdedyh/article69372528.ece/alternates/LANDSCAPE_1200/arg%20bra.jpg" alt="">
+                    <div class="wide-match-overlay"></div>
+                    <div class="wide-match-body">
+                        <div class="wide-match-league">FIFA World Cup Qual.</div>
+                        <div class="wide-match-title">Brazil vs Argentina</div>
+                        <div class="wide-match-sub">Highlights · 1 – 2 · FT</div>
+                    </div>
+                </div>
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+</main>
+
+<!-- ── FOOTER ── -->
+<footer>
+    <div class="footer-top">
+        <div class="footer-brand">
+            <div class="footer-logo">StreamVerse</div>
+            <div class="footer-tagline">India's most loved streaming platform. Watch anywhere, anytime.</div>
+            <div class="footer-apps">
+                <div class="app-btn"><svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>App Store</div>
+                <div class="app-btn"><svg viewBox="0 0 24 24"><path d="m3 20.5v-17c0-.83 1-.95 1.4-.4l14.5 8.6c.38.24.38.76 0 1L4.4 21.1c-.4.5-1.4.33-1.4-.6z"/></svg>Play Store</div>
+            </div>
+        </div>
+        <div class="footer-links-row">
+            <a href="">About Us</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="help.html">Help &amp; Support</a>
+            <a href="privacy.html">Privacy &amp; Terms</a>
+            <a href="feedback.html">Feedback</a>
+            <a href="#">Careers</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="footer-copy">© 2025 StreamVerse Entertainment Pvt. Ltd. All rights reserved.</div>
+        <div class="footer-badges">
+            <span class="footer-badge">4K UHD</span>
+            <span class="footer-badge">DOLBY ATMOS</span>
+            <span class="footer-badge">HDR 10+</span>
+            <span class="footer-badge">U/A CERTIFIED</span>
+        </div>
+    </div>
+</footer>
+
+<script>
+    function scrollRow(btn, dir) {
+        const wrap = btn.closest('.row-wrap');
+        const row = wrap.querySelector('.row');
+        row.scrollBy({ left: dir * 640, behavior: 'smooth' });
+    }
+
+    document.querySelectorAll('.cat-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+            document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+        });
+    });
+
+    // Hero dots auto-rotate
+    let heroIdx = 0;
+    const heroDots = document.querySelectorAll('.hero-dots span');
+    setInterval(() => {
+        heroDots.forEach(d => d.classList.remove('active'));
+        heroIdx = (heroIdx + 1) % heroDots.length;
+        heroDots[heroIdx].classList.add('active');
+    }, 4000);
+
+    heroDots.forEach((dot, i) => {
+        dot.addEventListener('click', () => {
+            heroDots.forEach(d => d.classList.remove('active'));
+            dot.classList.add('active');
+            heroIdx = i;
+        });
+    });
+
+    // Mute button toggle
+    const muteBtn = document.querySelector('.hero-mute');
+    let muted = true;
+    const muteIcon = `<svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
+    const unmuteIcon = `<svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`;
+
+    muteBtn.addEventListener('click', () => {
+        muted = !muted;
+        muteBtn.style.borderColor = muted ? 'rgba(255,255,255,0.15)' : 'var(--accent2)';
+        muteBtn.innerHTML = muted ? muteIcon : unmuteIcon;
+    });
+</script>
+<script src="script.js"></script>
+</body>
+</body>
+</html>

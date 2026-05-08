@@ -1,0 +1,1862 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamVerse – Help Center</title>3
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg2: #111118;
+            --surface: #1a1a24;
+            --accent: #e50914;
+            --accent2: #f5a623;
+            --gold: #FFD700;
+            --teal: #00c9a7;
+            --blue: #4f8ef7;
+            --text: #f0f0f0;
+            --muted: #888;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            padding: 16px 48px;
+            background: rgba(10, 10, 15, 0.98);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #bbb;
+            font-size: 0.88rem;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+            padding: 6px 14px;
+            border-radius: 6px;
+            transition: color 0.2s, background 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .nav-links a.active {
+            color: #fff;
+            background: rgba(229, 9, 20, 0.1);
+            border-bottom: 2px solid var(--accent);
+            border-radius: 6px 6px 0 0;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-left: auto;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 7px 16px;
+            transition: border-color 0.2s;
+        }
+
+        .search-box:focus-within {
+            border-color: rgba(229, 9, 20, 0.5);
+        }
+
+        .search-box input {
+            background: none;
+            border: none;
+            outline: none;
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            width: 160px;
+        }
+
+        .search-box input::placeholder {
+            color: var(--muted);
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, var(--accent), #c20810);
+            border: none;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .nav-btn:hover {
+            opacity: 0.88;
+            transform: scale(1.03);
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        .avatar:hover {
+            border-color: var(--accent2);
+        }
+
+        /* HERO */
+        .help-hero {
+            margin-top: 68px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 64px 24px 48px;
+        }
+
+        .help-hero-bg {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #0f0005 0%, #0a0a1a 40%, #0a0f15 70%, #000a15 100%);
+        }
+
+        .help-hero-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(229, 9, 20, 0.18) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 50%, rgba(245, 166, 35, 0.13) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 100%, rgba(79, 142, 247, 0.09) 0%, transparent 50%);
+        }
+
+        .help-hero-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(229, 9, 20, 0.06) 80px, transparent 80px),
+                radial-gradient(circle at 90% 80%, rgba(245, 166, 35, 0.06) 120px, transparent 120px);
+        }
+
+        .help-hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            animation: heroFadeUp 0.8s ease both;
+        }
+
+        @keyframes heroFadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .help-hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(229, 9, 20, 0.12);
+            border: 1px solid rgba(229, 9, 20, 0.3);
+            border-radius: 4px;
+            padding: 5px 16px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .help-hero-tag .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            animation: pulse 1.4s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .help-hero-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2.8rem, 6vw, 5rem);
+            letter-spacing: 3px;
+            line-height: 1;
+            margin-bottom: 16px;
+        }
+
+        .help-hero-title em {
+            font-style: normal;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .help-hero-sub {
+            font-size: 0.97rem;
+            color: #aaa;
+            max-width: 500px;
+            margin: 0 auto 32px;
+            line-height: 1.7;
+        }
+
+        .hero-search-wrap {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 580px;
+            animation: heroFadeUp 0.9s 0.1s ease both;
+        }
+
+        .hero-search {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .hero-search:focus-within {
+            border-color: rgba(229, 9, 20, 0.5);
+            box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.08);
+        }
+
+        .hero-search svg {
+            margin-left: 18px;
+            flex-shrink: 0;
+        }
+
+        .hero-search input {
+            flex: 1;
+            background: none;
+            border: none;
+            outline: none;
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            padding: 16px 14px;
+        }
+
+        .hero-search input::placeholder {
+            color: var(--muted);
+        }
+
+        .hero-search-btn {
+            background: linear-gradient(135deg, var(--accent), #c20810);
+            border: none;
+            color: #fff;
+            padding: 0 24px;
+            min-height: 52px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+
+        .hero-search-btn:hover {
+            opacity: 0.88;
+        }
+
+        .hero-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 16px;
+        }
+
+        .hero-tag {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 5px 14px;
+            font-size: 0.75rem;
+            color: #bbb;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .hero-tag:hover {
+            background: rgba(229, 9, 20, 0.1);
+            border-color: rgba(229, 9, 20, 0.3);
+            color: #fff;
+        }
+
+        /* STATUS BAR */
+        .status-bar {
+            background: rgba(0, 201, 167, 0.07);
+            border-top: 1px solid rgba(0, 201, 167, 0.15);
+            border-bottom: 1px solid rgba(0, 201, 167, 0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 24px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--teal);
+        }
+
+        .status-pulse {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--teal);
+            animation: pulse 1.6s infinite;
+        }
+
+        /* STATS BAR */
+        .stats-bar {
+            background: var(--surface);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            flex: 1;
+            min-width: 150px;
+            padding: 24px 28px;
+            text-align: center;
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            transition: background 0.2s;
+        }
+
+        .stat-item:last-child {
+            border-right: none;
+        }
+
+        .stat-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .stat-val {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.2rem;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .stat-label {
+            font-size: 0.72rem;
+            color: var(--muted);
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* MAIN */
+        .help-main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 80px 48px 100px;
+        }
+
+        /* SECTION HEADING */
+        .section-heading {
+            text-align: center;
+            margin-bottom: 52px;
+        }
+
+        .section-heading .label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .section-heading h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2rem, 3vw, 2.8rem);
+            letter-spacing: 2px;
+        }
+
+        .section-heading h2 em {
+            font-style: normal;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-heading p {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-top: 10px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+        }
+
+        /* TOPICS GRID */
+        .topics-section {
+            margin-bottom: 90px;
+        }
+
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .topic-card {
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 16px;
+            padding: 30px 24px;
+            cursor: pointer;
+            transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .topic-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s;
+        }
+
+        .topic-card:hover {
+            border-color: rgba(229, 9, 20, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .topic-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .topic-icon {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            display: block;
+            line-height: 1;
+        }
+
+        .topic-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .topic-card p {
+            font-size: 0.82rem;
+            line-height: 1.65;
+            color: rgba(200, 200, 210, 0.7);
+            margin-bottom: 18px;
+        }
+
+        .topic-count {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* TWO-COL */
+        .two-col-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            margin-bottom: 90px;
+            align-items: start;
+        }
+
+        .col-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent2);
+            margin-bottom: 10px;
+        }
+
+        .col-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+
+        .col-divider {
+            width: 36px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            border-radius: 2px;
+            margin: 16px 0 24px;
+        }
+
+        .articles-list {
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .article-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 22px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            transition: background 0.15s;
+            text-decoration: none;
+            color: inherit;
+            gap: 14px;
+        }
+
+        .article-item:last-child {
+            border-bottom: none;
+        }
+
+        .article-item:hover {
+            background: rgba(229, 9, 20, 0.06);
+        }
+
+        .article-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .article-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .article-title {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #ddd;
+        }
+
+        .article-tag {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            padding: 3px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .tag-account {
+            background: rgba(229, 9, 20, 0.12);
+            color: var(--accent);
+            border: 1px solid rgba(229, 9, 20, 0.25);
+        }
+
+        .tag-streaming {
+            background: rgba(79, 142, 247, 0.12);
+            color: var(--blue);
+            border: 1px solid rgba(79, 142, 247, 0.25);
+        }
+
+        .tag-billing {
+            background: rgba(245, 166, 35, 0.12);
+            color: var(--accent2);
+            border: 1px solid rgba(245, 166, 35, 0.25);
+        }
+
+        .tag-device {
+            background: rgba(0, 201, 167, 0.12);
+            color: var(--teal);
+            border: 1px solid rgba(0, 201, 167, 0.25);
+        }
+
+        .guide-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .guide-step {
+            display: flex;
+            gap: 18px;
+            align-items: flex-start;
+        }
+
+        .step-num {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), #c20810);
+            color: #fff;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+            box-shadow: 0 4px 16px rgba(229, 9, 20, 0.3);
+        }
+
+        .step-body h4 {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .step-body p {
+            font-size: 0.82rem;
+            color: rgba(200, 200, 210, 0.7);
+            line-height: 1.6;
+        }
+
+        .app-card {
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 16px;
+            padding: 22px;
+            margin-top: 24px;
+        }
+
+        .app-card-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+
+        .app-card-sub {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 14px;
+        }
+
+        .app-platforms {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .app-platform {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .app-platform:hover {
+            background: rgba(229, 9, 20, 0.07);
+            border-color: rgba(229, 9, 20, 0.25);
+        }
+
+        .app-platform-icon {
+            font-size: 1.4rem;
+        }
+
+        .app-platform-info h4 {
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: #eee;
+        }
+
+        .app-platform-info p {
+            font-size: 0.72rem;
+            color: var(--muted);
+        }
+
+        .app-arrow {
+            margin-left: auto;
+            color: rgba(255, 255, 255, 0.25);
+            font-size: 0.9rem;
+        }
+
+        /* PLANS */
+        .plans-section {
+            margin-bottom: 90px;
+        }
+
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .plan-card {
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 16px;
+            padding: 30px 24px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .plan-card.featured {
+            border-color: rgba(229, 9, 20, 0.35);
+        }
+
+        .plan-card.featured::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(229, 9, 20, 0.07) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .plan-badge {
+            position: absolute;
+            top: -1px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--accent), #c20810);
+            color: #fff;
+            font-size: 0.62rem;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 0 0 8px 8px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .plan-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .plan-price {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.8rem;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .plan-price span {
+            font-size: 1rem;
+        }
+
+        .plan-desc {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            line-height: 1.6;
+        }
+
+        .plan-features {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .plan-features li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.82rem;
+            color: rgba(200, 200, 210, 0.8);
+        }
+
+        .check {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: rgba(0, 201, 167, 0.15);
+            border: 1px solid rgba(0, 201, 167, 0.3);
+            color: var(--teal);
+            font-size: 0.62rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* FAQ */
+        .faq-section {
+            margin-bottom: 90px;
+        }
+
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .faq-item {
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        .faq-item.open {
+            border-color: rgba(229, 9, 20, 0.3);
+        }
+
+        .faq-q {
+            padding: 18px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: #eee;
+            user-select: none;
+            transition: background 0.15s;
+            gap: 16px;
+        }
+
+        .faq-q:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .faq-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: rgba(229, 9, 20, 0.1);
+            border: 1px solid rgba(229, 9, 20, 0.25);
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            transition: transform 0.25s, background 0.2s;
+        }
+
+        .faq-item.open .faq-icon {
+            transform: rotate(45deg);
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .faq-a {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s;
+            padding: 0 22px;
+            font-size: 0.85rem;
+            color: rgba(200, 200, 210, 0.75);
+            line-height: 1.75;
+        }
+
+        .faq-item.open .faq-a {
+            max-height: 260px;
+            padding: 0 22px 20px;
+        }
+
+        /* CONTACT */
+        .contact-section {
+            margin-bottom: 90px;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .contact-card {
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 16px;
+            padding: 36px 28px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s;
+        }
+
+        .contact-card:hover {
+            border-color: rgba(229, 9, 20, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .contact-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .contact-icon-wrap {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin: 0 auto 18px;
+        }
+
+        .contact-card h3 {
+            font-size: 1.02rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .contact-card p {
+            font-size: 0.82rem;
+            color: rgba(200, 200, 210, 0.7);
+            line-height: 1.65;
+            margin-bottom: 18px;
+        }
+
+        .contact-avail {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            padding: 5px 14px;
+            border-radius: 4px;
+        }
+
+        .avail-green {
+            background: rgba(0, 201, 167, 0.1);
+            border: 1px solid rgba(0, 201, 167, 0.25);
+            color: var(--teal);
+        }
+
+        .avail-gold {
+            background: rgba(245, 166, 35, 0.1);
+            border: 1px solid rgba(245, 166, 35, 0.25);
+            color: var(--accent2);
+        }
+
+        /* CTA BLOCK */
+        .cta-block {
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 20px;
+            padding: 60px 48px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-block::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 20% 50%, rgba(229, 9, 20, 0.12) 0%, transparent 55%), radial-gradient(ellipse at 80% 50%, rgba(245, 166, 35, 0.09) 0%, transparent 50%);
+        }
+
+        .cta-tag {
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 14px;
+            position: relative;
+        }
+
+        .cta-block h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2rem, 3vw, 2.8rem);
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+            position: relative;
+        }
+
+        .cta-block h2 em {
+            font-style: normal;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cta-block p {
+            font-size: 0.9rem;
+            color: rgba(200, 200, 210, 0.75);
+            max-width: 480px;
+            margin: 0 auto 28px;
+            line-height: 1.7;
+            position: relative;
+        }
+
+        .cta-btns {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        .btn-primary {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--accent), #c20810);
+            border: none;
+            color: #fff;
+            padding: 14px 30px;
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.04);
+            box-shadow: 0 8px 28px rgba(229, 9, 20, 0.45);
+        }
+
+        .btn-outline {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ddd;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .btn-outline:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+            padding: 44px 48px 32px;
+            margin-top: 80px;
+        }
+
+        
+
+        
+
+        .footer-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+
+        .footer-tagline {
+            font-size: 0.82rem;
+            color: var(--muted);
+            line-height: 1.6;
+            max-width: 240px;
+        }
+
+        .footer-apps {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .app-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px 14px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            font-size: 0.72rem;
+            color: #ccc;
+        }
+
+        .app-btn:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .app-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        
+
+        
+
+        
+
+        
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .footer-copy {
+            color: var(--muted);
+            font-size: 0.75rem;
+        }
+
+        .footer-badges {
+            display: flex;
+            gap: 10px;
+        }
+
+        .footer-badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            padding: 4px 10px;
+            font-size: 0.65rem;
+            color: var(--muted);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* RESPONSIVE */
+        @media(max-width:900px) {
+            nav {
+                padding: 14px 20px;
+                gap: 16px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .help-main {
+                padding: 48px 20px 80px;
+            }
+
+            .two-col-section {
+                grid-template-columns: 1fr;
+                gap: 36px;
+            }
+
+            .plans-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-block {
+                padding: 40px 24px;
+            }
+
+            footer {
+                padding: 24px 20px;
+            }
+        }
+    
+        /* ── FOOTER LINKS ROW ── */
+        .footer-top { display: flex; justify-content: space-between; align-items: center; padding-bottom: 32px; border-bottom: 1px solid rgba(255,255,255,0.07); margin-bottom: 24px; flex-wrap: wrap; gap: 24px; }
+        .footer-brand { max-width: 280px; }
+        .footer-links-row { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+        .footer-links-row a { color: var(--muted); font-size: 0.82rem; text-decoration: none; transition: color 0.2s; }
+        .footer-links-row a:hover { color: #fff; }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <nav>
+    <div class="logo">StreamVerse</div>
+    <div class="nav-links">
+        <a href="home.html">Home</a>
+        <a href="movies.html">Movies</a>
+        <a href="tv.html">TV Shows</a>
+        <a href="sports.html">Sports</a>
+        <a href="kids.html">Kids</a>
+    </div>
+    <div class="nav-right">
+        <div class="search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2.5">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input type="text" placeholder="Search movies, shows...">
+        </div>
+        <button class="nav-btn">Subscribe</button>
+        <div class="avatar">U</div>
+    </div>
+</nav>
+
+    <!-- HERO -->
+    <div class="help-hero">
+        <div class="help-hero-bg"></div>
+        <div class="help-hero-content">
+            <div class="help-hero-tag"><span class="dot"></span>Support Center</div>
+            <h1 class="help-hero-title">HOW CAN WE <em>HELP YOU?</em></h1>
+            <p class="help-hero-sub">Search our knowledge base, browse help topics, or connect with a StreamVerse
+                support agent — available 24/7.</p>
+        </div>
+        <div class="hero-search-wrap">
+            <div class="hero-search">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2.5">
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.35-4.35" />
+                </svg>
+                <input type="text" placeholder="Search… e.g. 'reset password', 'cancel subscription'">
+                <button class="hero-search-btn">Search</button>
+            </div>
+            <div class="hero-tags">
+                <span class="hero-tag">Reset Password</span>
+                <span class="hero-tag">Cancel Subscription</span>
+                <span class="hero-tag">Payment Failed</span>
+                <span class="hero-tag">Watch on TV</span>
+                <span class="hero-tag">Buffering Issues</span>
+                <span class="hero-tag">Download App</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATUS BAR -->
+    <div class="status-bar">
+        <div class="status-pulse"></div>
+        All StreamVerse systems are fully operational — No issues reported
+    </div>
+
+    <!-- STATS BAR -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-val">24/7</div>
+            <div class="stat-label">Live Support</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-val">500+</div>
+            <div class="stat-label">Help Articles</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-val">&lt;2 Min</div>
+            <div class="stat-label">Avg Response</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-val">98%</div>
+            <div class="stat-label">Issues Resolved</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-val">50M+</div>
+            <div class="stat-label">Users Helped</div>
+        </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="help-main">
+
+        <!-- BROWSE TOPICS -->
+        <div class="topics-section">
+            <div class="section-heading">
+                <span class="label">✦ Browse Topics</span>
+                <h2>WHAT DO YOU NEED <em>HELP WITH?</em></h2>
+                <p>Choose a category to explore all related articles and step-by-step guides.</p>
+            </div>
+            <div class="topics-grid">
+                <a href="#" class="topic-card"><span class="topic-icon">👤</span>
+                    <h3>Account & Profile</h3>
+                    <p>Manage settings, profile pictures, passwords, email IDs, and linked devices.</p>
+                    <div class="topic-count">18 Articles <span>›</span></div>
+                </a>
+                <a href="#" class="topic-card"><span class="topic-icon">💳</span>
+                    <h3>Subscription & Billing</h3>
+                    <p>Upgrade, downgrade, or cancel plans and manage your payment methods easily.</p>
+                    <div class="topic-count">24 Articles <span>›</span></div>
+                </a>
+                <a href="#" class="topic-card"><span class="topic-icon">📺</span>
+                    <h3>Streaming & Playback</h3>
+                    <p>Fix buffering, video quality issues, subtitles, audio sync, and playback errors.</p>
+                    <div class="topic-count">31 Articles <span>›</span></div>
+                </a>
+                <a href="#" class="topic-card"><span class="topic-icon">📱</span>
+                    <h3>Devices & Apps</h3>
+                    <p>Set up StreamVerse on Smart TV, mobile, tablet, laptop, or game console.</p>
+                    <div class="topic-count">22 Articles <span>›</span></div>
+                </a>
+                <a href="#" class="topic-card"><span class="topic-icon">⬇️</span>
+                    <h3>Downloads & Offline</h3>
+                    <p>Download movies and shows to watch without internet, anywhere you go.</p>
+                    <div class="topic-count">12 Articles <span>›</span></div>
+                </a>
+                <a href="#" class="topic-card"><span class="topic-icon">🔒</span>
+                    <h3>Privacy & Security</h3>
+                    <p>Control your data, parental controls, privacy settings, and account safety.</p>
+                    <div class="topic-count">9 Articles <span>›</span></div>
+                </a>
+                <a href="#" class="topic-card"><span class="topic-icon">🎉</span>
+                    <h3>Offers & Promotions</h3>
+                    <p>Redeem promo codes, partner deals, and exclusive StreamVerse cashbacks.</p>
+                    <div class="topic-count">7 Articles <span>›</span></div>
+                </a>
+                <a href="#" class="topic-card"><span class="topic-icon">📡</span>
+                    <h3>Live TV & Sports</h3>
+                    <p>Watch cricket, football, live channels and set match reminder alerts.</p>
+                    <div class="topic-count">14 Articles <span>›</span></div>
+                </a>
+            </div>
+        </div>
+
+        <!-- POPULAR + GETTING STARTED -->
+        <div class="two-col-section">
+            <div>
+                <div class="col-label">✦ Trending Now</div>
+                <h2 class="col-title">POPULAR <em
+                        style="font-style:normal;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">ARTICLES</em>
+                </h2>
+                <div class="col-divider"></div>
+                <div class="articles-list">
+                    <a href="#" class="article-item">
+                        <div class="article-left"><span class="article-dot"></span><span class="article-title">How to
+                                reset your StreamVerse password</span></div><span
+                            class="article-tag tag-account">Account</span>
+                    </a>
+                    <a href="#" class="article-item">
+                        <div class="article-left"><span class="article-dot"></span><span class="article-title">Why is my
+                                video buffering or not loading?</span></div><span
+                            class="article-tag tag-streaming">Streaming</span>
+                    </a>
+                    <a href="#" class="article-item">
+                        <div class="article-left"><span class="article-dot"></span><span class="article-title">How to
+                                cancel your StreamVerse subscription</span></div><span
+                            class="article-tag tag-billing">Billing</span>
+                    </a>
+                    <a href="#" class="article-item">
+                        <div class="article-left"><span class="article-dot"></span><span class="article-title">Setting
+                                up StreamVerse on your Smart TV</span></div><span
+                            class="article-tag tag-device">Device</span>
+                    </a>
+                    <a href="#" class="article-item">
+                        <div class="article-left"><span class="article-dot"></span><span class="article-title">My
+                                payment failed — what should I do?</span></div><span
+                            class="article-tag tag-billing">Billing</span>
+                    </a>
+                    <a href="#" class="article-item">
+                        <div class="article-left"><span class="article-dot"></span><span class="article-title">How to
+                                create and switch between profiles</span></div><span
+                            class="article-tag tag-account">Account</span>
+                    </a>
+                    <a href="#" class="article-item">
+                        <div class="article-left"><span class="article-dot"></span><span
+                                class="article-title">Downloading content for offline viewing</span></div><span
+                            class="article-tag tag-device">Device</span>
+                    </a>
+                    <a href="#" class="article-item">
+                        <div class="article-left"><span class="article-dot"></span><span class="article-title">Changing
+                                video quality and data usage settings</span></div><span
+                            class="article-tag tag-streaming">Streaming</span>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <div class="col-label">✦ New to StreamVerse?</div>
+                <h2 class="col-title">GETTING <em
+                        style="font-style:normal;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">STARTED</em>
+                </h2>
+                <div class="col-divider"></div>
+                <div class="guide-steps">
+                    <div class="guide-step">
+                        <div class="step-num">1</div>
+                        <div class="step-body">
+                            <h4>Create your account</h4>
+                            <p>Sign up with your email or mobile number and verify your identity in seconds.</p>
+                        </div>
+                    </div>
+                    <div class="guide-step">
+                        <div class="step-num">2</div>
+                        <div class="step-body">
+                            <h4>Choose a subscription plan</h4>
+                            <p>Pick from Mobile, Standard, or Premium — all with full library access included.</p>
+                        </div>
+                    </div>
+                    <div class="guide-step">
+                        <div class="step-num">3</div>
+                        <div class="step-body">
+                            <h4>Download the StreamVerse app</h4>
+                            <p>Available on Android, iOS, Smart TV, Fire Stick, and more. Stream anywhere.</p>
+                        </div>
+                    </div>
+                    <div class="guide-step">
+                        <div class="step-num">4</div>
+                        <div class="step-body">
+                            <h4>Set up your profiles</h4>
+                            <p>Personalize up to 5 profiles, including a dedicated Kids mode with parental controls.</p>
+                        </div>
+                    </div>
+                    <div class="guide-step">
+                        <div class="step-num">5</div>
+                        <div class="step-body">
+                            <h4>Start watching</h4>
+                            <p>Explore thousands of movies, series, live sports, and StreamVerse Originals. Enjoy!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-card">
+                    <div class="app-card-label">✦ Get the App</div>
+                    <div class="app-card-sub">Download StreamVerse on your favourite device</div>
+                    <div class="app-platforms">
+                        <div class="app-platform"><span class="app-platform-icon">🤖</span>
+                            <div class="app-platform-info">
+                                <h4>Android</h4>
+                                <p>Google Play Store</p>
+                            </div><span class="app-arrow">›</span>
+                        </div>
+                        <div class="app-platform"><span class="app-platform-icon">🍎</span>
+                            <div class="app-platform-info">
+                                <h4>iOS / iPadOS</h4>
+                                <p>Apple App Store</p>
+                            </div><span class="app-arrow">›</span>
+                        </div>
+                        <div class="app-platform"><span class="app-platform-icon">📺</span>
+                            <div class="app-platform-info">
+                                <h4>Smart TV / Fire Stick</h4>
+                                <p>Available on most platforms</p>
+                            </div><span class="app-arrow">›</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLANS -->
+        <div class="plans-section">
+            <div class="section-heading">
+                <span class="label">✦ Plans & Pricing</span>
+                <h2>STREAMVERSE <em>SUBSCRIPTION PLANS</em></h2>
+                <p>Find the right plan for you. All plans include access to our entire content library.</p>
+            </div>
+            <div class="plans-grid">
+                <div class="plan-card">
+                    <div class="plan-name">Mobile</div>
+                    <div class="plan-price">₹149<span>/mo</span></div>
+                    <div class="plan-desc">Perfect for solo streaming on the go.</div>
+                    <ul class="plan-features">
+                        <li>
+                            <div class="check">✓</div>1 screen at a time
+                        </li>
+                        <li>
+                            <div class="check">✓</div>Mobile & tablet only
+                        </li>
+                        <li>
+                            <div class="check">✓</div>HD 720p quality
+                        </li>
+                        <li>
+                            <div class="check">✓</div>Ad-supported content
+                        </li>
+                        <li>
+                            <div class="check">✓</div>Downloads: 25 titles
+                        </li>
+                    </ul>
+                </div>
+                <div class="plan-card featured">
+                    <div class="plan-badge">Most Popular</div>
+                    <div class="plan-name">Standard</div>
+                    <div class="plan-price">₹299<span>/mo</span></div>
+                    <div class="plan-desc">Great for couples and small families.</div>
+                    <ul class="plan-features">
+                        <li>
+                            <div class="check">✓</div>2 screens at a time
+                        </li>
+                        <li>
+                            <div class="check">✓</div>TV, laptop, mobile & tablet
+                        </li>
+                        <li>
+                            <div class="check">✓</div>Full HD 1080p quality
+                        </li>
+                        <li>
+                            <div class="check">✓</div>Ad-free experience
+                        </li>
+                        <li>
+                            <div class="check">✓</div>Downloads: 50 titles
+                        </li>
+                        <li>
+                            <div class="check">✓</div>3 user profiles
+                        </li>
+                    </ul>
+                </div>
+                <div class="plan-card">
+                    <div class="plan-name">Premium</div>
+                    <div class="plan-price">₹499<span>/mo</span></div>
+                    <div class="plan-desc">Ultimate experience for the whole family.</div>
+                    <ul class="plan-features">
+                        <li>
+                            <div class="check">✓</div>4 screens simultaneously
+                        </li>
+                        <li>
+                            <div class="check">✓</div>All devices supported
+                        </li>
+                        <li>
+                            <div class="check">✓</div>4K Ultra HD + Dolby Atmos
+                        </li>
+                        <li>
+                            <div class="check">✓</div>Ad-free experience
+                        </li>
+                        <li>
+                            <div class="check">✓</div>Downloads: 100 titles
+                        </li>
+                        <li>
+                            <div class="check">✓</div>5 profiles + Kids mode
+                        </li>
+                        <li>
+                            <div class="check">✓</div>Priority support access
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="faq-section">
+            <div class="section-heading">
+                <span class="label">✦ Quick Answers</span>
+                <h2>FREQUENTLY ASKED <em>QUESTIONS</em></h2>
+                <p>Fast answers to the most common StreamVerse queries — no waiting required.</p>
+            </div>
+            <div class="faq-list">
+                <div class="faq-item open">
+                    <div class="faq-q" onclick="toggleFaq(this)">How many devices can I use with my StreamVerse account?
+                        <div class="faq-icon">+</div>
+                    </div>
+                    <div class="faq-a">Simultaneous streams depend on your plan — Mobile allows 1, Standard allows 2,
+                        and Premium allows 4 screens at once. You can install the app on unlimited devices, but only the
+                        plan-permitted number can stream simultaneously.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q" onclick="toggleFaq(this)">Can I share my StreamVerse account with family members?
+                        <div class="faq-icon">+</div>
+                    </div>
+                    <div class="faq-a">Yes! Standard plans support up to 3 profiles and Premium supports up to 5,
+                        including a dedicated Kids profile with parental controls. Each profile gets its own
+                        personalised watchlist and recommendations. Account sharing outside your household may be
+                        restricted per our Terms of Use.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q" onclick="toggleFaq(this)">How do I cancel my StreamVerse subscription?<div
+                            class="faq-icon">+</div>
+                    </div>
+                    <div class="faq-a">You can cancel anytime from Account → Subscription → Cancel Subscription. You'll
+                        retain full access until the end of your current billing cycle. No partial refunds are issued
+                        for the remaining period, and cancellations take effect immediately.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q" onclick="toggleFaq(this)">Is StreamVerse available on Smart TVs?<div
+                            class="faq-icon">+</div>
+                    </div>
+                    <div class="faq-a">StreamVerse is available on Samsung (Tizen OS), LG (webOS), Sony (Android TV),
+                        and most major Smart TVs. You can also use Amazon Fire Stick, Chromecast, Apple TV, and Roku.
+                        Simply search "StreamVerse" in your device's app store and install for free.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q" onclick="toggleFaq(this)">Why is my video buffering or playing in low quality?
+                        <div class="faq-icon">+</div>
+                    </div>
+                    <div class="faq-a">Buffering is usually caused by a slow internet connection. We recommend at least
+                        5 Mbps for HD and 25 Mbps for 4K. Try restarting your router, switching from Wi-Fi to a wired
+                        connection, lowering quality in Settings, or closing other bandwidth-heavy apps.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q" onclick="toggleFaq(this)">How do I redeem a StreamVerse promo code?<div
+                            class="faq-icon">+</div>
+                    </div>
+                    <div class="faq-a">Sign in and go to Account → Offers & Promos → Redeem Code. Enter the code exactly
+                        as shown — codes are case-sensitive. Valid codes are applied immediately to your account. Each
+                        promo code can only be redeemed once per account.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q" onclick="toggleFaq(this)">Can I watch StreamVerse content offline?<div
+                            class="faq-icon">+</div>
+                    </div>
+                    <div class="faq-a">Yes! Tap the download icon on any eligible title and watch it offline in the
+                        Downloads section of the app. Downloaded content expires after a set period. The number of
+                        downloadable titles depends on your plan. Note: not all content is available for download due to
+                        licensing restrictions.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTACT -->
+        <div class="contact-section">
+            <div class="section-heading">
+                <span class="label">✦ Get in Touch</span>
+                <h2>CONTACT <em>STREAMVERSE SUPPORT</em></h2>
+                <p>Our dedicated support team is available around the clock to resolve your issues fast.</p>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div class="contact-icon-wrap"
+                        style="background:rgba(229,9,20,0.1);border:1px solid rgba(229,9,20,0.2);">💬</div>
+                    <h3>Live Chat</h3>
+                    <p>Chat instantly with a real StreamVerse support agent. Fastest resolution for most account and
+                        streaming issues.</p>
+                    <span class="contact-avail avail-green">Available 24/7</span>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon-wrap"
+                        style="background:rgba(79,142,247,0.1);border:1px solid rgba(79,142,247,0.2);">📧</div>
+                    <h3>Email Support</h3>
+                    <p>Send us a detailed message and our team will respond with a complete resolution within a few
+                        hours.</p>
+                    <span class="contact-avail avail-gold">Response in 4–6 hrs</span>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon-wrap"
+                        style="background:rgba(0,201,167,0.1);border:1px solid rgba(0,201,167,0.2);">📞</div>
+                    <h3>Phone Support</h3>
+                    <p>Speak directly with a StreamVerse specialist for complex billing or technical account matters.
+                    </p>
+                    <span class="contact-avail avail-gold">Mon–Sat, 9am–9pm</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-block">
+            <div class="cta-tag">✦ Still Need Help?</div>
+            <h2>CAN'T FIND WHAT <em>YOU'RE LOOKING FOR?</em></h2>
+            <p>Our StreamVerse support team is available around the clock to help you enjoy uninterrupted streaming on
+                all your devices.</p>
+            <div class="cta-btns">
+                <button class="btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    Start Live Chat
+                </button>
+                <button class="btn-outline">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14,2 14,8 20,8" />
+                    </svg>
+                    Browse All Articles
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+    <div class="footer-top">
+        <div class="footer-brand">
+            <div class="footer-logo">StreamVerse</div>
+            <div class="footer-tagline">India's most loved streaming platform. Watch anywhere, anytime.</div>
+            <div class="footer-apps">
+                <div class="app-btn">
+                    <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                    App Store
+                </div>
+                <div class="app-btn">
+                    <svg viewBox="0 0 24 24"><path d="m3 20.5v-17c0-.83 1-.95 1.4-.4l14.5 8.6c.38.24.38.76 0 1L4.4 21.1c-.4.5-1.4.33-1.4-.6z"/></svg>
+                    Play Store
+                </div>
+            </div>
+        </div>
+        <div class="footer-links-row">
+            <a href="about.html">About Us</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="help.html">Help &amp; Support</a>
+            <a href="privacy.html">Privacy &amp; Terms</a>
+            <a href="feedback.html">Feedback</a>
+            <a href="careers.html">Careers</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="footer-copy">© 2025 StreamVerse. Built with ❤️ by Payal, Diksha, Latika &amp; Smily.</div>
+        <div class="footer-badges">
+            <span class="footer-badge">4K UHD</span>
+            <span class="footer-badge">DOLBY ATMOS</span>
+            <span class="footer-badge">HDR 10+</span>
+            <span class="footer-badge">U/A CERTIFIED</span>
+        </div>
+    </div>
+</footer>
+
+    <script>
+        function toggleFaq(el) {
+            const item = el.parentElement;
+            const isOpen = item.classList.contains('open');
+            document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+            if (!isOpen) item.classList.add('open');
+        }
+    </script>
+</body>
+<script src="script.js"></script>
+</body>
+</html>
