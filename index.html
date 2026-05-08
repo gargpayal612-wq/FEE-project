@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamVerse</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f; --bg2: #111118; --surface: #1a1a24;
+            --accent: #e50914; --accent2: #f5a623; --gold: #FFD700;
+            --text: #f0f0f0; --muted: #888; --card-w: 180px; --card-h: 260px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 6px; height: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        /* NAV */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+            display: flex; align-items: center; gap: 32px; padding: 16px 48px;
+            background: linear-gradient(to bottom, rgba(10,10,15,0.98) 70%, transparent);
+            backdrop-filter: blur(8px); transition: background 0.3s;
+        }
+        .logo {
+            font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 3px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; flex-shrink: 0; cursor: pointer;
+        }
+        .nav-links { display: flex; gap: 4px; flex: 1; }
+        .nav-links a {
+            text-decoration: none; color: #bbb; font-size: 0.88rem; font-weight: 500;
+            padding: 6px 14px; border-radius: 6px; transition: color 0.2s, background 0.2s;
+        }
+        .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.07); }
+        .nav-links a.active { color: #fff; background: rgba(229,9,20,0.1); border-bottom: 2px solid var(--accent); border-radius: 6px 6px 0 0; }
+        .nav-right { display: flex; align-items: center; gap: 16px; margin-left: auto; }
+        .search-box {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px; padding: 7px 16px; transition: border-color 0.2s;
+        }
+        .search-box:focus-within { border-color: rgba(229,9,20,0.5); }
+        .search-box input { background: none; border: none; outline: none; color: #fff; font-family: 'Outfit', sans-serif; font-size: 0.85rem; width: 160px; }
+        .search-box input::placeholder { color: var(--muted); }
+        .nav-btn {
+            background: linear-gradient(135deg, var(--accent), #c20810); border: none; color: #fff;
+            padding: 8px 18px; border-radius: 6px; font-family: 'Outfit', sans-serif;
+            font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s, transform 0.2s;
+        }
+        .nav-btn:hover { opacity: 0.88; transform: scale(1.03); }
+        .avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            display: grid; place-items: center; font-weight: 700; font-size: 0.85rem;
+            cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s;
+        }
+        .avatar:hover { border-color: var(--accent2); }
+
+        /* HERO */
+        .hero {
+            height: 92vh; min-height: 580px; position: relative; overflow: hidden;
+            display: flex; align-items: center; padding: 120px 60px 90px;
+        }
+        .hero-bg-img {
+            position: absolute; inset: 0;
+            background-image: url('https://i.ytimg.com/vi/iQQTA50W-R4/maxresdefault.jpg');
+            background-size: cover; background-position: center top;
+            animation: heroZoom 16s ease-in-out infinite alternate;
+        }
+        @keyframes heroZoom { from { transform: scale(1.02); } to { transform: scale(1.07); } }
+        .hero-bg {
+            position: absolute; inset: 0;
+            background: linear-gradient(to right, rgba(10,10,15,0.97) 32%, rgba(10,10,15,0.55) 60%, rgba(10,10,15,0.15) 100%),
+                        linear-gradient(to top, rgba(10,10,15,1) 0%, rgba(10,10,15,0.4) 35%, transparent 65%);
+        }
+        .hero-grain {
+            position: absolute; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+            opacity: 0.4; pointer-events: none;
+        }
+        .hero-content { position: relative; z-index: 2; max-width: 560px; animation: heroFadeUp 0.8s ease both; }
+        @keyframes heroFadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(229,9,20,0.12); border: 1px solid rgba(229,9,20,0.35);
+            border-radius: 4px; padding: 5px 14px; font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 2px; color: var(--accent); text-transform: uppercase; margin-bottom: 20px;
+        }
+        .hero-badge .pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: pulse 1.4s infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.35; transform: scale(0.8); } }
+        .hero-title {
+            font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.2rem, 6vw, 5.5rem);
+            line-height: 0.95; letter-spacing: 2px; margin-bottom: 18px;
+            text-shadow: 0 4px 30px rgba(0,0,0,0.6);
+        }
+        .hero-title em {
+            font-style: normal;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .hero-meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; font-size: 0.82rem; color: #aaa; }
+        .hero-meta .year { color: var(--accent2); font-weight: 600; }
+        .hero-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: #555; }
+        .rating-badge { background: rgba(255,215,0,0.12); border: 1px solid rgba(255,215,0,0.3); border-radius: 4px; padding: 2px 8px; color: var(--gold); font-weight: 600; font-size: 0.78rem; }
+        .genre-tags { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+        .genre-tag { padding: 4px 14px; border-radius: 20px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); font-size: 0.75rem; color: #ccc; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
+        .genre-tag:hover { border-color: var(--accent); color: #fff; }
+        .hero-desc { font-size: 0.9rem; line-height: 1.7; color: rgba(200,200,210,0.85); margin-bottom: 28px; max-width: 440px; }
+        .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+        .btn-play {
+            display: flex; align-items: center; gap: 10px; background: var(--accent); color: #fff;
+            border: none; border-radius: 6px; padding: 13px 28px; font-size: 0.95rem; font-weight: 700;
+            font-family: 'Outfit', sans-serif; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-play:hover { transform: scale(1.04); box-shadow: 0 6px 28px rgba(229,9,20,0.5); }
+        .btn-play svg { width: 16px; height: 16px; fill: #fff; }
+        .btn-info {
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+            color: #fff; border-radius: 6px; padding: 13px 24px; font-size: 0.95rem; font-weight: 500;
+            font-family: 'Outfit', sans-serif; cursor: pointer; transition: background 0.2s; backdrop-filter: blur(4px);
+        }
+        .btn-info:hover { background: rgba(255,255,255,0.18); }
+        .hero-mute {
+            position: absolute; right: 60px; top: 50%; transform: translateY(-50%);
+            width: 42px; height: 42px; border-radius: 50%; background: rgba(10,10,15,0.7);
+            border: 1px solid rgba(255,255,255,0.15); display: grid; place-items: center;
+            cursor: pointer; backdrop-filter: blur(8px); transition: border-color 0.2s; z-index: 3;
+        }
+        .hero-mute:hover { border-color: var(--accent); }
+        .hero-mute svg { width: 18px; height: 18px; stroke: #fff; fill: none; stroke-width: 2; }
+        .hero-dots { position: absolute; bottom: 28px; right: 48px; display: flex; gap: 8px; z-index: 3; }
+        .hero-dots span { width: 28px; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.2); cursor: pointer; transition: background 0.3s, width 0.3s; }
+        .hero-dots span.active { background: var(--accent); width: 44px; }
+
+        /* MAIN */
+        main { padding: 0 0 80px; }
+        .category-bar { display: flex; gap: 10px; padding: 30px 48px 0; overflow-x: auto; scrollbar-width: none; }
+        .category-bar::-webkit-scrollbar { display: none; }
+        .cat-pill { flex-shrink: 0; padding: 10px 28px; border-radius: 24px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #bbb; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+        .cat-pill:hover { background: rgba(255,255,255,0.12); color: #fff; }
+        .cat-pill.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+
+        /* SECTION */
+        .section { margin-top: 48px; animation: fadeInUp 0.5s ease both; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .section-header { display: flex; align-items: center; justify-content: space-between; padding: 0 48px; margin-bottom: 20px; }
+        .section-title { display: flex; align-items: center; gap: 12px; font-size: 1.28rem; font-weight: 700; }
+        .section-title .icon { font-size: 1.4rem; }
+        .section-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); padding: 3px 10px; border-radius: 3px; background: rgba(255,255,255,0.05); margin-left: 6px; }
+        .see-all { font-size: 0.82rem; color: var(--accent); cursor: pointer; font-weight: 500; text-decoration: none; display: flex; align-items: center; gap: 4px; transition: gap 0.2s; }
+        .see-all:hover { gap: 8px; }
+
+        /* ROW */
+        .row-wrap { position: relative; }
+        .row { display: flex; gap: 16px; padding: 8px 48px 16px; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }
+        .row::-webkit-scrollbar { display: none; }
+        .scroll-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 42px; height: 42px; border-radius: 50%; background: rgba(15,15,22,0.95); border: 1px solid rgba(255,255,255,0.14); color: #fff; font-size: 1.2rem; cursor: pointer; display: grid; place-items: center; z-index: 10; transition: background 0.2s, opacity 0.2s, transform 0.2s; opacity: 0; backdrop-filter: blur(8px); }
+        .row-wrap:hover .scroll-btn { opacity: 1; }
+        .scroll-btn:hover { background: rgba(229,9,20,0.75); transform: translateY(-50%) scale(1.08); }
+        .scroll-btn.left { left: 6px; } .scroll-btn.right { right: 6px; }
+
+        /* CARD */
+        .card { flex-shrink: 0; width: var(--card-w); cursor: pointer; transition: transform 0.28s; position: relative; }
+        .card:hover { transform: scale(1.07) translateY(-4px); z-index: 5; }
+        .card-thumb { width: 100%; height: var(--card-h); border-radius: 10px; overflow: hidden; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+        .card-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
+        .card:hover .card-thumb img { transform: scale(1.07); }
+        .card-thumb::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 55%); border-radius: 10px; opacity: 0; transition: opacity 0.28s; }
+        .card:hover .card-thumb::after { opacity: 1; }
+        .card-play { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; transition: opacity 0.28s; z-index: 2; }
+        .card:hover .card-play { opacity: 1; }
+        .card-play-btn { width: 48px; height: 48px; border-radius: 50%; background: rgba(229,9,20,0.92); display: grid; place-items: center; box-shadow: 0 4px 24px rgba(229,9,20,0.6); transition: transform 0.2s; }
+        .card:hover .card-play-btn { transform: scale(1.1); }
+        .card-play-btn svg { width: 18px; height: 18px; fill: #fff; margin-left: 2px; }
+        .card-badge { position: absolute; top: 8px; left: 8px; z-index: 3; font-size: 0.6rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border-radius: 3px; }
+        .badge-new { background: var(--accent); color: #fff; } .badge-hot { background: var(--accent2); color: #000; }
+        .badge-free { background: #16a34a; color: #fff; } .badge-4k { background: #7c3aed; color: #fff; }
+        .card-info { padding: 10px 4px 0; }
+        .card-title { font-size: 0.82rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
+        .card-sub { font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+        .card-rating { color: var(--gold); font-size: 0.7rem; }
+
+        /* WIDE CARD */
+        .wide-card { flex-shrink: 0; width: 300px; height: 172px; border-radius: 12px; overflow: hidden; cursor: pointer; position: relative; transition: transform 0.28s; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+        .wide-card:hover { transform: scale(1.04) translateY(-4px); z-index: 5; }
+        .wide-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+        .wide-card:hover img { transform: scale(1.07); }
+        .wide-card-inner { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 16px; background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, transparent 60%); z-index: 2; }
+        .wide-card-title { font-size: 0.96rem; font-weight: 700; margin-bottom: 4px; }
+        .wide-card-sub { font-size: 0.72rem; color: #aaa; }
+
+        /* CONTINUE WATCHING */
+        .continue-card { flex-shrink: 0; width: 260px; cursor: pointer; transition: transform 0.28s; }
+        .continue-card:hover { transform: scale(1.04) translateY(-4px); z-index: 5; }
+        .continue-thumb { width: 100%; height: 148px; border-radius: 10px; overflow: hidden; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+        .continue-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
+        .continue-card:hover .continue-thumb img { transform: scale(1.06); }
+        .continue-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%); opacity: 0; transition: opacity 0.28s; display: grid; place-items: center; }
+        .continue-card:hover .continue-overlay { opacity: 1; }
+        .continue-progress-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: rgba(255,255,255,0.15); }
+        .continue-progress { height: 100%; background: var(--accent); border-radius: 0 2px 2px 0; }
+        .continue-info { padding: 10px 4px 0; }
+        .continue-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+        .continue-ep { font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+        .continue-ep .pct { color: var(--accent2); font-weight: 600; }
+
+        /* TOP 10 */
+        .top10-card { flex-shrink: 0; width: 165px; cursor: pointer; transition: transform 0.28s; position: relative; }
+        .top10-card:hover { transform: scale(1.06) translateY(-4px); z-index: 5; }
+        .top10-num { position: absolute; left: -12px; bottom: 36px; font-family: 'Bebas Neue', sans-serif; font-size: 5.8rem; line-height: 1; -webkit-text-stroke: 2px rgba(255,255,255,0.13); color: transparent; z-index: 3; pointer-events: none; }
+        .top10-thumb { width: 100%; height: 225px; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+        .top10-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
+        .top10-card:hover .top10-thumb img { transform: scale(1.06); }
+        .top10-title { font-size: 0.8rem; font-weight: 600; margin-top: 9px; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* PROMO */
+        .promo-banner { margin: 48px 48px 0; border-radius: 18px; overflow: hidden; height: 140px; position: relative; background: linear-gradient(135deg, #1a0533 0%, #0d1b3e 50%, #0f2a1e 100%); display: flex; align-items: center; padding: 0 44px; cursor: pointer; transition: transform 0.2s; }
+        .promo-banner:hover { transform: scale(1.01); }
+        .promo-banner::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 15% 50%, rgba(229,9,20,0.28) 0%, transparent 55%), radial-gradient(ellipse at 85% 50%, rgba(245,166,35,0.22) 0%, transparent 50%); }
+        .promo-content { position: relative; z-index: 2; }
+        .promo-tag { font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent2); margin-bottom: 7px; }
+        .promo-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 2px; margin-bottom: 6px; }
+        .promo-features { display: flex; gap: 16px; flex-wrap: wrap; }
+        .promo-feature { font-size: 0.78rem; color: #aaa; display: flex; align-items: center; gap: 5px; }
+        .promo-feature::before { content: '✓'; color: var(--accent2); font-weight: 700; }
+        .promo-btn { margin-left: auto; position: relative; z-index: 2; background: linear-gradient(135deg, var(--accent), #c20810); border: none; color: #fff; padding: 14px 32px; border-radius: 8px; font-family: 'Outfit', sans-serif; font-size: 0.92rem; font-weight: 700; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; white-space: nowrap; }
+        .promo-btn:hover { transform: scale(1.04); box-shadow: 0 8px 28px rgba(229,9,20,0.5); }
+
+        /* FOOTER */
+        footer { border-top: 1px solid rgba(255,255,255,0.07); padding: 44px 48px 32px; margin-top: 32px; }  
+        .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 3px; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 12px; }
+        .footer-tagline { font-size: 0.82rem; color: var(--muted); line-height: 1.6; max-width: 240px; }
+        .footer-apps { display: flex; gap: 10px; margin-top: 16px; }
+        .app-btn { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 8px 14px; cursor: pointer; transition: border-color 0.2s; font-size: 0.72rem; color: #ccc; }
+        .app-btn:hover { border-color: rgba(255,255,255,0.25); }
+        .app-btn svg { width: 16px; height: 16px; fill: currentColor; }
+        .footer-top { display: flex; justify-content: space-between; align-items: center; padding-bottom: 32px; border-bottom: 1px solid rgba(255,255,255,0.07); margin-bottom: 24px; flex-wrap: wrap; gap: 24px; }
+        .footer-brand { max-width: 280px; }
+        .footer-links-row { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+        .footer-links-row a { color: var(--muted); font-size: 0.82rem; text-decoration: none; transition: color 0.2s; }
+        .footer-links-row a:hover { color: #fff; }
+        .footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); }
+        .footer-copy { color: var(--muted); font-size: 0.75rem; }
+        .footer-badges { display: flex; gap: 10px; }
+        .footer-badge { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 4px; padding: 4px 10px; font-size: 0.65rem; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; }
+    </style>
+</head>
+<body>
+    
+<!-- NAVIGATION -->
+<nav>
+    <div class="logo">StreamVerse</div>
+    <div class="nav-links">
+        <a href="#" class="active">Home</a>
+        <a href="movies.html">Movies</a>
+        <a href="tv.html">TV Shows</a>
+        <a href="sports.html">Sports</a>
+        <a href="kids.html">Kids</a>
+    </div>
+    <div class="nav-right">
+        <div class="search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" placeholder="Search movies, shows...">
+        </div>
+        <button class="nav-btn">Subscribe</button>
+        <div class="avatar">User</div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-bg-img"></div>
+    <div class="hero-bg"></div>
+    <div class="hero-grain"></div>
+    <div class="hero-mute">
+        <svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+    </div>
+    <div class="hero-content">
+        <div class="hero-badge"><span class="pulse-dot"></span>Now Streaming</div>
+        <h1 class="hero-title">SHADOW<br><em>FALL</em></h1>
+        <div class="hero-meta">
+            <span class="year">2025</span><span class="dot"></span>
+            <span>2h 18m</span><span class="dot"></span>
+            <span>UA 16+</span><span class="dot"></span>
+            <span class="rating-badge">⭐ 8.6</span>
+        </div>
+        <div class="genre-tags">
+            <span class="genre-tag">Action</span>
+            <span class="genre-tag">Thriller</span>
+            <span class="genre-tag">Mystery</span>
+        </div>
+        <p class="hero-desc">A disgraced detective returns to her hometown after a string of impossible murders points to a killer she once put away — who has been in prison for fifteen years.</p>
+        <div class="hero-btns">
+            <button class="btn-play"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>Play Now</button>
+            <button class="btn-info">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                More Info
+            </button>
+        </div>
+    </div>
+    <div class="hero-dots"><span class="active"></span><span></span><span></span><span></span></div>
+</section>
+
+<main>
+    <div class="category-bar">
+        <div class="cat-pill active">All</div>
+        <div class="cat-pill">🔥 Trending</div>
+        <div class="cat-pill">🎬 Movies</div>
+        <div class="cat-pill">📺 Web Series</div>
+        <div class="cat-pill">👻 Horror</div>
+        <div class="cat-pill">😂 Comedy</div>
+        <div class="cat-pill">🎭 Drama</div>
+        <div class="cat-pill">💥 Action</div>
+        <div class="cat-pill">🕵 Thriller</div>
+        <div class="cat-pill">💕 Romance</div>
+        <div class="cat-pill">🧒 Kids</div>
+        <div class="cat-pill">🏏 Sports</div>
+    </div>
+
+    <!-- CONTINUE WATCHING -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">▶️</span> Continue Watching</div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+                <div class="continue-card"><div class="continue-thumb"><img src="https://indianexpress.com/wp-content/uploads/2016/10/inferno-movie-review-759.jpg" alt="Inferno Rising"><div class="continue-overlay"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div><div class="continue-progress-bar"><div class="continue-progress" style="width:62%"></div></div></div><div class="continue-info"><div class="continue-title">Inferno Rising</div><div class="continue-ep">S2 E4 <span class="pct">· 62% left</span></div></div></div>
+                <div class="continue-card"><div class="continue-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKMMXHFT5rb4Nuehs06HWZYcegYHyGK5yRDA&s" alt="Ocean's Deep"><div class="continue-overlay"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div><div class="continue-progress-bar"><div class="continue-progress" style="width:28%"></div></div></div><div class="continue-info"><div class="continue-title">Ocean's Deep</div><div class="continue-ep">Movie <span class="pct">· 72% left</span></div></div></div>
+                <div class="continue-card"><div class="continue-thumb"><img src="https://m.media-amazon.com/images/M/MV5BMWI1NGRmNTctYTVkYS00MzVlLWEzZmYtOWMwYzI4NDdlODQ2XkEyXkFqcGc@._V1_.jpg" alt="Nexus Protocol"><div class="continue-overlay"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div><div class="continue-progress-bar"><div class="continue-progress" style="width:85%"></div></div></div><div class="continue-info"><div class="continue-title">Nexus Protocol</div><div class="continue-ep">S1 E7 <span class="pct">· 15% left</span></div></div></div>
+                <div class="continue-card"><div class="continue-thumb"><img src="https://i.ytimg.com/vi/SQ__13rhAJs/sddefault.jpg" alt="Eden's Last Garden"><div class="continue-overlay"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div><div class="continue-progress-bar"><div class="continue-progress" style="width:15%"></div></div></div><div class="continue-info"><div class="continue-title">Eden's Last Garden</div><div class="continue-ep">S1 E1 <span class="pct">· 85% left</span></div></div></div>
+                <div class="continue-card"><div class="continue-thumb"><img src="https://thumbnails.cbsig.net/CBS_Production_Entertainment_VMS/2024/02/24/2311599171526/BLDGL_US_2007_SA_16x9_1920x1080_NB_2584584_1920x1080.jpg" alt="Blaze of Glory"><div class="continue-overlay"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div><div class="continue-progress-bar"><div class="continue-progress" style="width:47%"></div></div></div><div class="continue-info"><div class="continue-title">Blaze of Glory</div><div class="continue-ep">Movie <span class="pct">· 53% left</span></div></div></div>
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- TRENDING NOW -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">🔥</span> Trending Now <span class="section-label">This Week</span></div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+                <div class="wide-card"><img src="https://i.ytimg.com/vi/iQQTA50W-R4/hq720.jpg" alt="Shadowfall"><div class="wide-card-inner"><div class="wide-card-title">Shadowfall</div><div class="wide-card-sub">Thriller · 8.6 ⭐</div></div></div>
+                <div class="wide-card"><img src="https://m.media-amazon.com/images/M/MV5BMWI1NGRmNTctYTVkYS00MzVlLWEzZmYtOWMwYzI4NDdlODQ2XkEyXkFqcGc@._V1_.jpg" alt="Nexus Protocol"><div class="wide-card-inner"><div class="wide-card-title">Nexus Protocol</div><div class="wide-card-sub">Sci-Fi · 9.1 ⭐</div></div></div>
+                <div class="wide-card"><img src="https://i.ytimg.com/vi/SQ__13rhAJs/sddefault.jpg" alt="Eden's Last Garden"><div class="wide-card-inner"><div class="wide-card-title">Eden's Last Garden</div><div class="wide-card-sub">Drama · 7.9 ⭐</div></div></div>
+                <div class="wide-card"><img src="https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1739386039i/222139730.jpg" alt="Void Walker"><div class="wide-card-inner"><div class="wide-card-title">Void Walker</div><div class="wide-card-sub">Action · 8.3 ⭐</div></div></div>
+                <div class="wide-card"><img src="https://m.media-amazon.com/images/M/MV5BMDRiZDE1MjctZWQ0Mi00NGRhLWI1YTktNDQ2NGZkY2ExNWJkXkEyXkFqcGc@._V1_.jpg" alt="Desert Kings"><div class="wide-card-inner"><div class="wide-card-title">Desert Kings</div><div class="wide-card-sub">Drama · 7.7 ⭐</div></div></div>
+                <div class="wide-card"><img src="https://m.media-amazon.com/images/I/71hOMHiYHmL._AC_UF1000,1000_QL80_.jpg" alt="Coastal Legends"><div class="wide-card-inner"><div class="wide-card-title">Coastal Legends</div><div class="wide-card-sub">Adventure · 8.0 ⭐</div></div></div>
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- TOP 10 -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">🏆</span> Top 10 in India Today</div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+                <div class="top10-card"><div class="top10-num">1</div><div class="top10-thumb"><img src="https://m.media-amazon.com/images/I/616Sj0+HKDL._AC_UF1000,1000_QL80_.jpg" alt="Shadowfall"></div><div class="top10-title">Shadowfall</div></div>
+                <div class="top10-card"><div class="top10-num">2</div><div class="top10-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJR4-cn4jpOr9zn9mLN7RUS4kBq0zlUs6G4g&s" alt="Nexus Protocol"></div><div class="top10-title">Nexus Protocol</div></div>
+                <div class="top10-card"><div class="top10-num">3</div><div class="top10-thumb"><img src="https://m.media-amazon.com/images/S/pv-target-images/345e66f1339c8157fab4a94005cb1bcc0998dea5a41a2a8e7a5e1abe772590ca.jpg" alt="Ocean's Deep"></div><div class="top10-title">Ocean's Deep</div></div>
+                <div class="top10-card"><div class="top10-num">4</div><div class="top10-thumb"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e9/BlazeOfGloryJapanFront.jpg/250px-BlazeOfGloryJapanFront.jpg" alt="Blaze of Glory"></div><div class="top10-title">Blaze of Glory</div></div>
+                <div class="top10-card"><div class="top10-num">5</div><div class="top10-thumb"><img src="https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1739386039i/222139730.jpg" alt="Void Walker"></div><div class="top10-title">Void Walker</div></div>
+                <div class="top10-card"><div class="top10-num">6</div><div class="top10-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXx-0r3nkZB5diAD5rI3O-NeelW8jN3XoBIw&s" alt="Eden's Last Garden"></div><div class="top10-title">Eden's Last Garden</div></div>
+                <div class="top10-card"><div class="top10-num">7</div><div class="top10-thumb"><img src="https://m.media-amazon.com/images/M/MV5BNDA3ZmI2YzEtYjgxOC00ZjhhLTk4NjMtOGZiYWI4ZmM1NWNlXkEyXkFqcGc@._V1_.jpg" alt="Desert Kings"></div><div class="top10-title">Desert Kings</div></div>
+                <div class="top10-card"><div class="top10-num">8</div><div class="top10-thumb"><img src="https://im.jdmagicbox.com/comp/jd_social/news/2022sep28/image-1194519-dqpwvavlms.jpg" alt="Nova Station"></div><div class="top10-title">Nova Station</div></div>
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- HORROR -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">👻</span> Horror &amp; Suspense</div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BMjMwNDI3MTk2MF5BMl5BanBnXkFtZTgwMzAwMjAxNzE@._V1_.jpg" alt="The Hollow"><div class="card-badge badge-new">NEW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">The Hollow</div><div class="card-sub"><span class="card-rating">⭐ 8.4</span><span>·</span><span>2024</span></div></div></div>
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BZjJmYmJlODAtN2I2Yy00YzQ1LTg5MzAtNWU4MGYyZWY1ZTMzXkEyXkFqcGc@._V1_.jpg" alt="Blood Moon Rising"><div class="card-badge badge-hot">HOT</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Blood Moon Rising</div><div class="card-sub"><span class="card-rating">⭐ 7.8</span><span>·</span><span>2025</span></div></div></div>
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/S/pv-target-images/25231af1b7ddf31781d9a0f36cbc11256f193e241387486aadd22536587c2717.jpg" alt="Whisper in the Dark"><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Whisper in the Dark</div><div class="card-sub"><span class="card-rating">⭐ 8.1</span><span>·</span><span>2024</span></div></div></div>
+                <div class="card"><div class="card-thumb"><img src="https://resizing.flixster.com/rn6UgukhM4w7wGSerQ-Pv8jMx5A=/206x305/v2/https://resizing.flixster.com/kSzcCM30HLJwiqPTFHCh0jETIYc=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzLzhmNmRlOWM1LWI5NWMtNGI2Ny04YzkzLWMyODE5NjNhNGYwNi5qcGc=" alt="Cursed Manor"><div class="card-badge badge-4k">4K</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Cursed Manor</div><div class="card-sub"><span class="card-rating">⭐ 7.6</span><span>·</span><span>2023</span></div></div></div>
+                <div class="card"><div class="card-thumb"><img src="https://images.justwatch.com/poster/309418706/s718/deep-fear-2023.jpg" alt="Deep Fear"><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Deep Fear</div><div class="card-sub"><span class="card-rating">⭐ 8.0</span><span>·</span><span>2025</span></div></div></div>
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BMTk5NDE2NDUxM15BMl5BanBnXkFtZTgwOTA3NzI1NjE@._V1_FMjpg_UX1000_.jpg" alt="Phantom Room"><div class="card-badge badge-new">NEW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Phantom Room</div><div class="card-sub"><span class="card-rating">⭐ 7.5</span><span>·</span><span>2025</span></div></div></div>
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/S/pv-target-images/ad707cef6e22bbf69cbc7051b91a124332d9a5110835ddada76655bdc18f13b0.jpg" alt="Night Shift"><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Night Shift</div><div class="card-sub"><span class="card-rating">⭐ 8.3</span><span>·</span><span>2024</span></div></div></div>
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- PROMO -->
+    <div class="promo-banner">
+        <div class="promo-content">
+            <div class="promo-tag">✦ Limited Time Offer</div>
+            <div class="promo-title">StreamVerse Premium</div>
+            <div class="promo-features">
+                <span class="promo-feature">4K Ultra HD</span>
+                <span class="promo-feature">Dolby Atmos</span>
+                <span class="promo-feature">No Ads</span>
+                <span class="promo-feature">Download Offline</span>
+                <span class="promo-feature">5 Screens</span>
+            </div>
+        </div>
+        <button class="promo-btn">Upgrade Now →</button>
+    </div>
+
+    <!-- COMEDY -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">😂</span> Comedy Picks</div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+                <div class="card"><div class="card-thumb"><img src="https://universus.cards/cards/ggs01/002.jpg" alt="Happy Chaos"><div class="card-badge badge-hot">HOT</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Happy Chaos</div><div class="card-sub"><span class="card-rating">⭐ 8.2</span><span>·</span><span>2025</span></div></div></div>
+                <div class="card"><div class="card-thumb"><img src="https://kotaku.com/igdb/image/upload/t_cover_big/coa4gi.jpg" alt="Office Wars"><div class="card-badge badge-free">FREE</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Office Wars</div><div class="card-sub"><span class="card-rating">⭐ 7.9</span><span>·</span><span>2024</span></div></div></div>
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BNGI2ZDgzZTUtZjY0ZS00Y2Q1LTllYzQtODQwNTYxNWRmNjY4XkEyXkFqcGc@._V1_QL75_UY281_CR11,0,190,281_.jpg" alt="The Squad"><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">The Squad</div><div class="card-sub"><span class="card-rating">⭐ 8.5</span><span>·</span><span>2025</span></div></div></div>
+                <div class="card"><div class="card-thumb"><img src="https://c.saavncdn.com/667/Monsoon-Madness-Hindi-2022-20220809104544-500x500.jpg" alt="Monsoon Madness"><div class="card-badge badge-new">NEW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Monsoon Madness</div><div class="card-sub"><span class="card-rating">⭐ 7.6</span><span>·</span><span>2025</span></div></div></div>
+                <div class="card"><div class="card-thumb"><img src="https://upload.wikimedia.org/wikipedia/en/a/af/Disaster_movie.jpg" alt="Date Night Disaster"><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Date Night Disaster</div><div class="card-sub"><span class="card-rating">⭐ 7.4</span><span>·</span><span>2024</span></div></div></div>
+                <div class="card"><div class="card-thumb"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/9/9d/Family_Time_film_poster.jpg/250px-Family_Time_film_poster.jpg" alt="Family Time"><div class="card-badge badge-free">FREE</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Family Time</div><div class="card-sub"><span class="card-rating">⭐ 8.0</span><span>·</span><span>2023</span></div></div></div>
+                <div class="card"><div class="card-thumb"><img src="https://bestsimilar.com/img/movie/thumb/5b/78960.jpg" alt="Rookie Cops"><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Rookie Cops</div><div class="card-sub"><span class="card-rating">⭐ 7.8</span><span>·</span><span>2025</span></div></div></div>
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- ACTION -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">💥</span> Action &amp; Adventure</div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+                <div class="card">
+                    <div class="card-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfF_evHwdV3qo7_RADa1djanmmUOz9BLvhfQ&s" alt="Inferno Rising">
+                        <div class="card-badge badge-4k">4K
+                        </div>
+                        <div class="card-play">
+                            <div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">Inferno Rising
+                        </div>
+                        <div class="card-sub"><span class="card-rating">⭐ 8.7</span><span>·</span><span>2025</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQS7-0FcNrZQvCYIrltFpAGAWuHse8SBfw9rg&s" alt="Void Walker">
+                        <div class="card-badge badge-new">NEW</div>
+                        <div class="card-play">
+                            <div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">Void Walker</div>
+                        <div class="card-sub"><span class="card-rating">⭐ 8.3</span><span>·</span><span>2025</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-thumb"><img src="https://www.defiant-ent.com/wp-content/uploads/DEF3034.jpg" alt="Ocean's Deep">
+                        <div class="card-play">
+                            <div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">Ocean's Deep</div>
+                        <div class="card-sub"><span class="card-rating">⭐ 8.0</span><span>·</span><span>2024</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BMjYwYjVlOGYtZDkxNi00NDk3LWJjNmEtN2ZiMGMyNGZiMWE3XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Blaze of Glory">
+                        <div class="card-badge badge-hot">HOT</div>
+                        <div class="card-play">
+                            <div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">Blaze of Glory</div>
+                        <div class="card-sub"><span class="card-rating">⭐ 7.9</span><span>·</span><span>2025</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-thumb"><img src="https://bestsimilar.com/img/movie/thumb/4b/15988.jpg" alt="Iron Siege">
+                        <div class="card-play">
+                            <div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">Iron Siege</div>
+                        <div class="card-sub"><span class="card-rating">⭐ 8.4</span><span>·</span><span>2024</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-thumb"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/8/8d/Delta_force_poster.jpg/250px-Delta_force_poster.jpg" alt="Delta Force X">
+                        <div class="card-badge badge-4k">4K</div>
+                        <div class="card-play">
+                            <div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">Delta Force X</div>
+                        <div class="card-sub"><span class="card-rating">⭐ 7.7</span><span>·</span><span>2023</span>
+                        </div>
+                    </div >
+                </div >
+                <div class="card">
+                    <div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BMDQxZmEzMzYtODM5MC00NTFhLTk4NTItMmNmNDhiNTMxMGMyXkEyXkFqcGc@._V1_.jpg" alt="Storm Rider">
+                        <div class="card-play">
+                            <div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">Storm Rider</div>
+                        <div class="card-sub"><span class="card-rating">⭐ 8.1</span><span>·</span><span>2025</span></div>
+                    </div>
+                </div>
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+    <!-- DRAMA -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-title"><span class="icon">🎭</span> Drama &amp; Romance</div>
+            <a class="see-all" href="#">See All →</a>
+        </div>
+        <div class="row-wrap">
+            <button class="scroll-btn left" onclick="scrollRow(this,-1)">‹</button>
+            <div class="row">
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BMzNhYmIxNDEtYWVjYS00OGUwLWE1NTMtNjkxOGNlZmY3YmU1XkEyXkFqcGc@._V1_.jpg" alt="Eden's Last Garden"><div class="card-badge badge-new">NEW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Eden's Last Garden</div><div class="card-sub"><span class="card-rating">⭐ 7.9</span><span>·</span><span>2025</span></div></div></div>
+                <div class="card"><div class="card-thumb"><img src="https://resizing.flixster.com/OuV7khuiMzOpFi9dj-mliWyABcU=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzLzc0ZGMxZTJkLTM3MjItNGM3ZS1hYjlhLWU3ZjBhZmY0OTJiYy5qcGc=" alt="Nova Station"><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Nova Station</div><div class="card-sub"><span class="card-rating">⭐ 8.5</span><span>·</span><span>2025</span></div></div></div>
+                <div class="card"><div class="card-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBUofxGazTj5Lk2SOn8x098AAwC2xyM6Ty5A&s" alt="Letters Home"><div class="card-badge badge-hot">HOT</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Letters Home</div><div class="card-sub"><span class="card-rating">⭐ 8.2</span><span>·</span><span>2024</span></div></div></div>
+                <div class="card"><div class="card-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjcL1vhqZIqcSoJQO56Gl1_-Ix4BtEGEdz1A&s" alt="Monsoon Season"><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Monsoon Season</div><div class="card-sub"><span class="card-rating">⭐ 7.6</span><span>·</span><span>2024</span></div></div></div>
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/M/MV5BNDA3ZmI2YzEtYjgxOC00ZjhhLTk4NjMtOGZiYWI4ZmM1NWNlXkEyXkFqcGc@._V1_QL75_UY281_CR11,0,190,281_.jpg" alt="Desert Kings"><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Desert Kings</div><div class="card-sub"><span class="card-rating">⭐ 7.7</span><span>·</span><span>2025</span></div></div></div>
+                <div class="card"><div class="card-thumb"><img src="https://m.media-amazon.com/images/S/pv-target-images/7d6440824d776c13a5c4ac8fcda9de6f04f2221cd969188130f57546e6e3bbb4.jpg" alt="Tide and Time"><div class="card-badge badge-new">NEW</div><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Tide and Time</div><div class="card-sub"><span class="card-rating">⭐ 8.0</span><span>·</span><span>2025</span></div></div></div>
+                <div class="card"><div class="card-thumb"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWsL6wc8EWOKf8npb1d74TKmsQLfc1daszPg&s" alt="Coastal Legends"><div class="card-play"><div class="card-play-btn"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div><div class="card-info"><div class="card-title">Coastal Legends</div><div class="card-sub"><span class="card-rating">⭐ 8.0</span><span>·</span><span>2025</span></div></div></div>
+            </div>
+            <button class="scroll-btn right" onclick="scrollRow(this,1)">›</button>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <div class="footer-top">
+        <div class="footer-brand">
+            <div class="footer-logo">StreamVerse</div>
+            <div class="footer-tagline">India's most loved streaming platform. Watch anywhere, anytime.</div>
+            <div class="footer-apps">
+                <div class="app-btn"><svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>App Store</div>
+                <div class="app-btn"><svg viewBox="0 0 24 24"><path d="m3 20.5v-17c0-.83 1-.95 1.4-.4l14.5 8.6c.38.24.38.76 0 1L4.4 21.1c-.4.5-1.4.33-1.4-.6z"/></svg>Play Store</div>
+            </div>
+        </div>
+        <div class="footer-links-row">
+            <a href="about.html">About Us</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="help.html">Help &amp; Support</a>
+            <a href="privacy.html">Privacy &amp; Terms</a>
+            <a href="feedback.html">Feedback</a>
+            <a href="#">Careers</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="footer-copy">© 2025 StreamVerse Entertainment Pvt. Ltd. All rights reserved.</div>
+        <div class="footer-badges">
+            <span class="footer-badge">4K UHD</span>
+            <span class="footer-badge">DOLBY ATMOS</span>
+            <span class="footer-badge">HDR 10+</span>
+            <span class="footer-badge">U/A CERTIFIED</span>
+        </div>
+    </div>
+</footer>
+
+<script>
+    function scrollRow(btn, dir) {
+        const wrap = btn.closest('.row-wrap');
+        const row = wrap.querySelector('.row');
+        row.scrollBy({ left: dir * 640, behavior: 'smooth' });
+    }
+    document.querySelectorAll('.cat-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+            document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+        });
+    });
+    let heroIdx = 0;
+    const heroDots = document.querySelectorAll('.hero-dots span');
+    setInterval(() => {
+        heroDots.forEach(d => d.classList.remove('active'));
+        heroIdx = (heroIdx + 1) % heroDots.length;
+        heroDots[heroIdx].classList.add('active');
+    }, 4000);
+    heroDots.forEach((dot, i) => {
+        dot.addEventListener('click', () => {
+            heroDots.forEach(d => d.classList.remove('active'));
+            dot.classList.add('active');
+            heroIdx = i;
+        });
+    });
+    const muteBtn = document.querySelector('.hero-mute');
+    let muted = true;
+    const muteIcon = `<svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
+    const unmuteIcon = `<svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`;
+
+    muteBtn.addEventListener('click', () => {
+        muted = !muted;
+        muteBtn.style.borderColor = muted ? 'rgba(255,255,255,0.15)' : 'var(--accent2)';
+        muteBtn.innerHTML = muted ? muteIcon : unmuteIcon;
+    });
+</script>
+<script src="script.js"></script>
+</body>
+</html>

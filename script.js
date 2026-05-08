@@ -100,7 +100,7 @@ const handleLogin = (event) => {
         setCurrentUser({ name: validUser.name, email: validUser.email });
 
         // Redirect to intended page or home
-        const intendedPage = localStorage.getItem('intendedPage') || 'home.html';
+        const intendedPage = localStorage.getItem('intendedPage') || 'index.html';
         localStorage.removeItem('intendedPage'); // Clear after use
         window.location.href = intendedPage;
     } else {
@@ -111,7 +111,7 @@ const handleLogin = (event) => {
 // Logout Function
 const handleLogout = () => {
     clearCurrentUser();
-    window.location.href = 'home.html';
+    window.location.href = 'index.html';
 };
 
 // Utility to display messages
